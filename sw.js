@@ -1,5 +1,5 @@
 // Service worker: le info chiave restano consultabili anche senza segnale.
-const CACHE = 'tg-guida-v3';
+const CACHE = 'tg-guida-v4';
 const ASSETS = [
   './', './index.html', './content.js', './tracks.js',
   './icons/icon-192.png', './icons/icon-512.png',
@@ -21,7 +21,8 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   // le tile mappa non si cachano (troppe); tutto il resto cache-first con aggiornamento in rete
   if (url.hostname.includes('arcgisonline') || url.hostname.includes('openstreetmap') ||
-      url.hostname.includes('opentopomap') || url.hostname.includes('stay22')) return;
+      url.hostname.includes('opentopomap') || url.hostname.includes('stay22') ||
+      url.hostname.includes('open-meteo')) return;
   e.respondWith(
     caches.match(e.request).then(hit => {
       const net = fetch(e.request).then(res => {

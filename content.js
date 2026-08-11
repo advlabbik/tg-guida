@@ -88,10 +88,10 @@ infoCards: [
   { id: "sicurezza", icona: "🛡️", titolo: "Sicurezza: le regole d'oro",
     corpo: "Non è una gara: non prendere rischi inutili. Le strade sono aperte al traffico, rispetta il Codice della Strada. Evita di pedalare di notte; se devi, usa luci potenti. Non pedalare se sei troppo stanco, cerca di non restare mai da solo e aiuta chi è in difficoltà. Se un tratto ti sembra pericoloso, scendi e cammina: il futuro dell'evento dipende dalla prudenza di ognuno.",
     cerca: "sicurezza regole codice strada notte traffico prudenza stanchezza aiuto" },
-  { id: "gpsguide", icona: "🛰️", titolo: "Carica la traccia sul GPS adesso",
-    corpo: "Non aspettare il giorno della partenza: carica la traccia oggi, così hai tempo di risolvere i problemi (al ritiro pacco lo staff non potrà aiutarti). Gli eventi BAS usano Ride with GPS: con l'iscrizione hai le funzioni Premium sulle tracce ufficiali — navigazione turn-by-turn, mappe offline, sincronizzazione con Garmin, Wahoo e Hammerhead ✱. Parti sempre col GPS carico e un power bank. E ricorda: la traccia è riservata ai partecipanti, non condividerla.",
+  { id: "gpsguide", icona: "🛰️", titolo: "Sul GPS va SOLO la traccia definitiva",
+    corpo: "La traccia preliminare serve per studiare il viaggio e prenotare: guardala sulla mappa qui nella guida, ma NON caricarla sul GPS. Dopo la verifica finale di settembre ti consegniamo la traccia definitiva ✱: carica quella, e fallo appena arriva — non il giorno della partenza, così hai tempo di risolvere eventuali problemi (al ritiro pacco lo staff non potrà aiutarti). Gli eventi BAS usano Ride with GPS: con l'iscrizione hai le funzioni Premium sulle tracce ufficiali — navigazione turn-by-turn, mappe offline, sincronizzazione con Garmin, Wahoo e Hammerhead ✱. Parti sempre col GPS carico e un power bank. E ricorda: la traccia è riservata ai partecipanti, non condividerla.",
     link: { testo: "Guida: caricare una traccia su Garmin/Wahoo", url: "https://support.ridewithgps.com/hc/en-us" },
-    cerca: "gps traccia caricare garmin wahoo hammerhead ride with gps rwgps navigazione offline turn by turn batteria" },
+    cerca: "gps traccia caricare garmin wahoo hammerhead ride with gps rwgps navigazione offline turn by turn batteria definitiva preliminare" },
   { id: "animali", icona: "🐄", titolo: "Animali al pascolo",
     corpo: "Nei tratti in quota puoi incontrare mucche e greggi al pascolo, a volte con cani da guardiania. Rallenta, se serve scendi dalla bici e tienila tra te e l'animale, passa con calma senza gesti bruschi. Se attraversi un recinto di pascolo, richiudi sempre il cancello dietro di te.",
     cerca: "animali mucche cani pastore gregge pascolo cancelli recinti incontro" },
@@ -140,14 +140,9 @@ live: {
 dormire: {
   titolo: "Arrivare e dormire",
   intro: "Due prenotazioni, due tempi. La notte di venerdì 25 a Rovereto: subito, saremo in 500 nella stessa città. Le notti lungo il percorso: adesso che hai le tracce, non aspettare settembre — molte strutture in quota chiudono il 20.",
-  ferratel: {
-    titolo: "Il canale ufficiale: Visit Trentino",
-    testo: "Il sistema di prenotazione ufficiale del territorio: categoria, posizione, prezzo e disponibilità reale. Se una struttura è chiusa, non la puoi prenotare — quello che vedi è quello che c'è. Le APT hanno pre-allertato le strutture lungo il percorso.",
-    url: "https://www.visittrentino.info/it/prenota"
-  },
   stay22: {
-    titolo: "Cerca sulla mappa",
-    testo: "Hotel, B&B e campeggi intorno a Rovereto per la notte di venerdì 25. Muovi la mappa per esplorare le notti lungo il percorso.",
+    titolo: "Prenota dalla mappa",
+    testo: "Hotel, B&B e campeggi intorno a Rovereto per la notte di venerdì 25. Muovi la mappa lungo il percorso per prenotare anche le tappe successive: quello che vedi è prenotabile.",
     aid: "694570b3581ec595fca56708",
     campaign: "trentinogravel",
     lat: 45.8896, lng: 11.0440,
@@ -156,7 +151,7 @@ dormire: {
   consigli: [
     "Prima notte sul Medio e sul Lungo: puntate su Molveno o Andalo — molte strutture di Madonna di Campiglio sono già chiuse il 26/09",
     "Chi dorme in tenda usa i campeggi ufficiali: il bivacco libero non è ammesso",
-    "Pernottando in Trentino ricevete la Trentino Guest Card: trasporti e musei inclusi"
+    "Pernottando in Trentino ricevete la Trentino Guest Card: trasporti e musei inclusi durante il soggiorno"
   ]
 },
 
@@ -186,16 +181,47 @@ sponsor: {
   ]
 },
 
-checklist: [
-  { id: "certificato", testo: "Carica il certificato medico nell'area personale", tab: "info" },
-  { id: "traccia", testo: "Scarica la traccia GPX del tuo percorso", tab: "percorso" },
-  { id: "gps", testo: "Carica la traccia sul GPS e prova la navigazione", tab: "info" },
-  { id: "rovereto", testo: "Prenota la notte di venerdì 25 a Rovereto", tab: "dormire" },
-  { id: "tappe", testo: "Pianifica le tappe e prenota le notti lungo il percorso", tab: "dormire" },
-  { id: "studia", testo: "Studia percorso e altimetria", tab: "percorso" },
-  { id: "treno", testo: "Organizza il viaggio (il treno è tuo amico)", tab: "info" },
-  { id: "telegram", testo: "Iscriviti al canale Telegram", tab: "info" }
+avvisi: [
+  { testo: "Le tracce preliminari sono disponibili: studiale con calma, ma NON caricarle sul GPS. Sul GPS va solo la traccia definitiva, in arrivo dopo la verifica finale di settembre ✱." },
+  { testo: "Molte strutture in quota chiudono il 20 settembre: prenota le tue notti adesso." }
 ],
+
+checklist: [
+  { id: "certificato", testo: "1. Carica il certificato medico",
+    dettaglio: "Agonistico per il CICLISMO, in corso di validità. Vai nella tua area personale → sezione Certificati e carica il file (PDF o JPG, max 2 MB).",
+    url: "https://www.bikeadventureseries.com/my-account/", cta: "Vai all'area personale" },
+  { id: "studia", testo: "2. Studia la traccia preliminare",
+    dettaglio: "Guardala sulla mappa con l'altimetria e pianifica le tappe. NON caricarla sul GPS: caricherai solo la traccia definitiva, dopo la verifica di settembre.",
+    tab: "percorso" },
+  { id: "prima-notte", testo: "3. Prenota la prima notte",
+    dettaglio: "Venerdì 25 settembre a Rovereto: sarete in 500 nella stessa città, la stessa notte. Prenota adesso dalla mappa alloggi qui nella guida.",
+    tab: "dormire" },
+  { id: "tappe", testo: "4. Prenota le notti lungo il percorso",
+    dettaglio: "Molte strutture in quota chiudono il 20 settembre: la finestra giusta è adesso. Prima notte sul Medio e Lungo: punta su Molveno o Andalo.",
+    tab: "dormire" },
+  { id: "forum", testo: "5. Hai dubbi? Chiedi sul forum BAS",
+    dettaglio: "Per domande su preparazione, bici e materiali c'è la community: lo staff e gli altri partecipanti rispondono lì.",
+    url: "https://www.bikeadventureseries.com/community/", cta: "Vai al forum" },
+  { id: "telegram", testo: "6. Iscriviti al canale Telegram ✱",
+    dettaglio: "Le comunicazioni rapide durante l'evento passano da lì: entra prima di partire.",
+    tab: "info" },
+  { id: "treno", testo: "7. Organizza il viaggio",
+    dettaglio: "Il treno è tuo amico: Rovereto è sulla linea del Brennero e la stazione è a pochi minuti dalla partenza.",
+    tab: "info" }
+],
+
+meteo: {
+  localita: [
+    { nome: "Rovereto", lat: 45.889, lng: 11.044 },
+    { nome: "Riva del Garda", lat: 45.885, lng: 10.841 },
+    { nome: "M. di Campiglio", lat: 46.230, lng: 10.827 },
+    { nome: "Dimaro (V. Sole)", lat: 46.327, lng: 10.874 },
+    { nome: "Molveno", lat: 46.143, lng: 10.964 },
+    { nome: "Predazzo (Fiemme)", lat: 46.312, lng: 11.601 },
+    { nome: "S. Martino di C.", lat: 46.263, lng: 11.795 }
+  ],
+  giorniEvento: ["2026-09-25", "2026-09-26", "2026-09-27", "2026-09-28", "2026-09-29", "2026-09-30"]
+},
 
 durante: {
   orariOggi: "Arrivi presidiati 10:00–19:00 ✱ · Docce e ristoro a Progetto Manifattura"

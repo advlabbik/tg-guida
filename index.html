@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>Trentino Gravel · La tua guida</title>
+<meta name="robots" content="noindex, nofollow"/>
 <meta name="theme-color" content="#68173D"/>
 <link rel="manifest" href="manifest.webmanifest"/>
 <link rel="icon" href="icons/icon-192.png"/>
@@ -69,12 +70,40 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 #countdown b{display:block;font-size:24px}
 #countdown span{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;opacity:.8}
 /* checklist */
-.chk{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0ebe1;cursor:pointer}
+.chk{padding:11px 0;border-bottom:1px solid #f0ebe1}
 .chk:last-child{border-bottom:none}
-.chk input{width:20px;height:20px;accent-color:var(--maroon);flex:0 0 auto}
+.chk .top{display:flex;align-items:center;gap:10px}
+.chk input{width:21px;height:21px;accent-color:var(--maroon);flex:0 0 auto;cursor:pointer}
 .chk.done label{text-decoration:line-through;color:var(--muted)}
-.chk label{font-size:14.5px;cursor:pointer;flex:1}
-.chk .go{color:var(--maroon);font-weight:700;font-size:18px;text-decoration:none}
+.chk label{font-size:15px;font-weight:700;cursor:pointer;flex:1}
+.chk .det{font-size:13px;color:#5c554d;margin:5px 0 0 31px}
+.chk.done .det{color:#a49a8e}
+.chk .det a{color:var(--maroon);font-weight:700}
+/* avvisi */
+.avvisi{background:#fff8e6;border:2px solid var(--gold);border-radius:14px;padding:12px 16px;margin-bottom:12px}
+.avvisi h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#8a6a1f}
+.avvisi p{margin:0 0 7px;font-size:14px;color:#4a3d20}
+.avvisi p:last-child{margin-bottom:0}
+/* meteo */
+#meteotab{width:100%;border-collapse:collapse;font-size:12px}
+#meteotab th,#meteotab td{border:1px solid #eee8dc;padding:5px 4px;text-align:center}
+#meteotab th{background:var(--cream);font-size:11px}
+#meteotab td .wi{font-size:17px;display:block}
+#meteotab td .tt{color:var(--muted)}
+#meteotab .loc{text-align:left;font-weight:700;font-size:11.5px;white-space:nowrap}
+.meteowrap{overflow-x:auto}
+#meteogps{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:10px;display:none}
+.sunset{background:linear-gradient(90deg,#fff3e0,#ffe0b2);border-radius:10px;padding:8px 14px;font-size:13.5px;margin-top:10px;color:#6d4c1b}
+/* gate */
+#gate{position:fixed;inset:0;background:var(--maroon);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
+#gate .box{background:#fff;border-radius:18px;padding:28px 24px;max-width:380px;width:100%;text-align:center}
+#gate h2{margin:0 0 6px;color:var(--maroon-d);font-size:20px}
+#gate p{font-size:13.5px;color:var(--muted);margin:0 0 14px}
+#gate input{width:100%;font-size:17px;padding:12px;border:2px solid var(--line);border-radius:12px;text-align:center;
+  text-transform:uppercase;letter-spacing:2px;outline:none}
+#gate input:focus{border-color:var(--maroon)}
+#gate .err{color:#c1121f;font-size:12.5px;min-height:18px;margin:6px 0}
+#gate button{width:100%}
 /* big buttons (durante) */
 .bigbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .bigbtn{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 12px;text-align:center;
@@ -153,6 +182,13 @@ nav button.on .e{transform:scale(1.12)}
 </head>
 <body>
 <div id="phone">
+  <div id="gate" style="display:none"><div class="box">
+    <h2>Trentino Gravel</h2>
+    <p>Questa guida è riservata ai partecipanti.<br/>Inserisci il codice che trovi nell'email di benvenuto ✱.</p>
+    <input id="gatecode" type="text" placeholder="CODICE" autocomplete="off"/>
+    <div class="err" id="gateerr"></div>
+    <button class="btn" id="gatebtn">Entra</button>
+  </div></div>
   <div id="demobar"><b>PROTOTIPO</b> Vista:
     <button data-ph="auto">Auto</button><button data-ph="prima">Prima</button>
     <button data-ph="durante">Durante</button><button data-ph="dopo">Dopo</button>
@@ -200,6 +236,26 @@ const C = CONTENT.it;
 const $ = s => document.querySelector(s);
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
+/* ---------- accesso riservato ai partecipanti ---------- */
+/* Deterrente, non sicurezza vera: il codice arriva via email agli iscritti.
+   Nell'area personale su bikeadventureseries.com il login sostituirà tutto questo. */
+const GATE_CODE = 'PIONEER26'; // ✱ segnaposto
+function initGate(){
+  if (localStorage.getItem('tg-access') === GATE_CODE) return;
+  $('#gate').style.display = 'flex';
+  const tryCode = () => {
+    const v = $('#gatecode').value.trim().toUpperCase();
+    if (v === GATE_CODE){
+      localStorage.setItem('tg-access', GATE_CODE);
+      $('#gate').style.display = 'none';
+    } else {
+      $('#gateerr').textContent = 'Codice non valido. Controlla l\'email di benvenuto.';
+    }
+  };
+  $('#gatebtn').addEventListener('click', tryCode);
+  $('#gatecode').addEventListener('keydown', e => { if (e.key === 'Enter') tryCode(); });
+}
+
 /* ---------- fase (prima / durante / dopo) ---------- */
 function autoPhase(){
   const today = new Date().toISOString().slice(0,10);
@@ -235,6 +291,7 @@ function openTab(name){
   window.scrollTo({top:0});
   if (name==='percorso' && !mapsInit.mini) { mapsInit.mini = true; setTimeout(initMiniMap, 60); }
   if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; loadStay22(); }
+  if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 
@@ -242,31 +299,40 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
 function renderHome(){
   const ph = phase();
   let h = '';
+  if (C.avvisi && C.avvisi.length){
+    h += `<div class="avvisi"><h3>📌 Da sapere adesso</h3>` +
+      C.avvisi.map(a=>`<p>${esc(a.testo)}</p>`).join('') + `</div>`;
+  }
   if (ph === 'prima') {
     h += `<div class="card hero"><h2>${esc(C.intro.titolo)}</h2>
       <div id="countdown"></div>
       <p>${esc(C.intro.testo)}</p></div>`;
-    h += `<div class="card"><h2>La tua preparazione</h2><div id="cklist">` +
+    h += `<div class="card"><h2>Le cose da fare, in ordine</h2>
+      <p class="muted">Segui l'ordine e spunta quello che completi: la lista si ricorda di te.</p><div id="cklist">` +
       C.checklist.map(c=>`<div class="chk" data-id="${c.id}">
-        <input type="checkbox" id="ck-${c.id}"/><label for="ck-${c.id}">${esc(c.testo)}</label>
-        <a class="go" data-tab="${c.tab}" href="#">›</a></div>`).join('') + `</div></div>`;
-    h += `<div class="card"><h2>Da fare adesso: prenotare</h2>
-      <p>${esc(C.dormire.intro)}</p>
-      <div class="btnrow"><button class="btn" data-tab="dormire">Trova dove dormire</button></div></div>`;
+        <div class="top"><input type="checkbox" id="ck-${c.id}"/><label for="ck-${c.id}">${esc(c.testo)}</label></div>
+        <div class="det">${esc(c.dettaglio||'')} ${c.url
+          ? `<a href="${c.url}" target="_blank" rel="noopener">${esc(c.cta||'Apri')} ›</a>`
+          : `<a href="#" data-tab="${c.tab}">Vai ›</a>`}</div>
+      </div>`).join('') + `</div></div>`;
     h += cardPercorsiBrevi();
   }
   if (ph === 'durante') {
     h += `<div class="card hero"><h2>Si pedala. 🚵</h2>
       <p>${esc(C.durante.orariOggi)}</p>
-      <p><b>Hub:</b> ${esc(C.meta.hub)}</p></div>`;
+      <p><b>Hub:</b> ${esc(C.meta.hub)}</p>
+      <p id="herosunset"></p></div>`;
     h += `<div class="bigbtns">
       <a class="bigbtn" href="${C.live.link.url}" target="_blank" rel="noopener"><span class="e">📡</span><b>Live tracking</b></a>
       <div class="bigbtn" data-tab="live" data-gps="1"><span class="e">📍</span><b>Dove sono?</b></div>
+      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">🌦️</span><b>Meteo</b></div>
       <a class="bigbtn alert" href="tel:112"><span class="e">🆘</span><b>Emergenze · 112</b></a>
       <div class="bigbtn" data-tab="info"><span class="e">ℹ️</span><b>Tutte le info</b></div>
+      <div class="bigbtn" data-tab="dormire"><span class="e">🛏️</span><b>Dormire stanotte</b></div>
     </div>`;
     h += `<div class="card" style="margin-top:12px"><h3>⛰️ In quota</h3>
-      <p>Freddo dopo le 17, buio dopo le 19. Ripartite con le borracce piene e gli strati caldi a portata.</p></div>`;
+      <p>Freddo dopo le 17, buio poco dopo il tramonto. Ripartite con le borracce piene e gli strati caldi a portata.</p></div>`;
+    fillHeroSunset();
   }
   if (ph === 'dopo') {
     h += `<div class="card hero"><h2>${esc(C.dopo.titolo)}</h2><p>${esc(C.dopo.testo)}</p></div>`;
@@ -295,6 +361,10 @@ function bindTabLinks(root){
       e.preventDefault();
       openTab(el.dataset.tab);
       if (el.dataset.gps) setTimeout(startGPS, 250);
+      if (el.dataset.meteo) setTimeout(()=>{
+        const s = document.getElementById('meteosec');
+        if (s) s.scrollIntoView({behavior:'smooth'});
+      }, 250);
     });
   });
 }
@@ -385,10 +455,7 @@ function renderInfo(){
 function renderDormire(){
   const s = C.dormire;
   let h = `<div class="card"><h2>${esc(s.titolo)}</h2><p>${esc(s.intro)}</p></div>`;
-  h += `<div class="card" style="border:2px solid var(--gold)"><h3>✅ ${esc(s.ferratel.titolo)}</h3>
-    <p>${esc(s.ferratel.testo)}</p>
-    <div class="btnrow"><a class="btn" href="${s.ferratel.url}" target="_blank" rel="noopener">Prenota su Visit Trentino</a></div></div>`;
-  h += `<div class="card"><h3>🗺️ ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
+  h += `<div class="card" style="border:2px solid var(--gold)"><h3>🗺️ ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
     <div id="stay22wrap"><div style="padding:40px;text-align:center;color:var(--muted)">Caricamento mappa alloggi…</div></div>
     <p class="muted" style="margin-top:8px">Mappa alloggi via Stay22 · account aziendale in arrivo ✱</p></div>`;
   h += `<div class="card"><h3>Tre consigli dal team</h3>` +
@@ -410,6 +477,13 @@ function renderLive(){
   h += `<div class="card"><h3>🔑 ${esc(l.codice.titolo)}</h3><p>${esc(l.codice.testo)}</p>
     <div class="codebox">${esc(l.codice.demo)}</div>
     <p class="muted">Nell'area personale qui comparirà il codice reale di ciascun partecipante.</p></div>`;
+  h += `<div class="card" id="meteosec"><h3>🌦️ Meteo</h3>
+    <div class="btnrow"><button class="btn small" id="meteogpsbtn">Meteo dove sono</button></div>
+    <div id="meteogps"></div>
+    <h3 style="margin-top:16px">Le località dell'evento</h3>
+    <p class="muted" id="meteonote"></p>
+    <div class="meteowrap"><table id="meteotab"></table></div>
+    <div class="sunset" id="sunsetbox">🌇 Calcolo l'orario del tramonto…</div></div>`;
   h += `<div class="card"><h3>📍 ${esc(l.gps.titolo)}</h3><p>${esc(l.gps.testo)}</p>
     <p><label class="muted">Il mio percorso:</label>
     <select id="gpsroute" style="font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)">
@@ -420,6 +494,98 @@ function renderLive(){
     <div id="gpsmap" style="margin-top:10px;display:none"></div></div>`;
   $('#tab-live').innerHTML = h;
   $('#gpsbtn').addEventListener('click', startGPS);
+  $('#meteogpsbtn').addEventListener('click', meteoGPS);
+}
+
+/* ---------- METEO (Open-Meteo, gratuito, senza chiave) ---------- */
+function wIcon(code){
+  if (code === 0) return '☀️';
+  if (code <= 2) return '🌤️';
+  if (code === 3) return '☁️';
+  if (code <= 48) return '🌫️';
+  if (code <= 57) return '🌦️';
+  if (code <= 67) return '🌧️';
+  if (code <= 77) return '❄️';
+  if (code <= 82) return '🌧️';
+  if (code <= 86) return '🌨️';
+  return '⛈️';
+}
+function fmtDay(iso){
+  const d = new Date(iso + 'T12:00:00');
+  return ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'][d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1);
+}
+function meteoDays(){
+  const todayIso = new Date().toISOString().slice(0,10);
+  const horizon = new Date(Date.now() + 14*864e5).toISOString().slice(0,10);
+  if (C.meteo.giorniEvento[0] <= horizon && C.meteo.giorniEvento[C.meteo.giorniEvento.length-1] >= todayIso){
+    return { days: C.meteo.giorniEvento.filter(d => d >= todayIso), nota: '' };
+  }
+  const days = [];
+  for (let i = 0; i < 6; i++) days.push(new Date(Date.now() + i*864e5).toISOString().slice(0,10));
+  return { days, nota: 'Anteprima con i prossimi giorni ✱ — nei giorni dell\'evento questa tabella mostra il 25–30 settembre.' };
+}
+async function loadMeteoTable(){
+  const { days, nota } = meteoDays();
+  $('#meteonote').textContent = nota;
+  const tab = $('#meteotab');
+  tab.innerHTML = '<tr><th class="loc"></th>' + days.map(d=>`<th>${fmtDay(d)}</th>`).join('') + '</tr>' +
+    C.meteo.localita.map((l,i)=>`<tr><td class="loc">${esc(l.nome)}</td>` +
+      days.map(()=>'<td>…</td>').join('') + '</tr>').join('');
+  await Promise.all(C.meteo.localita.map(async (l, li) => {
+    try {
+      const u = `https://api.open-meteo.com/v1/forecast?latitude=${l.lat}&longitude=${l.lng}` +
+        `&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FRome` +
+        `&start_date=${days[0]}&end_date=${days[days.length-1]}`;
+      const r = await fetch(u).then(x=>x.json());
+      const row = tab.rows[li+1];
+      days.forEach((d, di) => {
+        const j = r.daily.time.indexOf(d);
+        row.cells[di+1].innerHTML = j < 0 ? '—' :
+          `<span class="wi">${wIcon(r.daily.weather_code[j])}</span>` +
+          `<span class="tt">${Math.round(r.daily.temperature_2m_min[j])}°/${Math.round(r.daily.temperature_2m_max[j])}°</span>`;
+      });
+    } catch(e){ /* offline: la tabella resta con i puntini */ }
+  }));
+}
+let sunsetCache = null;
+async function loadSunset(){
+  try {
+    if (!sunsetCache){
+      const u = `https://api.open-meteo.com/v1/forecast?latitude=45.889&longitude=11.044&daily=sunset&timezone=Europe%2FRome&forecast_days=1`;
+      const r = await fetch(u).then(x=>x.json());
+      sunsetCache = r.daily.sunset[0].slice(11,16);
+    }
+    const box = $('#sunsetbox');
+    if (box) box.innerHTML = `🌇 <b>Tramonto oggi a Rovereto: ${sunsetCache}</b> — pianifica di arrivare a destinazione prima del buio.`;
+    return sunsetCache;
+  } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = '🌇 Tramonto non disponibile offline.'; }
+}
+async function fillHeroSunset(){
+  const s = await loadSunset();
+  const el = $('#herosunset');
+  if (el && s) el.innerHTML = `🌇 Tramonto: <b>${s}</b> — occhio al buio.`;
+}
+async function meteoGPS(){
+  const box = $('#meteogps');
+  box.style.display = 'block';
+  if (!navigator.geolocation){ box.textContent = 'GPS non disponibile.'; return; }
+  box.textContent = 'Cerco la tua posizione…';
+  navigator.geolocation.getCurrentPosition(async pos => {
+    try {
+      const u = `https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}` +
+        `&current=temperature_2m,weather_code,wind_speed_10m,precipitation` +
+        `&hourly=precipitation_probability&daily=sunset&timezone=Europe%2FRome&forecast_days=1`;
+      const r = await fetch(u).then(x=>x.json());
+      const c = r.current;
+      const hNow = new Date().getHours();
+      const prob = r.hourly && r.hourly.precipitation_probability ? r.hourly.precipitation_probability[hNow] : null;
+      const sunset = r.daily && r.daily.sunset ? r.daily.sunset[0].slice(11,16) : null;
+      box.innerHTML = `<b>${wIcon(c.weather_code)} ${Math.round(c.temperature_2m)}°C</b> dove sei adesso · vento ${Math.round(c.wind_speed_10m)} km/h` +
+        (prob !== null ? ` · pioggia nelle prossime ore: ${prob}%` : '') +
+        (sunset ? `<br/>🌇 Il sole qui tramonta alle <b>${sunset}</b>.` : '');
+    } catch(e){ box.textContent = 'Meteo non raggiungibile: serve connessione.'; }
+  }, () => { box.textContent = 'Non riesco a leggere la posizione: controlla i permessi.'; },
+  {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
 }
 let gpsMap, gpsMarker, gpsLine, gpsWatch;
 function haversine(a, b){
@@ -503,6 +669,7 @@ $('#searchinput').addEventListener('input',e=>{
 });
 
 /* ---------- avvio ---------- */
+initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
 paintDemo(); openTab('home');
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
