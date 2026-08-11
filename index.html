@@ -395,7 +395,7 @@ function renderHome(){
       <p><b>Hub:</b> ${esc(C.meta.hub)}</p>
       <p id="herosunset"></p></div>`;
     h += `<div class="bigbtns">
-      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">📍</span><b>Dove sono?</b><br/><span style="font-size:12px;opacity:.85">km, cosa hai davanti, condividi posizione</span></div>
+      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">📍</span><b>Live</b><br/><span style="font-size:13px;opacity:.9">Tocca qui: dove sei, a che km, cosa hai davanti da mangiare e da dormire</span></div>
       <a class="bigbtn alert" href="tel:112"><span class="e">🆘</span><b>Emergenze · 112</b></a>
       <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">🌦️</span><b>Meteo e tramonto</b></div>
       <div class="bigbtn" data-tab="dormire"><span class="e">🛏️</span><b>Dormire stanotte</b></div>
@@ -683,23 +683,7 @@ function loadStay22(){
 /* ---------- LIVE ---------- */
 function renderLive(){
   const l = C.live;
-  const liveBtn = (l.link.url && l.link.url !== '#')
-    ? `<a class="btn" href="${l.link.url}" target="_blank" rel="noopener">${esc(l.link.testo)}</a>`
-    : `<span class="btn" style="opacity:.5;cursor:default">Link live in arrivo ✱</span>`;
-  let h = `<div class="card"><h2>${esc(l.titolo)}</h2><p>${esc(l.spiegazione)}</p>
-    <p class="muted">Il link funziona nei giorni dell'evento: passalo a chi ti segue da casa.</p>
-    <div class="btnrow">${liveBtn}</div></div>`;
-  h += `<div class="card"><h3>🔑 ${esc(l.codice.titolo)}</h3><p>${esc(l.codice.testo)}</p>
-    <div class="codebox">${esc(l.codice.demo)}</div>
-    <p class="muted">Nell'area personale qui comparirà il codice reale di ciascun partecipante.</p></div>`;
-  h += `<div class="card" id="meteosec"><h3>🌦️ Meteo</h3>
-    <div class="btnrow"><button class="btn small" id="meteogpsbtn">Meteo dove sono</button></div>
-    <div id="meteogps"></div>
-    <h3 style="margin-top:16px">Le località dell'evento</h3>
-    <p class="muted" id="meteonote"></p>
-    <div class="meteowrap"><table id="meteotab"></table></div>
-    <div class="sunset" id="sunsetbox">🌇 Calcolo l'orario del tramonto…</div></div>`;
-  h += `<div class="card"><h3>📍 ${esc(l.gps.titolo)}</h3><p>${esc(l.gps.testo)}</p>
+  let h = `<div class="card"><h2>📍 ${esc(l.gps.titolo)}</h2><p>${esc(l.gps.testo)}</p>
     <p><label class="muted">Il mio percorso:</label>
     <select id="gpsroute" style="font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)">
       ${C.percorsi.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('')}
@@ -708,6 +692,13 @@ function renderLive(){
     <div id="gpsinfo"></div>
     <div id="gpsahead"></div>
     <div id="gpsmap" style="margin-top:10px;display:none"></div></div>`;
+  h += `<div class="card" id="meteosec"><h3>🌦️ Meteo</h3>
+    <div class="btnrow"><button class="btn small" id="meteogpsbtn">Meteo dove sono</button></div>
+    <div id="meteogps"></div>
+    <h3 style="margin-top:16px">Le località dell'evento</h3>
+    <p class="muted" id="meteonote"></p>
+    <div class="meteowrap"><table id="meteotab"></table></div>
+    <div class="sunset" id="sunsetbox">🌇 Calcolo l'orario del tramonto…</div></div>`;
   $('#tab-live').innerHTML = h;
   $('#gpsroute').value = myRoute();
   $('#gpsroute').addEventListener('change', e=>{
@@ -902,7 +893,7 @@ const INDEX = [];
 C.infoCards.forEach(c=>INDEX.push({tab:'info', el:'info-'+c.id, t:c.titolo, s:c.corpo.slice(0,90)+'…', k:(c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase()}));
 C.percorsi.forEach(p=>INDEX.push({tab:'percorso', t:p.nome, s:`${p.km} km · ${p.dplus} m D+ · ${p.livello}`, k:(p.nome+' '+p.desc+' '+p.note.join(' ')+' percorso traccia gpx km dislivello').toLowerCase()}));
 INDEX.push({tab:'dormire', t:'Arrivare e dormire', s:'Prenotazioni, Visit Trentino, mappa alloggi', k:'dormire prenotare hotel alloggio notte stay22 ferratel visit trentino campeggio booking'});
-INDEX.push({tab:'live', t:'Live tracking e codice WHIP', s:'Il tuo codice, la live, dove sono', k:'live tracking whip codice gps dove sono seguire posizione tracker'});
+INDEX.push({tab:'live', t:'Dove sono / Meteo', s:'GPS sul percorso, meteo e tramonto', k:'live gps dove sono posizione meteo tramonto davanti'});
 INDEX.push({tab:'home', t:'Checklist di preparazione', s:'Le cose da fare prima di partire', k:'checklist preparazione lista cose da fare prima'});
 
 $('#searchbtn').addEventListener('click',()=>{ $('#searchov').classList.add('open'); $('#searchinput').focus(); });
