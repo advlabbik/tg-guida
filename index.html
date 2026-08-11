@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Trentino Gravel · La tua guida</title>
+<meta name="theme-color" content="#68173D"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="icon" href="icons/icon-192.png"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+:root{--maroon:#68173D;--maroon-d:#4d1029;--cream:#f4f1ea;--card:#fff;--ink:#2a2320;
+  --muted:#6b6157;--line:#e2dccf;--gold:#c69a4b;--nav-h:62px}
+*{box-sizing:border-box}
+html,body{margin:0;background:#d9d2c4}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);line-height:1.55}
+#phone{max-width:560px;margin:0 auto;background:var(--cream);min-height:100vh;position:relative;
+  box-shadow:0 0 40px rgba(60,40,30,.25)}
+/* demo bar */
+#demobar{background:#2a2320;color:#cfc7bc;font-size:11.5px;padding:6px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#demobar b{color:#fff;letter-spacing:.5px}
+#demobar button{background:none;border:1px solid #55504a;color:#cfc7bc;border-radius:999px;
+  padding:2px 10px;font-size:11px;cursor:pointer}
+#demobar button.on{background:var(--gold);border-color:var(--gold);color:#2a2320;font-weight:700}
+/* header */
+header{background:var(--maroon);color:#fff;padding:14px 16px 12px;position:sticky;top:0;z-index:600}
+header .row{display:flex;align-items:center;gap:10px}
+header h1{font-size:17px;margin:0;font-weight:800;letter-spacing:.2px;flex:1}
+header .sub{font-size:12px;opacity:.85;margin-top:1px}
+.langs{display:flex;gap:4px}
+.langs span{font-size:11px;font-weight:700;padding:3px 7px;border-radius:6px;opacity:.45}
+.langs .on{background:#fff;color:var(--maroon);opacity:1}
+#searchbtn{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:16px;
+  width:34px;height:34px;border-radius:10px;cursor:pointer}
+/* search overlay */
+#searchov{position:fixed;inset:0;background:rgba(42,35,32,.5);z-index:900;display:none}
+#searchov.open{display:block}
+#searchbox{max-width:560px;margin:0 auto;background:var(--cream);padding:14px;min-height:40vh;
+  border-radius:0 0 18px 18px;max-height:85vh;overflow-y:auto}
+#searchbox input{width:100%;font-size:16px;padding:12px 14px;border:2px solid var(--maroon);
+  border-radius:12px;outline:none;background:#fff}
+.sres{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:10px;cursor:pointer}
+.sres b{display:block;font-size:14.5px}
+.sres span{font-size:12.5px;color:var(--muted)}
+.snull{text-align:center;color:var(--muted);font-size:13.5px;padding:18px 0}
+/* main */
+main{padding:14px 14px calc(var(--nav-h) + 20px)}
+.tab{display:none}
+.tab.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;
+  box-shadow:0 2px 10px rgba(60,40,30,.05)}
+.card h2{font-size:18px;margin:0 0 8px;color:var(--maroon-d)}
+.card h3{font-size:15.5px;margin:0 0 6px}
+.card p{margin:0 0 8px;font-size:14.5px;color:#39332d}
+.card p:last-child{margin-bottom:0}
+.muted{color:var(--muted);font-size:12.5px}
+.btn{display:inline-block;background:var(--maroon);color:#fff;text-decoration:none;font-weight:700;
+  font-size:14px;padding:10px 18px;border-radius:999px;border:none;cursor:pointer}
+.btn.sec{background:#fff;color:var(--maroon);border:1.5px solid var(--maroon)}
+.btn.small{font-size:12.5px;padding:7px 13px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+/* hero */
+.hero{background:linear-gradient(135deg,var(--maroon) 0%,#8a2350 100%);color:#fff;border:none}
+.hero h2{color:#fff;font-size:20px}
+.hero p{color:#f0e2e8}
+#countdown{display:flex;gap:10px;margin:12px 0 4px}
+#countdown div{background:rgba(255,255,255,.14);border-radius:12px;padding:8px 0;text-align:center;flex:1}
+#countdown b{display:block;font-size:24px}
+#countdown span{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;opacity:.8}
+/* checklist */
+.chk{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0ebe1;cursor:pointer}
+.chk:last-child{border-bottom:none}
+.chk input{width:20px;height:20px;accent-color:var(--maroon);flex:0 0 auto}
+.chk.done label{text-decoration:line-through;color:var(--muted)}
+.chk label{font-size:14.5px;cursor:pointer;flex:1}
+.chk .go{color:var(--maroon);font-weight:700;font-size:18px;text-decoration:none}
+/* big buttons (durante) */
+.bigbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bigbtn{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 12px;text-align:center;
+  cursor:pointer;text-decoration:none;color:var(--ink);box-shadow:0 2px 10px rgba(60,40,30,.05)}
+.bigbtn .e{font-size:28px;display:block;margin-bottom:6px}
+.bigbtn b{font-size:14px}
+.bigbtn.alert{background:#fff5f5;border-color:#ffc9c9}
+/* percorsi */
+.route{border-left:5px solid var(--col);}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.badge{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:4px 12px;
+  font-size:12.5px;font-weight:600}
+.rnote{font-size:13px;color:#5c554d;padding-left:16px;margin:4px 0}
+#minimap,#gpsmap{height:340px;border-radius:14px;background:#e9e4d8}
+/* info */
+#infolist .icard{cursor:pointer}
+.icard .head{display:flex;align-items:center;gap:10px}
+.icard .head .e{font-size:20px}
+.icard .head h3{flex:1;margin:0}
+.icard .head .arr{color:var(--muted);transition:transform .2s}
+.icard.open .head .arr{transform:rotate(90deg)}
+.icard .body{display:none;margin-top:8px}
+.icard.open .body{display:block}
+#infosearch{width:100%;font-size:15px;padding:11px 14px;border:1.5px solid var(--line);
+  border-radius:12px;outline:none;background:#fff;margin-bottom:12px}
+mark{background:#ffe8a3;border-radius:3px;padding:0 1px}
+/* dormire */
+#stay22wrap{border-radius:14px;overflow:hidden;border:1px solid var(--line);height:420px}
+#stay22wrap iframe{width:100%;height:100%;border:0}
+/* live */
+.codebox{background:var(--cream);border:2px dashed var(--gold);border-radius:12px;text-align:center;
+  padding:14px;font-size:26px;font-weight:800;letter-spacing:2px;color:var(--maroon-d);margin:10px 0}
+#gpsinfo{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:10px;display:none}
+/* sponsor */
+.sponsor{margin-top:18px}
+.sponsor h3{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);text-align:center;margin:0 0 10px}
+.sprow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.sp{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 14px;text-align:center}
+.sp b{display:block;font-size:13px}
+.sp span{font-size:10.5px;color:var(--muted)}
+.legend{text-align:center;font-size:11.5px;color:var(--muted);margin:16px 0 4px}
+/* nav */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:700;display:flex;justify-content:center;pointer-events:none}
+nav .in{pointer-events:auto;display:flex;width:100%;max-width:560px;background:#fff;
+  border-top:1px solid var(--line);height:var(--nav-h);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;color:var(--muted);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10.5px;font-weight:600}
+nav button .e{font-size:20px}
+nav button.on{color:var(--maroon)}
+nav button.on .e{transform:scale(1.12)}
+.leaflet-container{font-family:inherit}
+</style>
+</head>
+<body>
+<div id="phone">
+  <div id="demobar"><b>PROTOTIPO</b> Vista:
+    <button data-ph="auto">Auto</button><button data-ph="prima">Prima</button>
+    <button data-ph="durante">Durante</button><button data-ph="dopo">Dopo</button>
+  </div>
+  <header>
+    <div class="row">
+      <div style="flex:1">
+        <h1 id="h-title"></h1>
+        <div class="sub" id="h-sub"></div>
+      </div>
+      <div class="langs"><span class="on">IT</span><span title="presto">EN</span><span title="presto">DE</span></div>
+      <button id="searchbtn" title="Cerca">🔍</button>
+    </div>
+  </header>
+
+  <div id="searchov"><div id="searchbox">
+    <input id="searchinput" type="search" placeholder="Cerca: parcheggi, tenda, orari, treno…" autocomplete="off"/>
+    <div id="searchres"></div>
+  </div></div>
+
+  <main>
+    <section class="tab" id="tab-home"></section>
+    <section class="tab" id="tab-percorso"></section>
+    <section class="tab" id="tab-info"></section>
+    <section class="tab" id="tab-dormire"></section>
+    <section class="tab" id="tab-live"></section>
+    <div class="sponsor" id="sponsorbar"></div>
+    <div class="legend">✱ dato segnaposto, da confermare · Prototipo interno AdventureLab</div>
+  </main>
+
+  <nav><div class="in">
+    <button data-tab="home"><span class="e">🏠</span>Home</button>
+    <button data-tab="percorso"><span class="e">🗺️</span>Percorso</button>
+    <button data-tab="info"><span class="e">ℹ️</span>Info</button>
+    <button data-tab="dormire"><span class="e">🛏️</span>Dormire</button>
+    <button data-tab="live"><span class="e">📡</span>Live</button>
+  </div></nav>
+</div>
+
+<script src="content.js"></script>
+<script src="tracks.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const C = CONTENT.it;
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- fase (prima / durante / dopo) ---------- */
+function autoPhase(){
+  const today = new Date().toISOString().slice(0,10);
+  if (today >= C.meta.fasi.dopo) return 'dopo';
+  if (today >= C.meta.fasi.durante) return 'durante';
+  return 'prima';
+}
+function phase(){
+  const o = localStorage.getItem('tg-demo-phase');
+  return (o && o !== 'auto') ? o : autoPhase();
+}
+document.querySelectorAll('#demobar button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    localStorage.setItem('tg-demo-phase', b.dataset.ph);
+    paintDemo(); renderHome();
+  });
+});
+function paintDemo(){
+  const cur = localStorage.getItem('tg-demo-phase') || 'auto';
+  document.querySelectorAll('#demobar button').forEach(b=>b.classList.toggle('on', b.dataset.ph===cur));
+}
+
+/* ---------- header ---------- */
+$('#h-title').textContent = C.meta.titolo;
+$('#h-sub').textContent = C.meta.sottotitolo;
+
+/* ---------- tabs ---------- */
+let mapsInit = {};
+function openTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  $('#tab-'+name).classList.add('on');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on', b.dataset.tab===name));
+  window.scrollTo({top:0});
+  if (name==='percorso' && !mapsInit.mini) { mapsInit.mini = true; setTimeout(initMiniMap, 60); }
+  if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; loadStay22(); }
+}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
+
+/* ---------- HOME ---------- */
+function renderHome(){
+  const ph = phase();
+  let h = '';
+  if (ph === 'prima') {
+    h += `<div class="card hero"><h2>${esc(C.intro.titolo)}</h2>
+      <div id="countdown"></div>
+      <p>${esc(C.intro.testo)}</p></div>`;
+    h += `<div class="card"><h2>La tua preparazione</h2><div id="cklist">` +
+      C.checklist.map(c=>`<div class="chk" data-id="${c.id}">
+        <input type="checkbox" id="ck-${c.id}"/><label for="ck-${c.id}">${esc(c.testo)}</label>
+        <a class="go" data-tab="${c.tab}" href="#">›</a></div>`).join('') + `</div></div>`;
+    h += `<div class="card"><h2>Da fare adesso: prenotare</h2>
+      <p>${esc(C.dormire.intro)}</p>
+      <div class="btnrow"><button class="btn" data-tab="dormire">Trova dove dormire</button></div></div>`;
+    h += cardPercorsiBrevi();
+  }
+  if (ph === 'durante') {
+    h += `<div class="card hero"><h2>Si pedala. 🚵</h2>
+      <p>${esc(C.durante.orariOggi)}</p>
+      <p><b>Hub:</b> ${esc(C.meta.hub)}</p></div>`;
+    h += `<div class="bigbtns">
+      <a class="bigbtn" href="${C.live.link.url}" target="_blank" rel="noopener"><span class="e">📡</span><b>Live tracking</b></a>
+      <div class="bigbtn" data-tab="live" data-gps="1"><span class="e">📍</span><b>Dove sono?</b></div>
+      <a class="bigbtn alert" href="tel:112"><span class="e">🆘</span><b>Emergenze · 112</b></a>
+      <div class="bigbtn" data-tab="info"><span class="e">ℹ️</span><b>Tutte le info</b></div>
+    </div>`;
+    h += `<div class="card" style="margin-top:12px"><h3>⛰️ In quota</h3>
+      <p>Freddo dopo le 17, buio dopo le 19. Ripartite con le borracce piene e gli strati caldi a portata.</p></div>`;
+  }
+  if (ph === 'dopo') {
+    h += `<div class="card hero"><h2>${esc(C.dopo.titolo)}</h2><p>${esc(C.dopo.testo)}</p></div>`;
+    h += C.dopo.azioni.map(a=>`<div class="card"><h3>${a.icona} ${esc(a.titolo)}</h3>
+      <p>${esc(a.testo)}</p>
+      <div class="btnrow"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)}</a></div></div>`).join('');
+    h += `<div class="card" style="border:2px solid var(--gold)"><h2>${esc(C.dopo.prossimo.titolo)}</h2>
+      <p>${esc(C.dopo.prossimo.testo)}</p>
+      <div class="btnrow"><a class="btn" href="${C.dopo.prossimo.url}" target="_blank" rel="noopener">${esc(C.dopo.prossimo.cta)}</a></div></div>`;
+  }
+  $('#tab-home').innerHTML = h;
+  if (ph === 'prima') { startCountdown(); bindChecklist(); }
+  bindTabLinks($('#tab-home'));
+}
+function cardPercorsiBrevi(){
+  return `<div class="card"><h2>I tre percorsi</h2>` +
+    C.percorsi.map(p=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 0">
+      <span style="width:11px;height:11px;border-radius:50%;background:${p.colore};flex:0 0 auto"></span>
+      <b style="font-size:14.5px">${esc(p.nome)}</b>
+      <span class="muted">${p.km} km · ${p.dplus} m D+</span></div>`).join('') +
+    `<div class="btnrow"><button class="btn sec" data-tab="percorso">Vai ai percorsi</button></div></div>`;
+}
+function bindTabLinks(root){
+  root.querySelectorAll('[data-tab]').forEach(el=>{
+    el.addEventListener('click',e=>{
+      e.preventDefault();
+      openTab(el.dataset.tab);
+      if (el.dataset.gps) setTimeout(startGPS, 250);
+    });
+  });
+}
+function startCountdown(){
+  const t = new Date(C.meta.dataPartenza).getTime();
+  function tick(){
+    const d = Math.max(0, t - Date.now());
+    const gg = Math.floor(d/864e5), hh = Math.floor(d%864e5/36e5), mm = Math.floor(d%36e5/6e4);
+    const el = $('#countdown');
+    if (el) el.innerHTML = `<div><b>${gg}</b><span>giorni</span></div>
+      <div><b>${hh}</b><span>ore</span></div><div><b>${mm}</b><span>minuti</span></div>`;
+  }
+  tick(); setInterval(tick, 30000);
+}
+function bindChecklist(){
+  const st = JSON.parse(localStorage.getItem('tg-ck') || '{}');
+  document.querySelectorAll('#cklist .chk').forEach(row=>{
+    const id = row.dataset.id, cb = row.querySelector('input');
+    cb.checked = !!st[id];
+    row.classList.toggle('done', cb.checked);
+    cb.addEventListener('change',()=>{
+      st[id] = cb.checked;
+      localStorage.setItem('tg-ck', JSON.stringify(st));
+      row.classList.toggle('done', cb.checked);
+    });
+  });
+}
+
+/* ---------- PERCORSO ---------- */
+function renderPercorso(){
+  let h = `<div class="card"><h2>Scegli il tuo percorso</h2>
+    <p>Partenza e arrivo per tutti: <b>${esc(C.meta.hub)}</b>. Puoi cambiare percorso fino al giorno prima — basta rispondere a una email dell'evento.</p></div>`;
+  h += C.percorsi.map(p=>`<div class="card route" style="--col:${p.colore}">
+    <h3 style="color:${p.colore}">${esc(p.nome)}</h3>
+    <div class="badges"><span class="badge">${p.km} km</span><span class="badge">${p.dplus} m D+</span>
+      <span class="badge">${esc(p.livello)}</span><span class="badge">${esc(p.giorni)}</span></div>
+    <p>${esc(p.desc)}</p>
+    ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
+    <div class="btnrow">
+      <a class="btn small" href="${C.mappeBase}percorso-${p.id}.html" target="_blank" rel="noopener">Mappa + altimetria</a>
+      <a class="btn small sec" href="${C.mappeBase}gpx/Trentino-Gravel-2026-${p.id[0].toUpperCase()+p.id.slice(1)}-V1.8.gpx" target="_blank" rel="noopener">↓ GPX</a>
+    </div></div>`).join('');
+  h += `<div class="card"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
+  $('#tab-percorso').innerHTML = h;
+}
+let miniMap;
+function initMiniMap(){
+  miniMap = L.map('minimap');
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'© Esri'}).addTo(miniMap);
+  let all = [];
+  ['lungo','medio','corto'].forEach(k=>{
+    const p = C.percorsi.find(x=>x.id===k);
+    const ll = TRACKS[k].coords.map(c=>[c[1],c[0]]);
+    L.polyline(ll,{color:'#fff',weight:6,opacity:.8}).addTo(miniMap);
+    L.polyline(ll,{color:p.colore,weight:3.5}).addTo(miniMap);
+    all = all.concat(ll);
+  });
+  const start = TRACKS.corto.coords[0];
+  L.circleMarker([start[1],start[0]],{radius:8,color:'#fff',weight:2,fillColor:'#111',fillOpacity:1})
+    .addTo(miniMap).bindPopup('Partenza / Arrivo · Rovereto');
+  miniMap.fitBounds(L.latLngBounds(all),{padding:[20,20]});
+}
+
+/* ---------- INFO ---------- */
+function renderInfo(){
+  let h = `<input id="infosearch" type="search" placeholder="Cerca nelle informazioni…" autocomplete="off"/>
+    <div id="infolist">`;
+  h += C.infoCards.map(c=>`<div class="card icard" id="info-${c.id}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase())}">
+    <div class="head"><span class="e">${c.icona}</span><h3>${esc(c.titolo)}</h3><span class="arr">›</span></div>
+    <div class="body"><p>${esc(c.corpo)}</p>
+    ${c.link ? `<a class="btn small sec" href="${c.link.url}" target="_blank" rel="noopener">${esc(c.link.testo)}</a>` : ''}</div>
+  </div>`).join('');
+  h += `</div>`;
+  $('#tab-info').innerHTML = h;
+  document.querySelectorAll('.icard .head').forEach(hd=>
+    hd.addEventListener('click',()=>hd.parentElement.classList.toggle('open')));
+  $('#infosearch').addEventListener('input',e=>{
+    const q = e.target.value.trim().toLowerCase();
+    document.querySelectorAll('#infolist .icard').forEach(c=>{
+      const hit = !q || c.dataset.cerca.includes(q);
+      c.style.display = hit ? '' : 'none';
+      if (q && hit) c.classList.add('open'); else if (!q) c.classList.remove('open');
+    });
+  });
+}
+
+/* ---------- DORMIRE ---------- */
+function renderDormire(){
+  const s = C.dormire;
+  let h = `<div class="card"><h2>${esc(s.titolo)}</h2><p>${esc(s.intro)}</p></div>`;
+  h += `<div class="card" style="border:2px solid var(--gold)"><h3>✅ ${esc(s.ferratel.titolo)}</h3>
+    <p>${esc(s.ferratel.testo)}</p>
+    <div class="btnrow"><a class="btn" href="${s.ferratel.url}" target="_blank" rel="noopener">Prenota su Visit Trentino</a></div></div>`;
+  h += `<div class="card"><h3>🗺️ ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
+    <div id="stay22wrap"><div style="padding:40px;text-align:center;color:var(--muted)">Caricamento mappa alloggi…</div></div>
+    <p class="muted" style="margin-top:8px">Mappa alloggi via Stay22 · account aziendale in arrivo ✱</p></div>`;
+  h += `<div class="card"><h3>Tre consigli dal team</h3>` +
+    s.consigli.map(c=>`<div class="rnote">• ${esc(c)}</div>`).join('') + `</div>`;
+  $('#tab-dormire').innerHTML = h;
+}
+function loadStay22(){
+  const s = C.dormire.stay22;
+  const url = `https://www.stay22.com/embed/gm?aid=${s.aid}&campaign=${s.campaign}&lat=${s.lat}&lng=${s.lng}`+
+    `&checkin=${s.checkin}&checkout=${s.checkout}&maincolor=68173D&venue=${encodeURIComponent('Progetto Manifattura Rovereto')}&ljs=it`;
+  $('#stay22wrap').innerHTML = `<iframe src="${url}" allow="geolocation" loading="lazy"></iframe>`;
+}
+
+/* ---------- LIVE ---------- */
+function renderLive(){
+  const l = C.live;
+  let h = `<div class="card"><h2>${esc(l.titolo)}</h2><p>${esc(l.spiegazione)}</p>
+    <div class="btnrow"><a class="btn" href="${l.link.url}" target="_blank" rel="noopener">${esc(l.link.testo)}</a></div></div>`;
+  h += `<div class="card"><h3>🔑 ${esc(l.codice.titolo)}</h3><p>${esc(l.codice.testo)}</p>
+    <div class="codebox">${esc(l.codice.demo)}</div>
+    <p class="muted">Nell'area personale qui comparirà il codice reale di ciascun partecipante.</p></div>`;
+  h += `<div class="card"><h3>📍 ${esc(l.gps.titolo)}</h3><p>${esc(l.gps.testo)}</p>
+    <p><label class="muted">Il mio percorso:</label>
+    <select id="gpsroute" style="font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)">
+      ${C.percorsi.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('')}
+    </select></p>
+    <div class="btnrow"><button class="btn" id="gpsbtn">Attiva il GPS</button></div>
+    <div id="gpsinfo"></div>
+    <div id="gpsmap" style="margin-top:10px;display:none"></div></div>`;
+  $('#tab-live').innerHTML = h;
+  $('#gpsbtn').addEventListener('click', startGPS);
+}
+let gpsMap, gpsMarker, gpsLine, gpsWatch;
+function haversine(a, b){
+  const R=6371, rad=Math.PI/180;
+  const la1=a[0]*rad, la2=b[0]*rad, dla=la2-la1, dlo=(b[1]-a[1])*rad;
+  const h=Math.sin(dla/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dlo/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+function startGPS(){
+  openTab('live');
+  const info = $('#gpsinfo');
+  info.style.display = 'block';
+  if (!navigator.geolocation){ info.textContent = 'GPS non disponibile su questo dispositivo.'; return; }
+  info.textContent = 'Ricerca posizione…';
+  if (gpsWatch) navigator.geolocation.clearWatch(gpsWatch);
+  gpsWatch = navigator.geolocation.watchPosition(pos=>{
+    const me = [pos.coords.latitude, pos.coords.longitude];
+    const rid = $('#gpsroute').value;
+    const p = C.percorsi.find(x=>x.id===rid);
+    const track = TRACKS[rid].coords.map(c=>[c[1],c[0]]);
+    // punto più vicino + km percorso
+    let best=0, bd=Infinity;
+    for (let i=0;i<track.length;i++){
+      const d = (track[i][0]-me[0])**2 + ((track[i][1]-me[1])*Math.cos(me[0]*Math.PI/180))**2;
+      if (d<bd){bd=d; best=i;}
+    }
+    let km=0;
+    for (let i=1;i<=best;i++) km += haversine(track[i-1], track[i]);
+    const distTrack = haversine(me, track[best]);
+    const kmTot = p.km;
+    if (distTrack > 3){
+      info.innerHTML = `Sei a <b>${distTrack.toFixed(1)} km</b> dal percorso ${esc(p.nome)}. Il punto più vicino è al km <b>${km.toFixed(0)}</b>.`;
+    } else {
+      info.innerHTML = `Sei circa al <b>km ${km.toFixed(0)}</b> di ${kmTot} del ${esc(p.nome)} — mancano <b>${Math.max(0,kmTot-km).toFixed(0)} km</b> all'arrivo a Rovereto. Forza! 💪`;
+    }
+    const mapEl = $('#gpsmap');
+    mapEl.style.display = 'block';
+    if (!gpsMap){
+      gpsMap = L.map('gpsmap');
+      L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© CyclOSM · © OpenStreetMap'}).addTo(gpsMap);
+    }
+    if (gpsLine) gpsMap.removeLayer(gpsLine);
+    gpsLine = L.polyline(track,{color:p.colore,weight:4}).addTo(gpsMap);
+    if (gpsMarker) gpsMap.removeLayer(gpsMarker);
+    gpsMarker = L.circleMarker(me,{radius:9,color:'#fff',weight:2.5,fillColor:'#1971c2',fillOpacity:1}).addTo(gpsMap).bindPopup('Sei qui');
+    gpsMap.setView(me, 13);
+  }, err=>{
+    info.textContent = 'Non riesco a leggere la posizione: ' + (err.code===1 ? 'permesso negato dal telefono.' : 'riprova all\'aperto.');
+  }, {enableHighAccuracy:true, maximumAge:10000, timeout:15000});
+}
+
+/* ---------- SPONSOR ---------- */
+$('#sponsorbar').innerHTML = `<h3>${esc(C.sponsor.titolo)}</h3><div class="sprow">` +
+  C.sponsor.lista.map(s=>`<div class="sp"><b>${esc(s.nome)}</b><span>${esc(s.ruolo)}</span></div>`).join('') + `</div>`;
+
+/* ---------- CERCA GLOBALE ---------- */
+const INDEX = [];
+C.infoCards.forEach(c=>INDEX.push({tab:'info', el:'info-'+c.id, t:c.titolo, s:c.corpo.slice(0,90)+'…', k:(c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase()}));
+C.percorsi.forEach(p=>INDEX.push({tab:'percorso', t:p.nome, s:`${p.km} km · ${p.dplus} m D+ · ${p.livello}`, k:(p.nome+' '+p.desc+' '+p.note.join(' ')+' percorso traccia gpx km dislivello').toLowerCase()}));
+INDEX.push({tab:'dormire', t:'Arrivare e dormire', s:'Prenotazioni, Visit Trentino, mappa alloggi', k:'dormire prenotare hotel alloggio notte stay22 ferratel visit trentino campeggio booking'});
+INDEX.push({tab:'live', t:'Live tracking e codice WHIP', s:'Il tuo codice, la live, dove sono', k:'live tracking whip codice gps dove sono seguire posizione tracker'});
+INDEX.push({tab:'home', t:'Checklist di preparazione', s:'Le cose da fare prima di partire', k:'checklist preparazione lista cose da fare prima'});
+
+$('#searchbtn').addEventListener('click',()=>{ $('#searchov').classList.add('open'); $('#searchinput').focus(); });
+$('#searchov').addEventListener('click',e=>{ if(e.target.id==='searchov') $('#searchov').classList.remove('open'); });
+$('#searchinput').addEventListener('input',e=>{
+  const q = e.target.value.trim().toLowerCase();
+  const box = $('#searchres');
+  if (!q){ box.innerHTML=''; return; }
+  const hits = INDEX.filter(i=>q.split(/\s+/).every(w=>i.k.includes(w))).slice(0,8);
+  box.innerHTML = hits.length
+    ? hits.map((h,i)=>`<div class="sres" data-i="${INDEX.indexOf(h)}"><b>${esc(h.t)}</b><span>${esc(h.s)}</span></div>`).join('')
+    : `<div class="snull">Niente per «${esc(q)}». Prova con un'altra parola.</div>`;
+  box.querySelectorAll('.sres').forEach(r=>r.addEventListener('click',()=>{
+    const h = INDEX[+r.dataset.i];
+    $('#searchov').classList.remove('open');
+    openTab(h.tab);
+    if (h.el){ const el = document.getElementById(h.el);
+      if (el){ el.classList.add('open'); setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150); } }
+  }));
+});
+
+/* ---------- avvio ---------- */
+renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
+paintDemo(); openTab('home');
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>

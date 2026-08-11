@@ -1,0 +1,14 @@
+{
+  "name": "Trentino Gravel — La tua guida",
+  "short_name": "TG Guida",
+  "description": "La guida ufficiale del Trentino Gravel: percorsi, info, alloggi e live tracking.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f1ea",
+  "theme_color": "#68173D",
+  "lang": "it",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
