@@ -94,6 +94,18 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .meteowrap{overflow-x:auto}
 #meteogps{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:10px;display:none}
 .sunset{background:linear-gradient(90deg,#fff3e0,#ffe0b2);border-radius:10px;padding:8px 14px;font-size:13.5px;margin-top:10px;color:#6d4c1b}
+/* installa in home */
+#installcard{background:linear-gradient(135deg,#fff,#fdf6ec);border:2px solid var(--gold)}
+@media(min-width:900px){#installcard{display:none !important}}
+#iosmodal{position:fixed;inset:0;background:rgba(42,35,32,.6);z-index:1500;display:none;align-items:flex-end;justify-content:center}
+#iosmodal .box{background:#fff;border-radius:18px 18px 0 0;padding:22px 20px 30px;max-width:560px;width:100%}
+#iosmodal h3{margin:0 0 10px;color:var(--maroon-d)}
+#iosmodal .step{display:flex;gap:12px;align-items:center;padding:9px 0;font-size:14.5px}
+#iosmodal .n{background:var(--maroon);color:#fff;width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 auto;font-size:13px}
+.bigbtn.primary{grid-column:1/-1;background:var(--maroon);border-color:var(--maroon);color:#fff;padding:20px 12px}
+.bigbtn.primary .e{font-size:34px}
+.bigbtn.primary b{font-size:16px}
 /* gate */
 #gate{position:fixed;inset:0;background:var(--maroon);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
 #gate .box{background:#fff;border-radius:18px;padding:28px 24px;max-width:380px;width:100%;text-align:center}
@@ -218,6 +230,13 @@ nav button.on .e{transform:scale(1.12)}
     <div id="searchres"></div>
   </div></div>
 
+  <div id="iosmodal"><div class="box">
+    <h3>📲 Salva la guida sull'iPhone</h3>
+    <div class="step"><span class="n">1</span><span>Tocca il tasto <b>Condividi</b> in basso in Safari (il quadrato con la freccia verso l'alto)</span></div>
+    <div class="step"><span class="n">2</span><span>Scorri e scegli <b>"Aggiungi alla schermata Home"</b></span></div>
+    <div class="step"><span class="n">3</span><span>Tocca <b>Aggiungi</b>: da ora la guida è un'icona sul telefono, un tocco e sei dentro</span></div>
+    <div class="btnrow" style="margin-top:12px"><button class="btn" id="iosclose">Fatto</button></div>
+  </div></div>
   <main>
     <section class="tab" id="tab-home"></section>
     <section class="tab" id="tab-percorso"></section>
@@ -288,6 +307,44 @@ function paintDemo(){
   document.querySelectorAll('#demobar button').forEach(b=>b.classList.toggle('on', b.dataset.ph===cur));
 }
 
+/* ---------- installa in home ---------- */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  maybeShowInstall();
+});
+function isStandalone(){
+  return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+}
+function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+function maybeShowInstall(){
+  const card = document.getElementById('installcard');
+  if (!card) return;
+  const ok = !isStandalone() && !localStorage.getItem('tg-install-off') && (deferredPrompt || isIOS());
+  card.style.display = ok ? '' : 'none';
+}
+function bindInstall(){
+  const btn = document.getElementById('installbtn'), later = document.getElementById('installlater');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (deferredPrompt){
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => { deferredPrompt = null; maybeShowInstall(); });
+    } else {
+      document.getElementById('iosmodal').style.display = 'flex';
+    }
+  });
+  later.addEventListener('click', () => {
+    localStorage.setItem('tg-install-off', '1');
+    maybeShowInstall();
+  });
+}
+document.getElementById('iosclose').addEventListener('click', () => {
+  document.getElementById('iosmodal').style.display = 'none';
+  localStorage.setItem('tg-install-off', '1');
+});
+
 /* ---------- header ---------- */
 $('#h-title').textContent = C.meta.titolo;
 $('#h-sub').textContent = C.meta.sottotitolo;
@@ -309,6 +366,11 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
 function renderHome(){
   const ph = phase();
   let h = '';
+  h += `<div class="card" id="installcard" style="display:none">
+    <h3>📲 Tieni la guida a portata di mano</h3>
+    <p>Salvala sulla schermata Home: diventa un'icona sul telefono — un tocco e sei dentro, anche senza segnale.</p>
+    <div class="btnrow"><button class="btn small" id="installbtn">Salva sul telefono</button>
+    <button class="btn small sec" id="installlater">Più tardi</button></div></div>`;
   if (C.avvisi && C.avvisi.length){
     h += `<div class="avvisi"><h3>📌 Da sapere adesso</h3>` +
       C.avvisi.map(a=>`<p>${esc(a.testo)}</p>`).join('') + `</div>`;
@@ -333,12 +395,12 @@ function renderHome(){
       <p><b>Hub:</b> ${esc(C.meta.hub)}</p>
       <p id="herosunset"></p></div>`;
     h += `<div class="bigbtns">
-      <a class="bigbtn" href="${C.live.link.url}" target="_blank" rel="noopener"><span class="e">📡</span><b>Live tracking</b></a>
-      <div class="bigbtn" data-tab="live" data-gps="1"><span class="e">📍</span><b>Dove sono?</b></div>
-      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">🌦️</span><b>Meteo</b></div>
+      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">📍</span><b>Dove sono?</b><br/><span style="font-size:12px;opacity:.85">km, cosa hai davanti, condividi posizione</span></div>
       <a class="bigbtn alert" href="tel:112"><span class="e">🆘</span><b>Emergenze · 112</b></a>
-      <div class="bigbtn" data-tab="info"><span class="e">ℹ️</span><b>Tutte le info</b></div>
+      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">🌦️</span><b>Meteo e tramonto</b></div>
       <div class="bigbtn" data-tab="dormire"><span class="e">🛏️</span><b>Dormire stanotte</b></div>
+      <div class="bigbtn" data-tab="live"><span class="e">📡</span><b>La tua live</b></div>
+      <div class="bigbtn" data-tab="info"><span class="e">ℹ️</span><b>Tutte le info</b></div>
     </div>`;
     h += `<div class="card" style="margin-top:12px"><h3>⛰️ In quota</h3>
       <p>Freddo dopo le 17, buio poco dopo il tramonto. Ripartite con le borracce piene e gli strati caldi a portata.</p></div>`;
@@ -356,6 +418,8 @@ function renderHome(){
   $('#tab-home').innerHTML = h;
   if (ph === 'prima') { startCountdown(); bindChecklist(); }
   bindTabLinks($('#tab-home'));
+  bindInstall();
+  maybeShowInstall();
 }
 function cardPercorsiBrevi(){
   return `<div class="card"><h2>I tre percorsi</h2>` +
@@ -619,8 +683,12 @@ function loadStay22(){
 /* ---------- LIVE ---------- */
 function renderLive(){
   const l = C.live;
+  const liveBtn = (l.link.url && l.link.url !== '#')
+    ? `<a class="btn" href="${l.link.url}" target="_blank" rel="noopener">${esc(l.link.testo)}</a>`
+    : `<span class="btn" style="opacity:.5;cursor:default">Link live in arrivo ✱</span>`;
   let h = `<div class="card"><h2>${esc(l.titolo)}</h2><p>${esc(l.spiegazione)}</p>
-    <div class="btnrow"><a class="btn" href="${l.link.url}" target="_blank" rel="noopener">${esc(l.link.testo)}</a></div></div>`;
+    <p class="muted">Il link funziona nei giorni dell'evento: passalo a chi ti segue da casa.</p>
+    <div class="btnrow">${liveBtn}</div></div>`;
   h += `<div class="card"><h3>🔑 ${esc(l.codice.titolo)}</h3><p>${esc(l.codice.testo)}</p>
     <div class="codebox">${esc(l.codice.demo)}</div>
     <p class="muted">Nell'area personale qui comparirà il codice reale di ciascun partecipante.</p></div>`;
@@ -648,6 +716,7 @@ function renderLive(){
   });
   $('#gpsbtn').addEventListener('click', startGPS);
   $('#meteogpsbtn').addEventListener('click', meteoGPS);
+  $('#gpsinfo').addEventListener('click', e => { if (e.target.id === 'shareposbtn') sharePos(); });
 }
 
 /* ---------- METEO (Open-Meteo, gratuito, senza chiave) ---------- */
@@ -740,7 +809,14 @@ async function meteoGPS(){
   }, () => { box.textContent = 'Non riesco a leggere la posizione: controlla i permessi.'; },
   {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
 }
-let gpsMap, gpsMarker, gpsLine, gpsWatch, gpsArrows, gpsArrowsRoute;
+let gpsMap, gpsMarker, gpsLine, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null;
+function sharePos(){
+  if (!lastPos) return;
+  const url = `https://maps.google.com/?q=${lastPos[0].toFixed(5)},${lastPos[1].toFixed(5)}`;
+  const text = `La mia posizione al Trentino Gravel: ${url}`;
+  if (navigator.share) navigator.share({text}).catch(()=>{});
+  else window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+}
 function haversine(a, b){
   const R=6371, rad=Math.PI/180;
   const la1=a[0]*rad, la2=b[0]*rad, dla=la2-la1, dlo=(b[1]-a[1])*rad;
@@ -772,6 +848,7 @@ function startGPS(){
   if (gpsWatch) navigator.geolocation.clearWatch(gpsWatch);
   gpsWatch = navigator.geolocation.watchPosition(pos=>{
     const me = [pos.coords.latitude, pos.coords.longitude];
+    lastPos = me;
     const rid = $('#gpsroute').value;
     const p = C.percorsi.find(x=>x.id===rid);
     const track = TRACKS[rid].coords.map(c=>[c[1],c[0]]);
@@ -790,6 +867,7 @@ function startGPS(){
     } else {
       info.innerHTML = `Sei circa al <b>km ${km.toFixed(0)}</b> di ${kmTot} del ${esc(p.nome)} — mancano <b>${Math.max(0,kmTot-km).toFixed(0)} km</b> all'arrivo a Rovereto. Forza! 💪`;
     }
+    info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">📤 Condividi la posizione</button></div>`;
     const aheadBox = $('#gpsahead');
     const ah = aheadHtml(rid, km);
     if (ah){ aheadBox.style.display = 'block'; aheadBox.innerHTML = ah; bindBook(aheadBox); }
