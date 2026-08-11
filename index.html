@@ -51,11 +51,11 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .tab.on{display:block}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;
   box-shadow:0 2px 10px rgba(60,40,30,.05)}
-.card h2{font-size:18px;margin:0 0 8px;color:var(--maroon-d)}
-.card h3{font-size:15.5px;margin:0 0 6px}
-.card p{margin:0 0 8px;font-size:14.5px;color:#39332d}
+.card h2{font-size:20px;margin:0 0 8px;color:var(--maroon-d)}
+.card h3{font-size:17px;margin:0 0 6px}
+.card p{margin:0 0 8px;font-size:16px;color:#39332d}
 .card p:last-child{margin-bottom:0}
-.muted{color:var(--muted);font-size:12.5px}
+.muted{color:var(--muted);font-size:14px}
 .btn{display:inline-block;background:var(--maroon);color:#fff;text-decoration:none;font-weight:700;
   font-size:14px;padding:10px 18px;border-radius:999px;border:none;cursor:pointer}
 .btn.sec{background:#fff;color:var(--maroon);border:1.5px solid var(--maroon)}
@@ -75,14 +75,14 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .chk .top{display:flex;align-items:center;gap:10px}
 .chk input{width:21px;height:21px;accent-color:var(--maroon);flex:0 0 auto;cursor:pointer}
 .chk.done label{text-decoration:line-through;color:var(--muted)}
-.chk label{font-size:15px;font-weight:700;cursor:pointer;flex:1}
-.chk .det{font-size:13px;color:#5c554d;margin:5px 0 0 31px}
+.chk label{font-size:16.5px;font-weight:700;cursor:pointer;flex:1}
+.chk .det{font-size:14.5px;color:#5c554d;margin:5px 0 0 31px}
 .chk.done .det{color:#a49a8e}
 .chk .det a{color:var(--maroon);font-weight:700}
 /* avvisi */
 .avvisi{background:#fff8e6;border:2px solid var(--gold);border-radius:14px;padding:12px 16px;margin-bottom:12px}
 .avvisi h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#8a6a1f}
-.avvisi p{margin:0 0 7px;font-size:14px;color:#4a3d20}
+.avvisi p{margin:0 0 7px;font-size:15.5px;color:#4a3d20}
 .avvisi p:last-child{margin-bottom:0}
 /* meteo */
 #meteotab{width:100%;border-collapse:collapse;font-size:12px}
@@ -128,18 +128,17 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .badge{background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:4px 12px;
   font-size:12.5px;font-weight:600}
-.rnote{font-size:13px;color:#5c554d;padding-left:16px;margin:4px 0}
+.rnote{font-size:14.5px;color:#5c554d;padding-left:16px;margin:4px 0}
 #minimap,#gpsmap{height:340px;border-radius:14px;background:#e9e4d8}
 /* info */
-#infolist .icard{cursor:pointer}
 .icard .head{display:flex;align-items:center;gap:10px}
-.icard .head .e{font-size:20px}
+.icard .head .e{font-size:22px}
 .icard .head h3{flex:1;margin:0}
-.icard .head .arr{color:var(--muted);transition:transform .2s}
-.icard.open .head .arr{transform:rotate(90deg)}
-.icard .body{display:none;margin-top:8px}
-.icard.open .body{display:block}
-#infosearch{width:100%;font-size:15px;padding:11px 14px;border:1.5px solid var(--line);
+.icard .body{display:block;margin-top:8px}
+.itheme{font-size:14px;text-transform:uppercase;letter-spacing:1.5px;color:var(--maroon);
+  margin:20px 2px 10px;font-weight:800}
+.itheme:first-of-type{margin-top:4px}
+#infosearch{width:100%;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);
   border-radius:12px;outline:none;background:#fff;margin-bottom:12px}
 mark{background:#ffe8a3;border-radius:3px;padding:0 1px}
 /* dormire */
@@ -148,11 +147,11 @@ mark{background:#ffe8a3;border-radius:3px;padding:0 1px}
 /* live */
 .codebox{background:var(--cream);border:2px dashed var(--gold);border-radius:12px;text-align:center;
   padding:14px;font-size:26px;font-weight:800;letter-spacing:2px;color:var(--maroon-d);margin:10px 0}
-#gpsinfo{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:10px;display:none}
-#gpsahead{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:8px;display:none}
+#gpsinfo{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:15.5px;margin-top:10px;display:none}
+#gpsahead{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:15.5px;margin-top:8px;display:none}
 /* servizi lungo il percorso */
 .poilist{max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:4px 12px;background:#fffdf9}
-.poirow{padding:7px 0;border-bottom:1px solid #f4efe5;font-size:13.5px;display:flex;gap:8px;align-items:center}
+.poirow{padding:8px 0;border-bottom:1px solid #f4efe5;font-size:15px;display:flex;gap:8px;align-items:center}
 .poirow:last-child{border-bottom:none}
 .poikm{color:var(--muted);font-size:11.5px;flex:0 0 50px;font-weight:700}
 .poibook{margin-left:auto;background:var(--maroon);color:#fff;border-radius:999px;padding:3px 11px;
@@ -368,7 +367,7 @@ function renderHome(){
   let h = '';
   h += `<div class="card" id="installcard" style="display:none">
     <h3>📲 Tieni la guida a portata di mano</h3>
-    <p>Salvala sulla schermata Home: diventa un'icona sul telefono — un tocco e sei dentro, anche senza segnale.</p>
+    <p>Salvala sulla schermata Home. Diventa un'icona sul telefono — un tocco e sei dentro, anche senza segnale.</p>
     <div class="btnrow"><button class="btn small" id="installbtn">Salva sul telefono</button>
     <button class="btn small sec" id="installlater">Più tardi</button></div></div>`;
   if (C.avvisi && C.avvisi.length){
@@ -380,7 +379,7 @@ function renderHome(){
       <div id="countdown"></div>
       <p>${esc(C.intro.testo)}</p></div>`;
     h += `<div class="card"><h2>Le cose da fare, in ordine</h2>
-      <p class="muted">Segui l'ordine e spunta quello che completi: la lista si ricorda di te.</p><div id="cklist">` +
+      <p class="muted">Segui l'ordine e spunta quello che completi. La lista si ricorda di te.</p><div id="cklist">` +
       C.checklist.map(c=>`<div class="chk" data-id="${c.id}">
         <div class="top"><input type="checkbox" id="ck-${c.id}"/><label for="ck-${c.id}">${esc(c.testo)}</label></div>
         <div class="det">${esc(c.dettaglio||'')} ${c.url
@@ -390,21 +389,14 @@ function renderHome(){
     h += cardPercorsiBrevi();
   }
   if (ph === 'durante') {
-    h += `<div class="card hero"><h2>Si pedala. 🚵</h2>
-      <p>${esc(C.durante.orariOggi)}</p>
-      <p><b>Hub:</b> ${esc(C.meta.hub)}</p>
-      <p id="herosunset"></p></div>`;
     h += `<div class="bigbtns">
-      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">📍</span><b>Live</b><br/><span style="font-size:13px;opacity:.9">Tocca qui: dove sei, a che km, cosa hai davanti da mangiare e da dormire</span></div>
+      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">📍</span><b>Live</b><br/><span style="font-size:13.5px;opacity:.9">Tocca qui e scopri dove sei, a che km, cosa hai davanti da mangiare e da dormire</span></div>
       <a class="bigbtn alert" href="tel:112"><span class="e">🆘</span><b>Emergenze · 112</b></a>
+      <div class="bigbtn" data-tab="live" data-share="1"><span class="e">📤</span><b>Condividi posizione</b></div>
       <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">🌦️</span><b>Meteo e tramonto</b></div>
       <div class="bigbtn" data-tab="dormire"><span class="e">🛏️</span><b>Dormire stanotte</b></div>
-      <div class="bigbtn" data-tab="live"><span class="e">📡</span><b>La tua live</b></div>
       <div class="bigbtn" data-tab="info"><span class="e">ℹ️</span><b>Tutte le info</b></div>
     </div>`;
-    h += `<div class="card" style="margin-top:12px"><h3>⛰️ In quota</h3>
-      <p>Freddo dopo le 17, buio poco dopo il tramonto. Ripartite con le borracce piene e gli strati caldi a portata.</p></div>`;
-    fillHeroSunset();
   }
   if (ph === 'dopo') {
     h += `<div class="card hero"><h2>${esc(C.dopo.titolo)}</h2><p>${esc(C.dopo.testo)}</p></div>`;
@@ -435,6 +427,7 @@ function bindTabLinks(root){
       e.preventDefault();
       openTab(el.dataset.tab);
       if (el.dataset.gps) setTimeout(startGPS, 250);
+      if (el.dataset.share) { autoShare = true; setTimeout(startGPS, 250); }
       if (el.dataset.meteo) setTimeout(()=>{
         const s = document.getElementById('meteosec');
         if (s) s.scrollIntoView({behavior:'smooth'});
@@ -612,21 +605,29 @@ function initMiniMap(){
 function renderInfo(){
   let h = `<input id="infosearch" type="search" placeholder="Cerca nelle informazioni…" autocomplete="off"/>
     <div id="infolist">`;
-  h += C.infoCards.map(c=>`<div class="card icard" id="info-${c.id}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase())}">
-    <div class="head"><span class="e">${c.icona}</span><h3>${esc(c.titolo)}</h3><span class="arr">›</span></div>
-    <div class="body"><p>${esc(c.corpo)}</p>
-    ${c.link ? `<a class="btn small sec" href="${c.link.url}" target="_blank" rel="noopener">${esc(c.link.testo)}</a>` : ''}</div>
-  </div>`).join('');
+  let temaCorrente = null;
+  C.infoCards.forEach(c=>{
+    if (c.tema !== temaCorrente){
+      temaCorrente = c.tema;
+      h += `<h2 class="itheme" data-tema="${esc(c.tema)}">${esc(c.tema)}</h2>`;
+    }
+    h += `<div class="card icard" id="info-${c.id}" data-tema="${esc(c.tema)}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase())}">
+      <div class="head"><span class="e">${c.icona}</span><h3>${esc(c.titolo)}</h3></div>
+      <div class="body"><p>${esc(c.corpo)}</p>
+      ${c.link ? `<a class="btn small sec" href="${c.link.url}" target="_blank" rel="noopener">${esc(c.link.testo)}</a>` : ''}</div>
+    </div>`;
+  });
   h += `</div>`;
   $('#tab-info').innerHTML = h;
-  document.querySelectorAll('.icard .head').forEach(hd=>
-    hd.addEventListener('click',()=>hd.parentElement.classList.toggle('open')));
   $('#infosearch').addEventListener('input',e=>{
     const q = e.target.value.trim().toLowerCase();
     document.querySelectorAll('#infolist .icard').forEach(c=>{
-      const hit = !q || c.dataset.cerca.includes(q);
-      c.style.display = hit ? '' : 'none';
-      if (q && hit) c.classList.add('open'); else if (!q) c.classList.remove('open');
+      c.style.display = (!q || c.dataset.cerca.includes(q)) ? '' : 'none';
+    });
+    document.querySelectorAll('#infolist .itheme').forEach(t=>{
+      const visibili = Array.from(document.querySelectorAll(`#infolist .icard[data-tema="${t.dataset.tema}"]`))
+        .some(c => c.style.display !== 'none');
+      t.style.display = visibili ? '' : 'none';
     });
   });
 }
@@ -684,7 +685,7 @@ function loadStay22(){
 function renderLive(){
   const l = C.live;
   let h = `<div class="card"><h2>📍 ${esc(l.gps.titolo)}</h2><p>${esc(l.gps.testo)}</p>
-    <p><label class="muted">Il mio percorso:</label>
+    <p><label class="muted">Il mio percorso</label>
     <select id="gpsroute" style="font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)">
       ${C.percorsi.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('')}
     </select></p>
@@ -769,7 +770,7 @@ async function loadSunset(){
       sunsetCache = r.daily.sunset[0].slice(11,16);
     }
     const box = $('#sunsetbox');
-    if (box) box.innerHTML = `🌇 <b>Tramonto oggi a Rovereto: ${sunsetCache}</b> — pianifica di arrivare a destinazione prima del buio.`;
+    if (box) box.innerHTML = `🌇 <b>Tramonto oggi a Rovereto alle ${sunsetCache}</b> — pianifica di arrivare a destinazione prima del buio.`;
     return sunsetCache;
   } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = '🌇 Tramonto non disponibile offline.'; }
 }
@@ -800,7 +801,7 @@ async function meteoGPS(){
   }, () => { box.textContent = 'Non riesco a leggere la posizione: controlla i permessi.'; },
   {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
 }
-let gpsMap, gpsMarker, gpsLine, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null;
+let gpsMap, gpsMarker, gpsLine, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
 function sharePos(){
   if (!lastPos) return;
   const url = `https://maps.google.com/?q=${lastPos[0].toFixed(5)},${lastPos[1].toFixed(5)}`;
@@ -824,7 +825,7 @@ function aheadHtml(rid, km){
   const row = (ico, e, label, book) =>
     `<div class="poirow"><span>${ico}</span><span>${label} <b>tra ${Math.max(1, Math.round(e.km - km))} km</b>
      <span class="muted">(km ${Math.round(e.km)})</span></span>${book ? bookBtn(e) : ''}</div>`;
-  let h = '<b>Davanti a te:</b>';
+  let h = '<b>Davanti a te</b>';
   if (w) h += row('⛲', w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} fontane)` : (w.n > 1 ? `${w.n} fontane` : 'fontana'), false);
   if (f) h += row('🍝', f, f.t === 'c' ? esc(f.nome) + ` (${f.ne} posti)` : esc(f.nome || f.sub), false);
   ss.forEach(e => h += row('🛏️', e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} alloggi)` : esc(e.nome || e.sub), true));
@@ -840,6 +841,7 @@ function startGPS(){
   gpsWatch = navigator.geolocation.watchPosition(pos=>{
     const me = [pos.coords.latitude, pos.coords.longitude];
     lastPos = me;
+    if (autoShare){ autoShare = false; sharePos(); }
     const rid = $('#gpsroute').value;
     const p = C.percorsi.find(x=>x.id===rid);
     const track = TRACKS[rid].coords.map(c=>[c[1],c[0]]);
@@ -892,7 +894,7 @@ $('#sponsorbar').innerHTML = `<h3>${esc(C.sponsor.titolo)}</h3><div class="sprow
 const INDEX = [];
 C.infoCards.forEach(c=>INDEX.push({tab:'info', el:'info-'+c.id, t:c.titolo, s:c.corpo.slice(0,90)+'…', k:(c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase()}));
 C.percorsi.forEach(p=>INDEX.push({tab:'percorso', t:p.nome, s:`${p.km} km · ${p.dplus} m D+ · ${p.livello}`, k:(p.nome+' '+p.desc+' '+p.note.join(' ')+' percorso traccia gpx km dislivello').toLowerCase()}));
-INDEX.push({tab:'dormire', t:'Arrivare e dormire', s:'Prenotazioni, Visit Trentino, mappa alloggi', k:'dormire prenotare hotel alloggio notte stay22 ferratel visit trentino campeggio booking'});
+INDEX.push({tab:'dormire', t:'Arrivare e dormire', s:'La mappa alloggi con prezzi e disponibilità', k:'dormire prenotare hotel alloggio notte mappa campeggio booking prenotazione'});
 INDEX.push({tab:'live', t:'Dove sono / Meteo', s:'GPS sul percorso, meteo e tramonto', k:'live gps dove sono posizione meteo tramonto davanti'});
 INDEX.push({tab:'home', t:'Checklist di preparazione', s:'Le cose da fare prima di partire', k:'checklist preparazione lista cose da fare prima'});
 

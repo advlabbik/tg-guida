@@ -1,5 +1,5 @@
 // Service worker: le info chiave restano consultabili anche senza segnale.
-const CACHE = 'tg-guida-v10';
+const CACHE = 'tg-guida-v11';
 const ASSETS = [
   './', './index.html', './content.js', './tracks.js', './poi.js',
   './icons/icon-192.png', './icons/icon-512.png',
