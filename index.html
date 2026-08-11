@@ -137,6 +137,14 @@ mark{background:#ffe8a3;border-radius:3px;padding:0 1px}
 .codebox{background:var(--cream);border:2px dashed var(--gold);border-radius:12px;text-align:center;
   padding:14px;font-size:26px;font-weight:800;letter-spacing:2px;color:var(--maroon-d);margin:10px 0}
 #gpsinfo{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:10px;display:none}
+#gpsahead{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:8px;display:none}
+/* servizi lungo il percorso */
+.poilist{max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:4px 12px;background:#fffdf9}
+.poirow{padding:7px 0;border-bottom:1px solid #f4efe5;font-size:13.5px;display:flex;gap:8px;align-items:center}
+.poirow:last-child{border-bottom:none}
+.poikm{color:var(--muted);font-size:11.5px;flex:0 0 50px;font-weight:700}
+.poibook{margin-left:auto;background:var(--maroon);color:#fff;border-radius:999px;padding:3px 11px;
+  font-size:11.5px;text-decoration:none;font-weight:700;flex:0 0 auto}
 /* sponsor */
 .sponsor{margin-top:18px}
 .sponsor h3{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);text-align:center;margin:0 0 10px}
@@ -170,7 +178,8 @@ nav button.on .e{transform:scale(1.12)}
   #searchbox{max-width:700px}
   #tab-percorso.on{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
   #tab-percorso.on>.card{margin-bottom:0}
-  #tab-percorso.on>.card:first-child,#tab-percorso.on>.card:last-child{grid-column:1/-1}
+  #tab-percorso.on>.card:first-child,#mapcard,#poicard{grid-column:1/-1}
+  .pfil.on{background:var(--maroon);border-color:var(--maroon);color:#fff}
   #infolist{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   #infolist .icard{margin-bottom:0}
   .bigbtns{grid-template-columns:repeat(4,1fr)}
@@ -230,6 +239,7 @@ nav button.on .e{transform:scale(1.12)}
 
 <script src="content.js"></script>
 <script src="tracks.js"></script>
+<script src="poi.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const C = CONTENT.it;
@@ -407,8 +417,93 @@ function renderPercorso(){
       <a class="btn small" href="${C.mappeBase}percorso-${p.id}.html" target="_blank" rel="noopener">Mappa + altimetria</a>
       <a class="btn small sec" href="${C.mappeBase}gpx/Trentino-Gravel-2026-${p.id[0].toUpperCase()+p.id.slice(1)}-V1.8.gpx" target="_blank" rel="noopener">↓ GPX</a>
     </div></div>`).join('');
-  h += `<div class="card"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
+  h += `<div class="card" id="mapcard"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
+  h += `<div class="card" id="poicard"><h3>⛲🍝🛏️ Servizi lungo il percorso</h3>
+    <p class="muted">Acqua, cibo e alloggi entro 500 m dalla traccia (fonte OpenStreetMap ✱). L'esistenza non garantisce l'apertura: per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa.</p>
+    <div class="btnrow" id="poipills" style="margin-bottom:8px">` +
+    C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
+    `</div>
+    <div class="btnrow" id="poifilters" style="margin-bottom:10px">
+      <button class="btn small sec pfil on" data-f="tutti">Tutto</button>
+      <button class="btn small sec pfil" data-f="a">⛲ Acqua</button>
+      <button class="btn small sec pfil" data-f="m">🍝 Mangiare</button>
+      <button class="btn small sec pfil" data-f="d">🛏️ Dormire</button>
+    </div><div id="poilist" class="poilist"></div></div>`;
   $('#tab-percorso').innerHTML = h;
+  document.querySelectorAll('#poifilters .pfil').forEach(b=>b.addEventListener('click',()=>{
+    poiFilter = b.dataset.f;
+    document.querySelectorAll('#poifilters .pfil').forEach(x=>x.classList.toggle('on', x===b));
+    renderPoiList();
+  }));
+  document.querySelectorAll('#poipills .rpill').forEach(b=>b.addEventListener('click',()=>{
+    setMyRoute(b.dataset.route);
+    renderPoiList();
+    if (mapsInit.stay) { stayCenter = null; loadStay22(); }
+  }));
+  renderPoiList();
+}
+function bookBtn(e){
+  return (e.lat ? `<a href="#" class="poibook" data-lat="${e.lat}" data-lng="${e.lng}">Prenota</a>` : '');
+}
+function poiRow(e){
+  if (e.t === 'c'){
+    const det = [e.ne?`${e.ne} mangiare`:null, e.ns?`${e.ns} alloggi`:null, e.nf?`${e.nf} fontane`:null]
+      .filter(Boolean).join(' · ');
+    return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><b>${esc(e.nome)}</b>
+      <span class="muted">${det}</span>${e.ns ? bookBtn(e) : ''}</div>`;
+  }
+  const ico = {a:'⛲', m:'🍝', d:'🛏️'}[e.t];
+  const nome = e.nome || e.sub;
+  const sub = (e.nome && e.t !== 'a') ? ` <span class="muted">(${esc(e.sub)}${e.luogo ? ' · ' + esc(e.luogo) : ''})</span>`
+            : (e.luogo ? ` <span class="muted">(${esc(e.luogo)})</span>` : '');
+  return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><span>${ico}</span>
+    <span>${esc(nome)}${sub}</span>${e.t === 'd' ? bookBtn(e) : ''}</div>`;
+}
+function bindBook(root){
+  root.querySelectorAll('.poibook').forEach(a=>a.addEventListener('click',ev=>{
+    ev.preventDefault();
+    goBook(+a.dataset.lat, +a.dataset.lng);
+  }));
+}
+let poiFilter = 'tutti';
+function poiMatch(e, f){
+  if (f === 'tutti') return true;
+  if (e.t === 'c') return (f === 'a' && e.nf > 0) || (f === 'm' && e.ne > 0) || (f === 'd' && e.ns > 0);
+  return e.t === f;
+}
+function gapWarnings(list){
+  // buchi > 20 km senza acqua ne' cibo: l'avviso che conta davvero
+  const supply = list.filter(e => e.t === 'a' || e.t === 'm' || (e.t === 'c' && (e.ne > 0 || e.nf > 0)));
+  const out = [];
+  for (let i = 1; i < supply.length; i++){
+    const gap = supply[i].km - supply[i-1].km;
+    if (gap > 20) out.push({km: supply[i-1].km + 0.01, gap: Math.round(gap), a: Math.round(supply[i-1].km), b: Math.round(supply[i].km)});
+  }
+  return out;
+}
+function renderPoiList(){
+  const el = document.getElementById('poilist');
+  if (!el) return;
+  const list = (window.POI && POI[myRoute()]) || [];
+  if (!list.length){
+    el.innerHTML = '<p class="muted" style="padding:10px 0">Lista servizi in preparazione ✱</p>';
+    return;
+  }
+  const rows = list.filter(e => poiMatch(e, poiFilter)).map(e => ({km: e.km, html: poiRow(e)}));
+  if (poiFilter !== 'd'){
+    gapWarnings(list).forEach(w => rows.push({km: w.km,
+      html: `<div class="poirow" style="background:#fff5f5;border-radius:8px;padding:7px 8px">⚠️
+        <span><b>${w.gap} km senza acqua né cibo</b> <span class="muted">dal km ${w.a} al km ${w.b} — fai scorta prima</span></span></div>`}));
+  }
+  rows.sort((x, y) => x.km - y.km);
+  el.innerHTML = rows.map(r => r.html).join('');
+  bindBook(el);
+}
+let stayCenter = null;
+function goBook(lat, lng){
+  stayCenter = {lat, lng};
+  openTab('dormire');
+  loadStay22();
 }
 function arrowLayer(ll, color, stepKm){
   const g = L.layerGroup();
@@ -500,8 +595,9 @@ function renderDormire(){
   h += `<div class="card"><h3>Tre consigli dal team</h3>` +
     s.consigli.map(c=>`<div class="rnote">• ${esc(c)}</div>`).join('') + `</div>`;
   $('#tab-dormire').innerHTML = h;
-  document.querySelectorAll('.rpill').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#tab-dormire .rpill').forEach(b=>b.addEventListener('click',()=>{
     setMyRoute(b.dataset.route);
+    stayCenter = null;
     loadStay22();
   }));
 }
@@ -510,7 +606,9 @@ function loadStay22(){
   const rid = myRoute();
   const p = C.percorsi.find(x=>x.id===rid);
   setMyRoute(rid);
-  const url = `https://www.stay22.com/embed/gm?aid=${s.aid}&campaign=${s.campaign}&lat=${s.lat}&lng=${s.lng}`+
+  const lat = stayCenter ? stayCenter.lat : s.lat;
+  const lng = stayCenter ? stayCenter.lng : s.lng;
+  const url = `https://www.stay22.com/embed/gm?aid=${s.aid}&campaign=${s.campaign}&lat=${lat}&lng=${lng}`+
     `&checkin=${s.checkin}&checkout=${s.checkout}&maincolor=68173D&venue=${encodeURIComponent('Progetto Manifattura Rovereto')}&ljs=it`+
     `&gpx=${encodeURIComponent(gpxUrl(rid))}&gpxlinecolor=${p.colore.replace('#','')}&gpxlinethickness=4&gpxlineopacity=1.00&mapstyle=outdoors`;
   $('#stay22wrap').innerHTML = `<iframe src="${url}" allow="geolocation" loading="lazy"></iframe>`;
@@ -538,6 +636,7 @@ function renderLive(){
     </select></p>
     <div class="btnrow"><button class="btn" id="gpsbtn">Attiva il GPS</button></div>
     <div id="gpsinfo"></div>
+    <div id="gpsahead"></div>
     <div id="gpsmap" style="margin-top:10px;display:none"></div></div>`;
   $('#tab-live').innerHTML = h;
   $('#gpsroute').value = myRoute();
@@ -646,6 +745,22 @@ function haversine(a, b){
   const h=Math.sin(dla/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dlo/2)**2;
   return 2*R*Math.asin(Math.sqrt(h));
 }
+function aheadHtml(rid, km){
+  const list = (window.POI && POI[rid]) || [];
+  const ahead = list.filter(e => e.km > km + 0.2);
+  if (!ahead.length) return '';
+  const w = ahead.find(e => e.t === 'a' || (e.t === 'c' && e.nf > 0));
+  const f = ahead.find(e => e.t === 'm' || (e.t === 'c' && e.ne > 0));
+  const ss = ahead.filter(e => e.t === 'd' || (e.t === 'c' && e.ns > 0)).slice(0, 2);
+  const row = (ico, e, label, book) =>
+    `<div class="poirow"><span>${ico}</span><span>${label} <b>tra ${Math.max(1, Math.round(e.km - km))} km</b>
+     <span class="muted">(km ${Math.round(e.km)})</span></span>${book ? bookBtn(e) : ''}</div>`;
+  let h = '<b>Davanti a te:</b>';
+  if (w) h += row('⛲', w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} fontane)` : 'fontana', false);
+  if (f) h += row('🍝', f, f.t === 'c' ? esc(f.nome) + ` (${f.ne} posti)` : esc(f.nome || f.sub), false);
+  ss.forEach(e => h += row('🛏️', e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} alloggi)` : esc(e.nome || e.sub), true));
+  return h;
+}
 function startGPS(){
   openTab('live');
   const info = $('#gpsinfo');
@@ -673,6 +788,10 @@ function startGPS(){
     } else {
       info.innerHTML = `Sei circa al <b>km ${km.toFixed(0)}</b> di ${kmTot} del ${esc(p.nome)} — mancano <b>${Math.max(0,kmTot-km).toFixed(0)} km</b> all'arrivo a Rovereto. Forza! 💪`;
     }
+    const aheadBox = $('#gpsahead');
+    const ah = aheadHtml(rid, km);
+    if (ah){ aheadBox.style.display = 'block'; aheadBox.innerHTML = ah; bindBook(aheadBox); }
+    else aheadBox.style.display = 'none';
     const mapEl = $('#gpsmap');
     mapEl.style.display = 'block';
     if (!gpsMap){
