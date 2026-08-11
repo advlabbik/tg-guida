@@ -126,6 +126,29 @@ nav button .e{font-size:20px}
 nav button.on{color:var(--maroon)}
 nav button.on .e{transform:scale(1.12)}
 .leaflet-container{font-family:inherit}
+/* ---------- desktop (le tracce si studiano da PC) ---------- */
+@media(min-width:900px){
+  #phone{max-width:1200px;display:grid;grid-template-columns:230px 1fr;grid-template-rows:auto auto 1fr}
+  #demobar{grid-column:1/-1}
+  header{grid-column:1/-1}
+  header h1{font-size:20px}
+  nav{position:static;grid-column:1;grid-row:3;display:block;align-self:stretch;background:#fff;border-right:1px solid var(--line)}
+  nav .in{flex-direction:column;height:auto;max-width:none;border-top:none;padding:16px 0;position:sticky;top:74px;background:none}
+  nav button{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:13px 22px;font-size:14.5px;width:100%;border-right:3px solid transparent}
+  nav button .e{font-size:20px}
+  nav button.on{background:var(--cream);border-right-color:var(--maroon)}
+  main{grid-column:2;grid-row:3;padding:22px 28px 40px}
+  #searchbox{max-width:700px}
+  #tab-percorso.on{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+  #tab-percorso.on>.card{margin-bottom:0}
+  #tab-percorso.on>.card:first-child,#tab-percorso.on>.card:last-child{grid-column:1/-1}
+  #infolist{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #infolist .icard{margin-bottom:0}
+  .bigbtns{grid-template-columns:repeat(4,1fr)}
+  #minimap,#gpsmap{height:540px}
+  #stay22wrap{height:580px}
+  #countdown{max-width:420px}
+}
 </style>
 </head>
 <body>
