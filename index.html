@@ -453,7 +453,9 @@ function poiRow(e){
       <span class="muted">${det}</span>${e.ns ? bookBtn(e) : ''}</div>`;
   }
   const ico = {a:'⛲', m:'🍝', d:'🛏️'}[e.t];
-  const nome = e.nome || e.sub;
+  const nome = (e.t === 'a' && e.n > 1)
+    ? `${e.n} fontane fino al km ${Math.round(e.fino)}`
+    : (e.nome || e.sub);
   const sub = (e.nome && e.t !== 'a') ? ` <span class="muted">(${esc(e.sub)}${e.luogo ? ' · ' + esc(e.luogo) : ''})</span>`
             : (e.luogo ? ` <span class="muted">(${esc(e.luogo)})</span>` : '');
   return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><span>${ico}</span>
@@ -756,7 +758,7 @@ function aheadHtml(rid, km){
     `<div class="poirow"><span>${ico}</span><span>${label} <b>tra ${Math.max(1, Math.round(e.km - km))} km</b>
      <span class="muted">(km ${Math.round(e.km)})</span></span>${book ? bookBtn(e) : ''}</div>`;
   let h = '<b>Davanti a te:</b>';
-  if (w) h += row('⛲', w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} fontane)` : 'fontana', false);
+  if (w) h += row('⛲', w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} fontane)` : (w.n > 1 ? `${w.n} fontane` : 'fontana'), false);
   if (f) h += row('🍝', f, f.t === 'c' ? esc(f.nome) + ` (${f.ne} posti)` : esc(f.nome || f.sub), false);
   ss.forEach(e => h += row('🛏️', e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} alloggi)` : esc(e.nome || e.sub), true));
   return h;
