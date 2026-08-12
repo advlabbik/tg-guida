@@ -162,6 +162,29 @@ async function activatePush(){
   }
 }
 
+async function loadComunicazioni(){
+  const sec = $('#commssec');
+  const list = $('#commslist');
+  if (!sec || !list) return;
+  if (phase() !== 'durante'){
+    sec.style.display = 'none';
+    return;
+  }
+  sec.style.display = '';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_broadcast_messages?select=title,body,created_at&order=created_at.desc`, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    if (!res.ok) throw new Error('fetch fallita');
+    const msgs = await res.json();
+    list.innerHTML = msgs.length
+      ? msgs.map(m => `<div class="avvisi"><h3>${esc(m.title)} · ${new Date(m.created_at).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</h3><p>${esc(m.body)}</p></div>`).join('')
+      : '<p class="muted">Nessuna comunicazione al momento.</p>';
+  } catch (err){
+    list.innerHTML = '<p class="muted">Non riesco a caricare le comunicazioni. Controlla la connessione.</p>';
+  }
+}
+
 /* ---------- accesso riservato ai partecipanti ---------- */
 /* Deterrente, non sicurezza vera: il codice arriva via email agli iscritti.
    Nell'area personale su bikeadventureseries.com il login sostituirà tutto questo. */
@@ -264,7 +287,7 @@ function openTab(name){
   if (name==='percorso' && !mapsInit.mini) { mapsInit.mini = true; setTimeout(initMiniMap, 60); }
   if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; loadStay22(); }
   if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
-  if (name==='live') { refreshNotifCard(); }
+  if (name==='live') { refreshNotifCard(); loadComunicazioni(); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 
@@ -607,6 +630,9 @@ function renderLive(){
     <p>Attiva le notifiche per ricevere le comunicazioni dello staff durante l'evento, anche ad app chiusa.</p>
     <div class="btnrow"><button class="btn" id="notifbtn">Attiva notifiche evento</button></div>
     <p class="muted" id="notifstatus"></p></div>`;
+  h += `<div id="commssec" style="display:none">
+    <h3 style="margin:4px 0 8px">${icon('megaphone',20)} Comunicazioni</h3>
+    <div id="commslist"></div></div>`;
   h += `<div class="card"><h2>${icon('crosshair',22)} ${esc(l.gps.titolo)}</h2><p>${esc(l.gps.testo)}</p>
     <p><label class="muted">Il mio percorso</label>
     <select id="gpsroute" style="font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)">
