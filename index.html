@@ -163,6 +163,14 @@ $('#h-sub').textContent = C.meta.sottotitolo;
 
 /* ---------- tabs ---------- */
 let mapsInit = {};
+let lastIsDesktop = window.matchMedia('(min-width:900px)').matches;
+window.addEventListener('resize', () => {
+  const isDesktop = window.matchMedia('(min-width:900px)').matches;
+  if (isDesktop === lastIsDesktop) return;
+  lastIsDesktop = isDesktop;
+  if (miniMap) setTimeout(() => miniMap.invalidateSize(), 50);
+  if (gpsMap) setTimeout(() => gpsMap.invalidateSize(), 50);
+});
 function openTab(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   $('#tab-'+name).classList.add('on');
@@ -472,7 +480,7 @@ function setMyRoute(id){
 function renderDormire(){
   const s = C.dormire;
   let h = `<div class="card"><h2>${esc(s.titolo)}</h2><p>${esc(s.intro)}</p></div>`;
-  h += `<div class="card" style="border:2px solid var(--gold)"><h3>🗺️ ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
+  h += `<div class="card" style="border:2px solid var(--terracotta)"><h3>🗺️ ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
     <p style="margin:4px 0 8px"><span class="muted">La mappa mostra la traccia del tuo percorso:</span></p>
     <div class="btnrow" style="margin:0 0 10px">` +
     C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +

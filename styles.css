@@ -107,15 +107,16 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .avvisi p{margin:0 0 7px;font-size:15.5px;color:var(--ink)}
 .avvisi p:last-child{margin-bottom:0}
 /* meteo */
-#meteotab{width:100%;border-collapse:collapse;font-size:12px}
-#meteotab th,#meteotab td{border:1px solid #eee8dc;padding:5px 4px;text-align:center}
-#meteotab th{background:var(--cream);font-size:11px}
+#meteotab{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:11px}
+#meteotab th{background:none;font-size:9px;text-transform:uppercase;border-bottom:1.5px solid var(--line);padding:5px 4px}
+#meteotab td{border-bottom:1px solid var(--sep);padding:5px 4px;text-align:center}
 #meteotab td .wi{font-size:17px;display:block}
 #meteotab td .tt{color:var(--muted)}
-#meteotab .loc{text-align:left;font-weight:700;font-size:11.5px;white-space:nowrap}
+#meteotab .loc{text-align:left;font-family:var(--f-label);font-weight:700;font-size:13px;
+  text-transform:uppercase;white-space:nowrap}
 .meteowrap{overflow-x:auto}
 #meteogps{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:10px;display:none}
-.sunset{background:linear-gradient(90deg,#fff3e0,#ffe0b2);border-radius:10px;padding:8px 14px;font-size:13.5px;margin-top:10px;color:#6d4c1b}
+.sunset{background:var(--cream);padding:10px 14px;font-size:14.5px;margin-top:10px;color:var(--ink)}
 /* installa in home */
 #installcard{background:#fff;border:1px solid var(--line);box-shadow:0 24px 60px rgba(12,14,26,.06)}
 #installcard h3{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-size:26px}
@@ -152,12 +153,13 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
   text-transform:uppercase;margin-top:auto}
 .bigbtn.alert{background:var(--terracotta);border-color:var(--terracotta);color:#fff}
 /* percorsi */
-.route{border-left:5px solid var(--col);}
+.route{border-left:5px solid var(--col)}
+.route h3{color:var(--col)}
 .badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .badge{background:var(--offwhite);border:1px solid var(--line);padding:4px 12px;
   font-family:var(--f-mono);font-size:11.5px;font-weight:500}
 .rnote{font-size:14.5px;color:#5c554d;padding-left:16px;margin:4px 0}
-#minimap,#gpsmap{height:340px;border-radius:14px;background:#e9e4d8}
+#minimap,#gpsmap{height:340px;background:var(--deep-forest)}
 /* pills percorso / filtri poi */
 .rpill{background:#fff;border:1px solid var(--line);font-family:var(--f-label);font-size:12.5px;
   font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer}
@@ -173,17 +175,18 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .itheme{font-family:var(--f-mono);font-size:14px;text-transform:uppercase;letter-spacing:.30em;
   color:var(--terracotta);margin:20px 2px 10px;font-weight:400}
 .itheme:first-of-type{margin-top:4px}
-#infosearch{width:100%;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);
-  border-radius:12px;outline:none;background:#fff;margin-bottom:12px}
-mark{background:#ffe8a3;border-radius:3px;padding:0 1px}
+#infosearch{width:100%;font-family:var(--f-body);font-size:16px;padding:12px 14px;
+  border:1.5px solid var(--line);outline:none;background:#fff;margin-bottom:12px}
+mark{background:var(--cream);padding:0 1px}
 /* dormire */
-#stay22wrap{border-radius:14px;overflow:hidden;border:1px solid var(--line);height:420px}
+#stay22wrap{border:1px solid var(--line);height:420px}
 #stay22wrap iframe{width:100%;height:100%;border:0}
 /* live */
 .codebox{background:var(--cream);border:2px dashed var(--terracotta);border-radius:12px;text-align:center;
   padding:14px;font-size:26px;font-weight:800;letter-spacing:2px;color:var(--deep-forest);margin:10px 0}
-#gpsinfo{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:15.5px;margin-top:10px;display:none}
-#gpsahead{background:var(--cream);border-radius:12px;padding:10px 14px;font-size:15.5px;margin-top:8px;display:none}
+#gpsinfo{background:#fff;border:1px solid var(--line);padding:10px 14px;font-size:15.5px;margin-top:10px;display:none}
+#gpsahead{background:#fff;border:1px solid var(--line);padding:10px 14px;font-size:15.5px;margin-top:8px;display:none}
+#gpsahead b{color:var(--terracotta)}
 /* servizi lungo il percorso */
 .poilist{max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:4px 12px;background:#fffdf9}
 .poirow{padding:8px 0;border-bottom:1px solid var(--sep);font-size:15px;display:flex;gap:8px;align-items:center}
