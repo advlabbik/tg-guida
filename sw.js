@@ -1,5 +1,8 @@
 // Service worker: le info chiave restano consultabili anche senza segnale.
-const CACHE = 'tg-guida-v16';
+// Strategia: network-first per i file dell'app (chi ha rete vede SEMPRE l'ultima
+// versione, senza doppia apertura), cache come rete di salvataggio quando il
+// segnale manca. Le tile mappa, il meteo e Stay22 non passano di qui.
+const CACHE = 'tg-guida-v17';
 const ASSETS = [
   './', './index.html', './styles.css', './content.js', './tracks.js', './poi.js', './icons.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/sprite.svg',
@@ -22,21 +25,35 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
-  // le tile mappa non si cachano (troppe); tutto il resto cache-first con aggiornamento in rete
+  // servizi esterni dinamici: sempre rete diretta, mai cache
   if (url.hostname.includes('arcgisonline') || url.hostname.includes('openstreetmap') ||
       url.hostname.includes('opentopomap') || url.hostname.includes('stay22') ||
       url.hostname.includes('open-meteo')) return;
-  e.respondWith(
-    caches.match(e.request).then(hit => {
-      const net = fetch(e.request).then(res => {
-        if (res.ok && (url.origin === location.origin || url.hostname === 'unpkg.com')) {
+
+  const sameApp = url.origin === location.origin;
+  if (sameApp) {
+    // network-first: la versione online vince sempre, la cache copre l'assenza di segnale
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res && res.ok) {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      }).catch(() => hit);
-      return hit || net;
-    })
+      }).catch(() => caches.match(e.request).then(hit => hit || caches.match('./index.html')))
+    );
+    return;
+  }
+  // librerie esterne versionate (Leaflet): cache-first, non cambiano mai
+  e.respondWith(
+    caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
+      if (res && res.ok && url.hostname === 'unpkg.com') {
+        const clone = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+      }
+      return res;
+    }))
   );
 });
