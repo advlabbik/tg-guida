@@ -360,6 +360,10 @@ function openTab(name){
   if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
+window.addEventListener('resize', ()=>{
+  if (miniMap) miniMap.invalidateSize();
+  if (gpsMap) gpsMap.invalidateSize();
+});
 
 /* ---------- HOME ---------- */
 function renderHome(){
