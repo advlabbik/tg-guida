@@ -34,8 +34,13 @@ NOMI = {k: k.capitalize() for k in GPX}
 BUF_POI, BUF_WATER, BUF_PLACE, SOGLIA = 500, 300, 2500, 4
 PASSO = 0.7          # km tra un punto e l'altro del corridoio: 700 m < 2x500 m di buffer
 CHUNK = 22
-ENDPOINTS = ["https://overpass-api.de/api/interpreter",
-             "https://overpass.osm.ch/api/interpreter"]
+# Candidati: prima dell'uso vengono COLLAUDATI sulla zona del percorso (vedi
+# collauda_endpoint). Mai aggiungere un mirror senza quel collaudo: esistono
+# istanze regionali (es. overpass.osm.ch = solo Svizzera) che rispondono
+# "200 OK, zero risultati" fuori dalla loro area e svuotano i dati in silenzio.
+CANDIDATI = ["https://overpass-api.de/api/interpreter",
+             "https://overpass.kumi.systems/api/interpreter"]
+ENDPOINTS = []  # riempita dal collaudo all'avvio
 RAGGIO = {"city": 4000, "town": 2500, "village": 1200, "hamlet": 700}
 RANGO = {"city": 4, "town": 3, "village": 2, "hamlet": 1}
 EAT = {"restaurant":"ristorante","cafe":"bar","bar":"bar","fast_food":"fast food",
@@ -70,6 +75,37 @@ def campiona(pts, cum, passo):
             while prossimo <= k: prossimo += passo
     if out[-1] != pts[-1]: out.append(pts[-1])
     return out
+
+def collauda_endpoint(lat, lon):
+    """Tiene solo i server che COPRONO la zona del percorso.
+
+    Il test pretende almeno un centro abitato entro 10 km dal punto di
+    partenza: un'istanza regionale fuori area risponde 200 con zero
+    risultati e senza questo filtro corrompe i dati in silenzio.
+    """
+    q = f"[out:json][timeout:25];node[place](around:10000,{lat},{lon});out count;"
+    buoni = []
+    for ep in CANDIDATI:
+        for tentativo in range(3):
+            try:
+                req = urllib.request.Request(ep, data=("data=" + urllib.parse.quote(q)).encode(),
+                                             headers={"User-Agent": "tg-guida-poi"})
+                with urllib.request.urlopen(req, timeout=30) as r:
+                    d = json.load(r)
+                tot = int(d["elements"][0]["tags"]["total"])
+                print(f"  {ep.split('/')[2]}: {tot} centri entro 10 km "
+                      f"{'-> OK' if tot > 0 else '-> SCARTATO, non copre la zona'}", flush=True)
+                if tot > 0: buoni.append(ep)
+                break
+            except Exception as e:
+                if tentativo == 2:
+                    print(f"  {ep.split('/')[2]}: non risponde ({e}) -> scartato per ora", flush=True)
+                else:
+                    time.sleep(10)
+    if not buoni:
+        sys.exit("Nessun server Overpass utilizzabile in questo momento. Riprova piu' tardi:\n"
+                 "il lavoro gia' scaricato e' salvato e riprende da dove si era fermato.")
+    return buoni
 
 def query(cs):
     q = f"""[out:json][timeout:120];
@@ -203,6 +239,10 @@ def elabora(key, pts, cum, elements):
         entries.append(e)
     entries.sort(key=lambda e: e["km"])
     return entries
+
+primo = parse_gpx(next(iter(GPX.values())))[0]
+print("Collaudo dei server Overpass sulla zona del percorso...", flush=True)
+ENDPOINTS.extend(collauda_endpoint(primo[0], primo[1]))
 
 risultato = {}
 for key, path in GPX.items():

@@ -24,7 +24,7 @@ python scripts/gen_poi.py corto="C:/tracce/corto.gpx" medio="C:/tracce/medio.gpx
   finché esiste, rilanciare NON riscarica (utile per ritoccare solo
   l'elaborazione). Per riscaricare da zero, cancellarla.
 
-## Le quattro trappole già pagate care (12 agosto 2026)
+## Le cinque trappole già pagate care (12 agosto 2026)
 
 Chi tocca lo script legga queste prima di "migliorarlo".
 
@@ -56,7 +56,17 @@ Con Overpass in giornata storta i 374 km del Lungo richiedono 20-40 minuti:
 è normale, non è un blocco. Un giro che "gira da ore" invece non è normale
 (vedi trappola 3).
 
-### 3. Overpass può rispondere "200 OK" con dati troncati
+### 3. I mirror Overpass regionali avvelenano i dati in silenzio
+
+`overpass.osm.ch` copre **solo la Svizzera**: interrogato sul Trentino risponde
+200 OK con zero risultati, senza alcun errore. Usato come riserva quando il
+server principale era occupato, ha svuotato metà dei tratti di tre generazioni
+consecutive. Per questo lo script **collauda ogni server all'avvio** sulla zona
+del percorso (pretende almeno un centro abitato entro 10 km dalla partenza) e
+scarta chi non la copre. Mai aggiungere un mirror alla lista senza quel
+collaudo — rispondere non basta, deve coprire l'area.
+
+### 4. Overpass può rispondere "200 OK" con dati troncati
 
 La trappola più subdola di tutte. Quando la query scade LATO SERVER, Overpass
 risponde comunque HTTP 200 con un JSON valido — ma con meno elementi (anche
@@ -66,7 +76,7 @@ e numeri dimezzati. Lo script ora controlla `remark` e tratta la risposta
 parziale come un errore da ritentare. Il sintomo, se ricompare, è nella
 checklist finale (fasce chilometriche vuote in zone abitate).
 
-### 4. I cicli con soglia devono far crescere la tolleranza
+### 5. I cicli con soglia devono far crescere la tolleranza
 
 Un `while len(punti) > soglia: ricampiona()` senza aumentare la tolleranza a
 ogni giro **non esce mai** se il primo tentativo è già sopra soglia: un'ora e
