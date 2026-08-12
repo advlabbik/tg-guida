@@ -285,7 +285,7 @@ function renderPercorso(){
     ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
     <div class="btnrow">
       <a class="btn small" href="${C.mappeBase}percorso-${p.id}.html" target="_blank" rel="noopener">Mappa + altimetria</a>
-      <a class="btn small sec" href="${C.mappeBase}gpx/Trentino-Gravel-2026-${p.id[0].toUpperCase()+p.id.slice(1)}-V1.8.gpx" target="_blank" rel="noopener">↓ GPX</a>
+      <a class="btn small sec dl" href="${C.mappeBase}gpx/Trentino-Gravel-2026-${p.id[0].toUpperCase()+p.id.slice(1)}-V1.8.gpx" target="_blank" rel="noopener">↓ GPX</a>
     </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
   h += `<div class="card" id="poicard"><h3>⛲🍝🛏️ Servizi lungo il percorso</h3>
@@ -458,6 +458,7 @@ function setMyRoute(id){
     b.style.removeProperty('background');
     b.style.removeProperty('border-color');
     b.style.removeProperty('color');
+    b.style.removeProperty('--pill-color');
     if (on) b.style.setProperty('--pill-color', C.percorsi.find(p=>p.id===id).colore);
   });
   const sel = document.getElementById('gpsroute');

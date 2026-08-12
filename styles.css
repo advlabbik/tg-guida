@@ -70,8 +70,9 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .btn.sec{background:#fff;color:var(--forest);border:1.5px solid var(--forest)}
 .btn.small{font-size:11.5px;padding:8px 14px}
 .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-/* freccia in coda a ogni CTA */
+/* freccia in coda a ogni CTA (non su download, toggle di percorso e filtri POI) */
 .btn::after{content:" →"}
+.btn.dl::after,.btn.rpill::after,.btn.pfil::after{content:none}
 /* hero */
 .hero{background:linear-gradient(135deg,var(--deep-forest) 0%,var(--deep-forest) 100%);color:#fff;border:none}
 .hero h2{color:#fff;font-size:20px}
