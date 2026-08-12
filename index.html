@@ -318,6 +318,10 @@ function openTab(name){
   if (name==='live') { refreshNotifCard(); loadComunicazioni(); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
+window.addEventListener('resize', ()=>{
+  if (miniMap) miniMap.invalidateSize();
+  if (gpsMap) gpsMap.invalidateSize();
+});
 
 /* ---------- HOME ---------- */
 function dataKicker(iso){
@@ -527,9 +531,9 @@ function renderPoiList(){
 let stayCenter = null;
 function goBook(lat, lng){
   stayCenter = {lat, lng};
-  const alreadyInit = mapsInit.stay;
+  const alreadyLoaded = mapsInit.stay;
   openTab('dormire');
-  if (alreadyInit) loadStay22();
+  if (alreadyLoaded) loadStay22();
 }
 function arrowLayer(ll, color, stepKm){
   const g = L.layerGroup();
@@ -627,7 +631,10 @@ function renderDormire(){
     C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
     `</div>
     <div id="stay22wrap"><div style="padding:40px;text-align:center;color:var(--muted)">Caricamento mappa alloggi…</div></div>
-    <p class="muted" style="margin-top:8px">Mappa alloggi via Stay22 · account aziendale in arrivo ✱</p></div>`;
+    <div class="btnrow" style="margin-top:10px">
+      <a class="btn small sec" id="airbnbbtn" href="#" target="_blank" rel="noopener">Cerca anche su Airbnb</a>
+    </div>
+    <p class="muted" style="margin-top:8px">La mappa raccoglie hotel, B&amp;B, appartamenti e campeggi dai principali portali. Airbnb funziona a parte, il bottone qui sopra apre la ricerca sulla stessa zona e con le stesse date.</p></div>`;
   h += `<div class="card"><h3>Tre consigli dal team</h3>` +
     s.consigli.map(c=>`<div class="rnote">• ${esc(c)}</div>`).join('') + `</div>`;
   $('#tab-dormire').innerHTML = h;
@@ -637,6 +644,19 @@ function renderDormire(){
     loadStay22();
   }));
 }
+// Airbnb non fa parte dei portali di Stay22 (ha chiuso il programma affiliati nel
+// 2021), ma per i partecipanti resta un canale abituale: lo offriamo comunque,
+// sulla stessa zona e con le stesse date della mappa.
+function airbnbUrl(lat, lng, checkin, checkout){
+  const d = 0.045; // riquadro di ricerca, circa 5 km per lato
+  const q = new URLSearchParams({
+    search_by_map: 'true', search_type: 'user_map_move',
+    ne_lat: (lat + d).toFixed(5), ne_lng: (lng + d).toFixed(5),
+    sw_lat: (lat - d).toFixed(5), sw_lng: (lng - d).toFixed(5),
+    zoom: '12', checkin, checkout, adults: '1'
+  });
+  return 'https://www.airbnb.it/s/homes?' + q.toString();
+}
 function loadStay22(){
   const s = C.dormire.stay22;
   const rid = myRoute();
@@ -644,6 +664,8 @@ function loadStay22(){
   setMyRoute(rid);
   const lat = stayCenter ? stayCenter.lat : s.lat;
   const lng = stayCenter ? stayCenter.lng : s.lng;
+  const ab = document.getElementById('airbnbbtn');
+  if (ab) ab.href = airbnbUrl(lat, lng, s.checkin, s.checkout);
   const url = `https://www.stay22.com/embed/gm?aid=${s.aid}&campaign=${s.campaign}&lat=${lat}&lng=${lng}`+
     `&checkin=${s.checkin}&checkout=${s.checkout}&maincolor=2C5E2E&venue=${encodeURIComponent('Progetto Manifattura Rovereto')}&ljs=it`+
     `&gpx=${encodeURIComponent(gpxUrl(rid))}&gpxlinecolor=${p.colore.replace('#','')}&gpxlinethickness=4&gpxlineopacity=1.00&mapstyle=outdoors`;
@@ -914,7 +936,12 @@ const VALID_TABS = ['home','percorso','info','dormire','live'];
 const requestedTab = new URLSearchParams(location.search).get('tab');
 paintDemo(); openTab(VALID_TABS.includes(requestedTab) ? requestedTab : 'home');
 if ('serviceWorker' in navigator) {
+  // se arriva una versione nuova mentre l'app è aperta, si ricarica da sola
+  const avevaSW = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (avevaSW && !window._tgReload) { window._tgReload = true; location.reload(); }
+  });
   navigator.serviceWorker.addEventListener('message', e => {
     if (e.data && e.data.type === 'open-live') openTab('live');
   });
