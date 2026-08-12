@@ -118,7 +118,7 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 #meteotab .loc{text-align:left;font-family:var(--f-label);font-weight:700;font-size:13px;
   text-transform:uppercase;white-space:nowrap}
 .meteowrap{overflow-x:auto}
-#meteogps{background:var(--cream);border-radius:var(--radius);padding:10px 14px;font-size:14px;margin-top:10px;display:none}
+#meteogps{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;font-size:14px;margin-top:10px;display:none}
 .sunset{background:var(--cream);padding:10px 14px;font-size:14.5px;margin-top:10px;color:var(--ink)}
 /* installa in home */
 #installcard{background:#fff;border:1px solid var(--line);box-shadow:0 24px 60px rgba(12,14,26,.06)}
