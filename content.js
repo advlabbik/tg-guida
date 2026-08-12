@@ -57,7 +57,7 @@ percorsi: [
     note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita"] },
   { id: "lungo", nome: "Percorso Lungo", colore: "#c1121f", km: 374, dplus: "7.900",
     livello: "Impegnativo",
-    desc: "Rispetto al Medio affronta la Val di Fassa e sale al Passo San Pellegrino su asfalto, per poi continuare a salire sul Col Margherita.",
+    desc: "Rispetto al Medio affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita.",
     note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica"] }
 ],
 
@@ -71,9 +71,8 @@ infoCards: [
     link: { testo: "Vai all'area personale", url: "https://www.bikeadventureseries.com/my-account/" },
     cerca: "certificato medico agonistico ciclismo obbligatorio caricare scadenza 27 agosto visita area personale" },
   { id: "gpsguide", tema: "Prima di partire", icona: "🛰️", titolo: "Sul GPS va solo la traccia definitiva",
-    corpo: "Le tracce che vedi qui sono preliminari e servono per studiare il viaggio e prenotare le notti. Non caricarle sul GPS. Le tracce definitive arrivano pochi giorni prima della partenza e, se non ci saranno problematiche dell'ultimo periodo, resteranno uguali a queste. Quando arriva la definitiva caricala subito, così hai tempo di risolvere eventuali problemi. Parti sempre col GPS carico e un power bank.",
-    link: { testo: "Guida per caricare una traccia su Garmin/Wahoo", url: "https://support.ridewithgps.com/hc/en-us" },
-    cerca: "gps traccia caricare garmin wahoo navigazione definitiva preliminare batteria power bank" },
+    corpo: "Le tracce che vedi qui sono preliminari e servono per studiare il viaggio e prenotare le notti. Non caricarle sul GPS. Le tracce definitive arrivano pochi giorni prima della partenza e, se non ci saranno problematiche dell'ultimo periodo, resteranno uguali a queste.",
+    cerca: "gps traccia caricare navigazione definitiva preliminare" },
   { id: "pacco", tema: "Prima di partire", icona: "🎒", titolo: "Consegna pacco evento",
     corpo: "Il ritiro del pacco evento è venerdì pomeriggio 25 settembre a Manifattura Tabacchi di Rovereto. Considera dalle 17 in poi. Gli orari ufficiali arrivano più avanti.",
     cerca: "pacco evento ritiro consegna venerdi 25 orario" },
@@ -91,12 +90,13 @@ infoCards: [
   { id: "treno", tema: "Arrivare a Rovereto", icona: "🚆", titolo: "Arrivare in treno (consigliato)",
     corpo: "Rovereto è sulla linea del Brennero, con treni diretti da Verona, Trento e Bolzano e collegamenti comodi da Milano, Bologna, Monaco e Innsbruck. La stazione è a pochi minuti in bici da Manifattura Tabacchi. Con la bici già montata e nessun parcheggio da cercare è la soluzione più semplice.",
     cerca: "treno stazione brennero arrivare come si arriva verona trento bolzano milano" },
-  { id: "auto", tema: "Arrivare a Rovereto", icona: "🚗", titolo: "Arrivare in auto",
-    corpo: "Per chi arriva in auto e la lascia ferma più giorni stiamo definendo con il Comune di Rovereto la soluzione migliore. I dettagli sui parcheggi arrivano a breve, qui e via email.",
-    cerca: "auto parcheggio parcheggi macchina dove lascio sosta" },
+  { id: "auto", tema: "Arrivare a Rovereto", icona: "🚗", titolo: "Arrivare in auto e parcheggi",
+    corpo: "Per la sosta lunga di più giorni usa i parcheggi comunali a pagamento di Rovereto, in particolare le aree Mart e Follone, a pochi minuti dalla sede. Non lasciare l'auto nei piazzali di Manifattura.",
+    link: { testo: "Mappa parcheggi Rovereto (PDF)", url: "https://smr.tn.it/wp-content/uploads/2023/06/Mappa-parcheggi-organizzati-e-struttura.pdf" },
+    cerca: "auto parcheggio parcheggi macchina dove lascio sosta mart follone mappa" },
   // ---- Sul percorso ----
   { id: "colmargherita", tema: "Sul percorso", icona: "⛰️", titolo: "Col Margherita (solo Lungo)",
-    corpo: "Il percorso Lungo affronta la Val di Fassa e sale al Passo San Pellegrino su asfalto, per poi continuare a salire sul Col Margherita. Lì ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze della strada. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È un tratto duro, ma una volta in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica. Se preferisci evitarlo, il percorso Medio esiste esattamente per questo.",
+    corpo: "Il percorso Lungo affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita. Lì ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze della strada. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È un tratto duro, ma una volta in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica. Se preferisci evitarlo, il percorso Medio esiste esattamente per questo.",
     cerca: "col margherita spinta piedi tratto tecnico camminare lungo san pellegrino fassa" },
   { id: "sicurezza", tema: "Sul percorso", icona: "🛡️", titolo: "Le regole d'oro della sicurezza",
     corpo: "Non è una gara, non prendere rischi inutili. Le strade sono aperte al traffico e vale il Codice della Strada. Evita di pedalare di notte e se devi farlo usa luci potenti. Non pedalare se sei troppo stanco, cerca di non restare mai da solo e aiuta chi è in difficoltà. Se un tratto ti sembra pericoloso scendi e cammina.",
@@ -150,12 +150,12 @@ dormire: {
     testo: "Hotel, B&B e campeggi intorno a Rovereto per la notte di venerdì 25. Muovi la mappa lungo il percorso per prenotare anche le tappe successive — quello che vedi è prenotabile.",
     aid: "adventurelabsrl",
     campaign: "tgguida2026",
-    lat: 45.8896, lng: 11.0440,
+    // centrata su Manifattura Tabacchi, non su Rovereto centro: cosi' la traccia
+    // passa proprio sotto gli alloggi e si capisce subito il valore della mappa
+    lat: 45.88291, lng: 11.02185,
     checkin: "2026-09-25", checkout: "2026-09-26"
   },
-  consigli: [
-    "Chi dorme in tenda usa i campeggi ufficiali, il bivacco libero non è ammesso"
-  ]
+  consigli: []
 },
 
 dopo: {

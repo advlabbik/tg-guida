@@ -486,7 +486,7 @@ function renderPercorso(){
     </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
   h += `<div class="card" id="poicard"><h3>⛲🍝🛏️ Servizi lungo il percorso</h3>
-    <p class="muted">Acqua, cibo e alloggi entro 500 metri dalla traccia, da OpenStreetMap. La lista dice che un posto esiste, non che è aperto — per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa.</p>
+    <p class="muted">Acqua, cibo e alloggi entro 500 metri dalla traccia. La lista dice che un posto esiste, non che è aperto — per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa.</p>
     <div class="btnrow" id="poipills" style="margin-bottom:8px">` +
     C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
     `</div>
@@ -664,14 +664,14 @@ function renderDormire(){
   const s = C.dormire;
   let h = `<div class="card"><h2>${esc(s.titolo)}</h2><p>${esc(s.intro)}</p></div>`;
   h += `<div class="card" style="border:2px solid var(--gold)"><h3>🗺️ ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
-    <p style="margin:4px 0 8px"><span class="muted">La mappa mostra la traccia del tuo percorso:</span></p>
+    <p style="margin:4px 0 8px"><span class="muted">La mappa mostra la traccia del tuo percorso</span></p>
     <div class="btnrow" style="margin:0 0 10px">` +
     C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
     `</div>
-    <div id="stay22wrap"><div style="padding:40px;text-align:center;color:var(--muted)">Caricamento mappa alloggi…</div></div>
-    <p class="muted" style="margin-top:8px">Mappa alloggi via Stay22 · account aziendale adventurelab srl</p></div>`;
-  h += `<div class="card"><h3>Tre consigli dal team</h3>` +
-    s.consigli.map(c=>`<div class="rnote">• ${esc(c)}</div>`).join('') + `</div>`;
+    <div id="stay22wrap"><div style="padding:40px;text-align:center;color:var(--muted)">Caricamento mappa alloggi…</div></div></div>`;
+  if (s.consigli && s.consigli.length)
+    h += `<div class="card"><h3>Consigli dal team</h3>` +
+      s.consigli.map(c=>`<div class="rnote">• ${esc(c)}</div>`).join('') + `</div>`;
   $('#tab-dormire').innerHTML = h;
   document.querySelectorAll('#tab-dormire .rpill').forEach(b=>b.addEventListener('click',()=>{
     setMyRoute(b.dataset.route);
