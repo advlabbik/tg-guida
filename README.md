@@ -22,7 +22,8 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 
 | File/cartella | Contenuto |
 |---|---|
-| `index.html` | Markup + tutta la logica dell'app (tab, gate d'accesso, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA) |
+| `index.html` | Markup + tutta la logica dell'app (tab, gate d'accesso, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA, opt-in notifiche push, feed Comunicazioni) |
+| `staff.html` | Pagina riservata allo staff per inviare comunicazioni push a tutti i partecipanti iscritti (gate separato da `index.html`, chiama la Edge Function `tg-send-broadcast`) |
 | `styles.css` | Tutto il CSS del design system (token in `:root`, componenti, schermate) |
 | `icons.js` | Helper `icon(name, size)` per le icone Lucide (sprite SVG) e `ICONS`, la mappa id-scheda-info → nome icona |
 | `icons/sprite.svg` | Sprite SVG con i simboli Lucide usati nell'app (referenziato via `<use>`, mai emoji per l'UI strutturale) |
@@ -44,6 +45,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 - **Live**: geolocalizzazione in tempo reale con calcolo del km percorso, POI davanti, condivisione posizione (WhatsApp/Web Share API), meteo (Open-Meteo, gratuito) per le località dell'evento, orario del tramonto, e una sezione per il live tracking WHIP (in stato "in arrivo" finché non arriva il link reale).
 - **Offline-first**: service worker network-first con fallback su cache, font e icone self-hosted, così le info restano consultabili anche senza segnale in montagna.
 - **Installabile**: prompt "aggiungi a schermata Home" per Android (`beforeinstallprompt`) e istruzioni guidate per iOS.
+- **Notifiche push e Comunicazioni**: opt-in Web Push (VAPID) nella tab Live, ricevute da `sw.js` anche ad app chiusa, più un feed in-app "Comunicazioni" come fallback per chi non riceve il push (es. iOS senza PWA installata). Lo staff invia i messaggi da `staff.html`. A differenza del resto dell'app (che gira senza backend), questa funzionalità introduce una **dipendenza runtime da Supabase** (progetto `kqsrtuzeeiljozdnjott`): tabelle `tg_push_subscriptions`/`tg_broadcast_messages` e la Edge Function `tg-send-broadcast`, versionate in `supabase/`.
 
 ## Placeholder pronti
 
@@ -60,6 +62,16 @@ Alcuni dati non ancora disponibili sono strutturati come singolo punto da aggior
 - `<meta name="robots" content="noindex, nofollow">`: la pagina non deve essere indicizzata, è riservata ai partecipanti.
 - Le mappe usano tile Esri (minimappa percorsi) e CyclOSM (mappa GPS live); Leaflet è caricato da unpkg via CDN.
 - Il breakpoint desktop (`@media(min-width:900px)`) non è stato ridisegnato con il nuovo design system — resta la struttura precedente (sidebar, griglie).
+
+### Checklist go-live notifiche push
+
+Prima della pubblicazione reale, da fare in quest'ordine:
+
+- [ ] Sostituire `STAFF_CODE` nel secret dell'Edge Function `tg-send-broadcast` su Supabase (`npx supabase secrets set STAFF_CODE=... --project-ref kqsrtuzeeiljozdnjott`) con il codice reale.
+- [ ] Sostituire la costante `STAFF_CODE` in `staff.html` con lo stesso valore — i due DEVONO combaciare esattamente, il primo update senza il secondo blocca tutto lo staff fuori.
+- [ ] Coordinare il ri-deploy del secret con chi ha già salvato il vecchio codice: `staff.html` salva il codice digitato in `localStorage`, quindi chi ha già sbloccato il gate con il placeholder non se ne accorge finché non prova a inviare (la Edge Function risponde 403).
+- [ ] Se si tocca di nuovo `sw.js`, incrementare `CACHE` (attualmente `tg-guida-v18`) — altrimenti i client con la PWA installata restano sulla versione cache precedente.
+- [ ] Verificare il fallback iOS su un iPhone reale — finora testato solo per via statica/logica (nessun hardware reale disponibile in fase di sviluppo).
 
 ## Stato del repo
 
