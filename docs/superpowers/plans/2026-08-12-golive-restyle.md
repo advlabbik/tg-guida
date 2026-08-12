@@ -229,7 +229,10 @@ Sostituire l'attuale (`--maroon`, `--maroon-d`, `--cream`, `--card`, `--ink`, `-
 html,body{margin:0;background:var(--offwhite)}
 body{font-family:var(--f-body);color:var(--ink);line-height:1.6;font-size:15.5px}
 #phone{max-width:560px;margin:0 auto;background:var(--offwhite);min-height:100vh;position:relative;box-shadow:none}
+button,input{appearance:none;-webkit-appearance:none;border-radius:0;font-family:inherit}
 ```
+
+iOS Safari applica un raggio nativo a `<button>`/`<input>` a meno di neutralizzarlo esplicitamente — senza questa riga il vincolo "raggio zero ovunque" (Global Constraints) sarebbe violato su ogni telefono iPhone nonostante il CSS dichiari `--radius:0`. Le regole più specifiche introdotte nelle Task successive (es. `#demobar button{border-radius:999px}` in Task 4) restano valide: la specificità del selettore ID prevale su questo reset generico per tag.
 
 - [ ] **Step 3: Sostituire ogni uso residuo delle vecchie variabili**
 
@@ -521,10 +524,14 @@ git commit -m "Restyle componenti generici: card, bottoni, checklist, badge, poi
   color:var(--muted-d)}
 ```
 
-Il kicker "Edizione Zero · 26.09.2026" sopra il titolo va aggiunto nel markup di `renderHome()` (`index.html:378`), non solo in CSS:
+Il kicker "Edizione Zero · 26.09.2026" sopra il titolo va aggiunto nel markup di `renderHome()` (`index.html:378`), non solo in CSS. **Non usare `toLocaleDateString('it-IT')`**: in JS quel formato produce separatori `/` (es. `26/09/2026`), non i punti richiesti dall'handoff — formattare a mano:
 
 ```js
-h += `<div class="card hero"><div class="kicker">Edizione Zero · ${new Date(C.meta.dataPartenza).toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric'})}</div>
+function dataKicker(iso){
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+}
+h += `<div class="card hero"><div class="kicker">Edizione Zero · ${dataKicker(C.meta.dataPartenza)}</div>
   <h2>${esc(C.intro.titolo)}</h2>
   <div id="countdown"></div>
   <p>${esc(C.intro.testo)}</p></div>`;
