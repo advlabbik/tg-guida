@@ -917,7 +917,7 @@ $('#searchinput').addEventListener('input',e=>{
     $('#searchov').classList.remove('open');
     openTab(h.tab);
     if (h.el){ const el = document.getElementById(h.el);
-      if (el){ el.classList.add('open'); setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150); } }
+      if (el){ setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150); } }
   }));
 });
 
