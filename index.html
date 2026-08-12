@@ -194,12 +194,12 @@ function renderHome(){
   const ph = phase();
   let h = '';
   h += `<div class="card" id="installcard" style="display:none">
-    <h3><span class="e">${icon('smartphone')}</span> Tieni la guida a portata di mano</h3>
+    <h3><span class="e">${icon('smartphone', 20)}</span> Tieni la guida a portata di mano</h3>
     <p>Salvala sulla schermata Home. Diventa un'icona sul telefono — un tocco e sei dentro, anche senza segnale.</p>
     <div class="btnrow"><button class="btn small" id="installbtn">Salva sul telefono</button>
     <button class="btn small sec" id="installlater">Più tardi</button></div></div>`;
   if (C.avvisi && C.avvisi.length){
-    h += `<div class="avvisi"><h3>📌 Da sapere adesso</h3>` +
+    h += `<div class="avvisi"><h3>Da sapere adesso</h3>` +
       C.avvisi.map(a=>`<p>${esc(a.testo)}</p>`).join('') + `</div>`;
   }
   if (ph === 'prima') {
@@ -219,18 +219,18 @@ function renderHome(){
   }
   if (ph === 'durante') {
     h += `<div class="bigbtns">
-      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">${icon('crosshair')}</span><b>Live</b><br/><span style="font-size:13.5px;opacity:.9">Tocca qui e scopri dove sei, a che km, cosa hai davanti da mangiare e da dormire</span></div>
-      <a class="bigbtn alert" href="tel:112"><span class="e">${icon('siren')}</span><b>Emergenze · 112</b></a>
-      <div class="bigbtn" data-tab="live" data-share="1"><span class="e">${icon('share-2')}</span><b>Condividi posizione</b></div>
-      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">${icon('cloud-sun-rain')}</span><b>Meteo e tramonto</b></div>
-      <div class="bigbtn" data-tab="dormire"><span class="e">${icon('bed-double')}</span><b>Dormire stanotte</b></div>
-      <div class="bigbtn" data-tab="info"><span class="e">${icon('info')}</span><b>Tutte le info</b></div>
+      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">${icon('crosshair', 26)}</span><b>Live</b><br/><span style="font-size:13.5px;opacity:.9">Tocca qui e scopri dove sei, a che km, cosa hai davanti da mangiare e da dormire</span></div>
+      <a class="bigbtn alert" href="tel:112"><span class="e">${icon('siren', 22)}</span><b>Emergenze · 112</b></a>
+      <div class="bigbtn" data-tab="live" data-share="1"><span class="e">${icon('share-2', 22)}</span><b>Condividi posizione</b></div>
+      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">${icon('cloud-sun-rain', 22)}</span><b>Meteo e tramonto</b></div>
+      <div class="bigbtn" data-tab="dormire"><span class="e">${icon('bed-double', 22)}</span><b>Dormire stanotte</b></div>
+      <div class="bigbtn" data-tab="info"><span class="e">${icon('info', 22)}</span><b>Tutte le info</b></div>
     </div>`;
   }
   if (ph === 'dopo') {
     h += `<div class="card hero"><h2>${esc(C.dopo.titolo)}</h2><p>${esc(C.dopo.testo)}</p></div>`;
     const dopoIcons = ['pencil-line', 'camera', 'award'];
-    h += C.dopo.azioni.map((a,i)=>`<div class="card"><h3>${icon(dopoIcons[i])} ${esc(a.titolo)}</h3>
+    h += C.dopo.azioni.map((a,i)=>`<div class="card"><h3>${icon(dopoIcons[i], 20)} ${esc(a.titolo)}</h3>
       <p>${esc(a.testo)}</p>
       <div class="btnrow"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)}</a></div></div>`).join('');
     h += `<div class="card" style="border:2px solid var(--gold)"><h2>${esc(C.dopo.prossimo.titolo)}</h2>
@@ -381,7 +381,7 @@ function renderPoiList(){
   const rows = list.filter(e => poiMatch(e, poiFilter)).map(e => ({km: e.km, html: poiRow(e)}));
   if (poiFilter !== 'd'){
     gapWarnings(list).forEach(w => rows.push({km: w.km,
-      html: `<div class="poirow" style="background:#fff5f5;border-radius:8px;padding:7px 8px">⚠️
+      html: `<div class="poirow" style="background:#fff5f5;border-radius:8px;padding:7px 8px"><span>${icon('triangle-alert', 15)}</span>
         <span><b>${w.gap} km senza acqua né cibo</b> <span class="muted">dal km ${w.a} al km ${w.b} — fai scorta prima</span></span></div>`}));
   }
   rows.sort((x, y) => x.km - y.km);
@@ -690,7 +690,7 @@ function startGPS(){
     if (distTrack > 3){
       info.innerHTML = `Sei a <b>${distTrack.toFixed(1)} km</b> dal percorso ${esc(p.nome)}. Il punto più vicino è al km <b>${km.toFixed(0)}</b>.`;
     } else {
-      info.innerHTML = `Sei circa al <b>km ${km.toFixed(0)}</b> di ${kmTot} del ${esc(p.nome)} — mancano <b>${Math.max(0,kmTot-km).toFixed(0)} km</b> all'arrivo a Rovereto. Forza! 💪`;
+      info.innerHTML = `Sei circa al <b>km ${km.toFixed(0)}</b> di ${kmTot} del ${esc(p.nome)} — mancano <b>${Math.max(0,kmTot-km).toFixed(0)} km</b> all'arrivo a Rovereto. Forza!`;
     }
     info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">${icon('share-2',15)} Condividi la posizione</button></div>`;
     const aheadBox = $('#gpsahead');
@@ -757,8 +757,8 @@ document.querySelectorAll('nav button .e').forEach(el=>{
   const tab = el.closest('button').dataset.tab;
   el.innerHTML = icon(map[tab], 19);
 });
-$('#searchbtn').innerHTML = icon('search', 16);
-$('#iosmodal-icon').innerHTML = icon('smartphone');
+$('#searchbtn').innerHTML = icon('search', 17);
+$('#iosmodal-icon').innerHTML = icon('smartphone', 20);
 paintDemo(); openTab('home');
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
