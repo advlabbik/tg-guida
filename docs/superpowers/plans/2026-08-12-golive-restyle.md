@@ -605,6 +605,8 @@ git commit -m "Restyle Home: hero, countdown, install card, modale iOS"
 #stay22wrap{border:1px solid var(--line);height:420px}
 ```
 
+**Residuo trovato durante il Task 4** (grep scoped a `styles.css` non lo copriva): `renderDormire()` in `index.html` ha uno stile inline `style="border:2px solid var(--gold)"` sulla card "Prenota dalla mappa" — `--gold` non esiste più da quando la Task 3 l'ha rimossa da `:root`. Sostituire con `style="border:2px solid var(--terracotta)"` (stesso trattamento "sigillo" usato altrove per le card in evidenza).
+
 - [ ] **Step 2: Info e Live**
 
 ```css
@@ -1092,6 +1094,8 @@ h += C.dopo.azioni.map(a=>`<div class="card"><h3>${a.icona} ${esc(a.titolo)}</h3
     ? pendingCta('In arrivo')
     : `<a class="btn" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)}</a>`}</div></div>`).join('');
 ```
+
+**Residuo trovato durante il Task 4** (grep scoped a `styles.css` non lo copriva): subito dopo questo blocco, la card `C.dopo.prossimo` ("Il prossimo capitolo") ha uno stile inline `style="border:2px solid var(--gold)"` — `--gold` non esiste più da quando la Task 3 l'ha rimossa da `:root`. Sostituire con `style="border:2px solid var(--terracotta)"`.
 
 - [ ] **Step 2: Marcare i 3 campi in content.js**
 
