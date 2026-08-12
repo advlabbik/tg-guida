@@ -801,7 +801,7 @@ async function meteoGPS(){
   }, () => { box.textContent = 'Non riesco a leggere la posizione: controlla i permessi.'; },
   {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
 }
-let gpsMap, gpsMarker, gpsLine, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
+let gpsMap, gpsMarker, gpsLine, gpsLineRoute, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
 function sharePos(){
   if (!lastPos) return;
   const url = `https://maps.google.com/?q=${lastPos[0].toFixed(5)},${lastPos[1].toFixed(5)}`;
@@ -871,8 +871,11 @@ function startGPS(){
       gpsMap = L.map('gpsmap');
       L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© CyclOSM · © OpenStreetMap'}).addTo(gpsMap);
     }
-    if (gpsLine) gpsMap.removeLayer(gpsLine);
-    gpsLine = L.polyline(track,{color:p.colore,weight:4}).addTo(gpsMap);
+    if (gpsLineRoute !== rid){
+      if (gpsLine) gpsMap.removeLayer(gpsLine);
+      gpsLine = L.polyline(track,{color:p.colore,weight:4}).addTo(gpsMap);
+      gpsLineRoute = rid;
+    }
     if (gpsArrowsRoute !== rid){
       if (gpsArrows) gpsMap.removeLayer(gpsArrows);
       gpsArrows = arrowLayer(track, p.colore, 10).addTo(gpsMap);
