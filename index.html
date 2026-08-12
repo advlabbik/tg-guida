@@ -455,9 +455,10 @@ function setMyRoute(id){
   document.querySelectorAll('.rpill').forEach(b=>{
     const on = b.dataset.route === id;
     b.classList.toggle('on', on);
-    b.style.background = on ? C.percorsi.find(p=>p.id===id).colore : '';
-    b.style.borderColor = on ? C.percorsi.find(p=>p.id===id).colore : '';
-    b.style.color = on ? '#fff' : '';
+    b.style.removeProperty('background');
+    b.style.removeProperty('border-color');
+    b.style.removeProperty('color');
+    if (on) b.style.setProperty('--pill-color', C.percorsi.find(p=>p.id===id).colore);
   });
   const sel = document.getElementById('gpsroute');
   if (sel) sel.value = id;
