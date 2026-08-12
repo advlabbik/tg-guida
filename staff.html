@@ -31,16 +31,21 @@
 </div>
 <script>
 const $ = s => document.querySelector(s);
-const STAFF_CODE = 'PIONEER26-STAFF'; // ✱ segnaposto, deve combaciare col secret STAFF_CODE della Edge Function
+// ✱ segnaposto, usato SOLO per il confronto locale (UX del gate). La Edge Function
+// valida il codice server-side comunque: il valore inviato nella richiesta e' sempre
+// quello digitato dallo staff (staffCode qui sotto), mai questa costante.
+const STAFF_CODE = 'PIONEER26-STAFF';
 const FUNCTION_URL = 'https://kqsrtuzeeiljozdnjott.supabase.co/functions/v1/tg-send-broadcast';
+let staffCode = localStorage.getItem('tg-staff-access') || '';
 
 function initGate(){
-  if (localStorage.getItem('tg-staff-access') === STAFF_CODE) return;
+  if (staffCode === STAFF_CODE) return;
   $('#gate').style.display = 'flex';
   const tryCode = () => {
     const v = $('#gatecode').value.trim().toUpperCase();
     if (v === STAFF_CODE){
-      localStorage.setItem('tg-staff-access', STAFF_CODE);
+      staffCode = v;
+      localStorage.setItem('tg-staff-access', v);
       $('#gate').style.display = 'none';
     } else {
       $('#gateerr').textContent = 'Codice non valido.';
@@ -65,7 +70,7 @@ $('#sendbtn').addEventListener('click', async () => {
     const res = await fetch(FUNCTION_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, body, staffCode: STAFF_CODE })
+      body: JSON.stringify({ title, body, staffCode })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Invio fallito');

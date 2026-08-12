@@ -99,6 +99,47 @@ function pushSupported(){
   return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 }
 
+const PUSH_ENDPOINT_KEY = 'tg-push-saved-endpoint';
+
+// Salva la subscription su Supabase (tollera 409 = già presente) e ricorda
+// l'endpoint salvato con successo, cosi' possiamo verificarlo piu' avanti.
+async function saveSubscription(sub){
+  const subJson = sub.toJSON();
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_push_subscriptions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ endpoint: subJson.endpoint, p256dh: subJson.keys.p256dh, auth: subJson.keys.auth })
+  });
+  if (!res.ok && res.status !== 409) throw new Error('salvataggio subscription fallito');
+  localStorage.setItem(PUSH_ENDPOINT_KEY, subJson.endpoint);
+}
+
+// Il permesso del browser resta 'granted' per sempre anche se il salvataggio
+// su Supabase e' fallito, o se il browser ha ruotato l'endpoint nel frattempo.
+// Verifichiamo silenziosamente e ri-salviamo quando serve, senza toccare la UI.
+async function verifyPushSubscription(){
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub){
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+    const savedEndpoint = localStorage.getItem(PUSH_ENDPOINT_KEY);
+    if (sub.endpoint !== savedEndpoint) await saveSubscription(sub);
+  } catch (err){
+    // silenzioso: nessuna UI da aggiornare, si riprova al prossimo refreshNotifCard()
+  }
+}
+
 async function refreshNotifCard(){
   const card = $('#notifcard');
   if (!card) return;
@@ -116,6 +157,7 @@ async function refreshNotifCard(){
   if (Notification.permission === 'granted'){
     btn.style.display = 'none';
     status.textContent = 'Notifiche attive. Riceverai le comunicazioni dello staff durante l\'evento.';
+    verifyPushSubscription();
   } else if (Notification.permission === 'denied'){
     btn.style.display = 'none';
     status.textContent = 'Notifiche bloccate dal browser. Abilitale dalle impostazioni del sito se vuoi riceverle.';
@@ -141,21 +183,7 @@ async function activatePush(){
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
       });
     }
-    const subJson = sub.toJSON();
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_push_subscriptions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ endpoint: subJson.endpoint, p256dh: subJson.keys.p256dh, auth: subJson.keys.auth })
-    });
-    if (!res.ok && res.status !== 409){
-      status.textContent = 'Errore nel salvataggio, riprova.';
-      return;
-    }
+    await saveSubscription(sub);
     refreshNotifCard();
   } catch (err){
     status.textContent = 'Errore nell\'attivazione delle notifiche, riprova.';
@@ -882,8 +910,15 @@ document.querySelectorAll('nav button .e').forEach(el=>{
 });
 $('#searchbtn').innerHTML = icon('search', 17);
 $('#iosmodal-icon').innerHTML = icon('smartphone', 20);
-paintDemo(); openTab('home');
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+const VALID_TABS = ['home','percorso','info','dormire','live'];
+const requestedTab = new URLSearchParams(location.search).get('tab');
+paintDemo(); openTab(VALID_TABS.includes(requestedTab) ? requestedTab : 'home');
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data && e.data.type === 'open-live') openTab('live');
+  });
+}
 </script>
 </body>
 </html>
