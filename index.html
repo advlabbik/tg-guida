@@ -19,7 +19,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-s
 #phone{max-width:560px;margin:0 auto;background:var(--cream);min-height:100vh;position:relative;
   box-shadow:0 0 40px rgba(60,40,30,.25)}
 /* demo bar */
-#demobar{background:#2a2320;color:#cfc7bc;font-size:11.5px;padding:6px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#demobar{background:#2a2320;color:#cfc7bc;font-size:11.5px;padding:6px 14px;display:none;gap:8px;align-items:center;flex-wrap:wrap}
+#demobar.visibile{display:flex}
 #demobar b{color:#fff;letter-spacing:.5px}
 #demobar button{background:none;border:1px solid #55504a;color:#cfc7bc;border-radius:999px;
   padding:2px 10px;font-size:11px;cursor:pointer}
@@ -204,7 +205,7 @@ nav button.on .e{transform:scale(1.12)}
 <div id="phone">
   <div id="gate" style="display:none"><div class="box">
     <h2>Trentino Gravel</h2>
-    <p>Questa guida è riservata ai partecipanti.<br/>Inserisci il codice che trovi nell'email di benvenuto ✱.</p>
+    <p>Questa guida è riservata ai partecipanti.<br/>Inserisci il codice che trovi nell'email con le tracce.</p>
     <input id="gatecode" type="text" placeholder="CODICE" autocomplete="off"/>
     <div class="err" id="gateerr"></div>
     <button class="btn" id="gatebtn">Entra</button>
@@ -243,7 +244,7 @@ nav button.on .e{transform:scale(1.12)}
     <section class="tab" id="tab-dormire"></section>
     <section class="tab" id="tab-live"></section>
     <div class="sponsor" id="sponsorbar"></div>
-    <div class="legend">✱ dato segnaposto, da confermare · Prototipo interno AdventureLab</div>
+    <div class="legend">Trentino Gravel · Guida in versione beta — la miglioriamo ogni settimana</div>
   </main>
 
   <nav><div class="in">
@@ -305,6 +306,11 @@ function paintDemo(){
   const cur = localStorage.getItem('tg-demo-phase') || 'auto';
   document.querySelectorAll('#demobar button').forEach(b=>b.classList.toggle('on', b.dataset.ph===cur));
 }
+// La barra demo (cambio fase) e' riservata al team: si attiva aprendo la guida
+// con ?demo=1 e resta attiva su quel dispositivo. I partecipanti non la vedono.
+if (new URLSearchParams(location.search).has('demo')) localStorage.setItem('tg-demo-visible', '1');
+if (localStorage.getItem('tg-demo-visible')) $('#demobar').classList.add('visibile');
+else localStorage.removeItem('tg-demo-phase');
 
 /* ---------- installa in home ---------- */
 let deferredPrompt = null;
@@ -407,7 +413,7 @@ function renderHome(){
     h += C.dopo.azioni.map(a=>`<div class="card"><h3>${a.icona} ${esc(a.titolo)}</h3>
       <p>${esc(a.testo)}</p>
       <div class="btnrow"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)}</a></div></div>`).join('');
-    h += `<div class="card" style="border:2px solid var(--gold)"><h2>${esc(C.dopo.prossimo.titolo)}</h2>
+    if (C.dopo.prossimo) h += `<div class="card" style="border:2px solid var(--gold)"><h2>${esc(C.dopo.prossimo.titolo)}</h2>
       <p>${esc(C.dopo.prossimo.testo)}</p>
       <div class="btnrow"><a class="btn" href="${C.dopo.prossimo.url}" target="_blank" rel="noopener">${esc(C.dopo.prossimo.cta)}</a></div></div>`;
   }
@@ -467,11 +473,11 @@ function bindChecklist(){
 /* ---------- PERCORSO ---------- */
 function renderPercorso(){
   let h = `<div class="card"><h2>Scegli il tuo percorso</h2>
-    <p>Partenza e arrivo per tutti: <b>${esc(C.meta.hub)}</b>. Puoi cambiare percorso fino al giorno prima — basta rispondere a una email dell'evento.</p></div>`;
+    <p>Partenza e arrivo per tutti da <b>${esc(C.meta.hub)}</b>. Puoi cambiare idea sul percorso in qualsiasi momento, senza bisogno di comunicarcelo — ti vedremo dall'app di live tracking.</p></div>`;
   h += C.percorsi.map(p=>`<div class="card route" style="--col:${p.colore}">
     <h3 style="color:${p.colore}">${esc(p.nome)}</h3>
     <div class="badges"><span class="badge">${p.km} km</span><span class="badge">${p.dplus} m D+</span>
-      <span class="badge">${esc(p.livello)}</span><span class="badge">${esc(p.giorni)}</span></div>
+      <span class="badge">${esc(p.livello)}</span></div>
     <p>${esc(p.desc)}</p>
     ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
     <div class="btnrow">
@@ -480,7 +486,7 @@ function renderPercorso(){
     </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
   h += `<div class="card" id="poicard"><h3>⛲🍝🛏️ Servizi lungo il percorso</h3>
-    <p class="muted">Acqua, cibo e alloggi entro 500 m dalla traccia (fonte OpenStreetMap ✱). L'esistenza non garantisce l'apertura: per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa.</p>
+    <p class="muted">Acqua, cibo e alloggi entro 500 metri dalla traccia, da OpenStreetMap. La lista dice che un posto esiste, non che è aperto — per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa.</p>
     <div class="btnrow" id="poipills" style="margin-bottom:8px">` +
     C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
     `</div>
@@ -549,7 +555,7 @@ function renderPoiList(){
   if (!el) return;
   const list = (window.POI && POI[myRoute()]) || [];
   if (!list.length){
-    el.innerHTML = '<p class="muted" style="padding:10px 0">Lista servizi in preparazione ✱</p>';
+    el.innerHTML = '<p class="muted" style="padding:10px 0">La lista servizi di questo percorso è in preparazione, arriva a breve.</p>';
     return;
   }
   const rows = list.filter(e => poiMatch(e, poiFilter)).map(e => ({km: e.km, html: poiRow(e)}));
@@ -741,7 +747,7 @@ function meteoDays(){
   }
   const days = [];
   for (let i = 0; i < 6; i++) days.push(new Date(Date.now() + i*864e5).toISOString().slice(0,10));
-  return { days, nota: 'Anteprima con i prossimi giorni ✱ — nei giorni dell\'evento questa tabella mostra il 25–30 settembre.' };
+  return { days, nota: 'Anteprima con i prossimi giorni — durante l\'evento questa tabella mostra il 25–30 settembre.' };
 }
 async function loadMeteoTable(){
   const { days, nota } = meteoDays();
@@ -890,6 +896,7 @@ function startGPS(){
 }
 
 /* ---------- SPONSOR ---------- */
+if (C.sponsor.lista && C.sponsor.lista.length)
 $('#sponsorbar').innerHTML = `<h3>${esc(C.sponsor.titolo)}</h3><div class="sprow">` +
   C.sponsor.lista.map(s=>`<div class="sp"><b>${esc(s.nome)}</b><span>${esc(s.ruolo)}</span></div>`).join('') + `</div>`;
 
