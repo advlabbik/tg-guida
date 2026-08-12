@@ -1,7 +1,7 @@
 // Service worker: le info chiave restano consultabili anche senza segnale.
 const CACHE = 'tg-guida-v17';
 const ASSETS = [
-  './', './index.html', './styles.css', './content.js', './tracks.js', './poi.js', './icons.js',
+  './', './index.html', './staff.html', './styles.css', './content.js', './tracks.js', './poi.js', './icons.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/sprite.svg',
   './fonts/bebas-neue-400.woff2', './fonts/barlow-condensed-700.woff2',
   './fonts/barlow-condensed-800.woff2', './fonts/dm-sans-400.woff2',
