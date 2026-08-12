@@ -1,7 +1,7 @@
 // Service worker: le info chiave restano consultabili anche senza segnale.
-const CACHE = 'tg-guida-v11';
+const CACHE = 'tg-guida-v12';
 const ASSETS = [
-  './', './index.html', './content.js', './tracks.js', './poi.js',
+  './', './index.html', './styles.css', './content.js', './tracks.js', './poi.js',
   './icons/icon-192.png', './icons/icon-512.png',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
