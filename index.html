@@ -360,6 +360,10 @@ function openTab(name){
   if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
+window.addEventListener('resize', ()=>{
+  if (miniMap) miniMap.invalidateSize();
+  if (gpsMap) gpsMap.invalidateSize();
+});
 
 /* ---------- HOME ---------- */
 function renderHome(){
@@ -472,7 +476,7 @@ function renderPercorso(){
     ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
     <div class="btnrow">
       <a class="btn small" href="${C.mappeBase}percorso-${p.id}.html" target="_blank" rel="noopener">Mappa + altimetria</a>
-      <a class="btn small sec" href="${C.mappeBase}gpx/Trentino-Gravel-2026-${p.id[0].toUpperCase()+p.id.slice(1)}-V1.8.gpx" target="_blank" rel="noopener">↓ GPX</a>
+      <a class="btn small sec" href="${gpxUrl(p.id)}" target="_blank" rel="noopener">↓ GPX</a>
     </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
   h += `<div class="card" id="poicard"><h3>⛲🍝🛏️ Servizi lungo il percorso</h3>
@@ -561,8 +565,9 @@ function renderPoiList(){
 let stayCenter = null;
 function goBook(lat, lng){
   stayCenter = {lat, lng};
+  const alreadyLoaded = mapsInit.stay;
   openTab('dormire');
-  loadStay22();
+  if (alreadyLoaded) loadStay22();
 }
 function arrowLayer(ll, color, stepKm){
   const g = L.layerGroup();
@@ -774,11 +779,6 @@ async function loadSunset(){
     return sunsetCache;
   } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = '🌇 Tramonto non disponibile offline.'; }
 }
-async function fillHeroSunset(){
-  const s = await loadSunset();
-  const el = $('#herosunset');
-  if (el && s) el.innerHTML = `🌇 Tramonto: <b>${s}</b> — occhio al buio.`;
-}
 async function meteoGPS(){
   const box = $('#meteogps');
   box.style.display = 'block';
@@ -801,7 +801,7 @@ async function meteoGPS(){
   }, () => { box.textContent = 'Non riesco a leggere la posizione: controlla i permessi.'; },
   {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
 }
-let gpsMap, gpsMarker, gpsLine, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
+let gpsMap, gpsMarker, gpsLine, gpsLineRoute, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
 function sharePos(){
   if (!lastPos) return;
   const url = `https://maps.google.com/?q=${lastPos[0].toFixed(5)},${lastPos[1].toFixed(5)}`;
@@ -871,8 +871,11 @@ function startGPS(){
       gpsMap = L.map('gpsmap');
       L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© CyclOSM · © OpenStreetMap'}).addTo(gpsMap);
     }
-    if (gpsLine) gpsMap.removeLayer(gpsLine);
-    gpsLine = L.polyline(track,{color:p.colore,weight:4}).addTo(gpsMap);
+    if (gpsLineRoute !== rid){
+      if (gpsLine) gpsMap.removeLayer(gpsLine);
+      gpsLine = L.polyline(track,{color:p.colore,weight:4}).addTo(gpsMap);
+      gpsLineRoute = rid;
+    }
     if (gpsArrowsRoute !== rid){
       if (gpsArrows) gpsMap.removeLayer(gpsArrows);
       gpsArrows = arrowLayer(track, p.colore, 10).addTo(gpsMap);
@@ -913,7 +916,7 @@ $('#searchinput').addEventListener('input',e=>{
     $('#searchov').classList.remove('open');
     openTab(h.tab);
     if (h.el){ const el = document.getElementById(h.el);
-      if (el){ el.classList.add('open'); setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150); } }
+      if (el){ setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150); } }
   }));
 });
 
