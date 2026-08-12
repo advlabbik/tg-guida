@@ -924,7 +924,14 @@ $('#searchinput').addEventListener('input',e=>{
 initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
 paintDemo(); openTab('home');
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+if ('serviceWorker' in navigator) {
+  // se arriva una versione nuova mentre l'app è aperta, si ricarica da sola
+  const avevaSW = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (avevaSW && !window._tgReload) { window._tgReload = true; location.reload(); }
+  });
+}
 </script>
 </body>
 </html>

@@ -46,11 +46,11 @@ percorsi: [
     livello: "Accessibile", giorni: "2–3 giorni",
     desc: "Il paracadute perfetto per la prima esperienza bikepacking. Passa dalla Val di Sole, tocca il Lago di Garda e chiude l'anello a Rovereto.",
     note: ["Biforcazione dal percorso Lungo e Medio a Sarche", "Circa il 70% su ciclabili e sterrato"] },
-  { id: "medio", nome: "Percorso Medio", colore: "#e8590c", km: 360, dplus: "7.300",
+  { id: "medio", nome: "Percorso Medio", colore: "#e8590c", km: 360, dplus: "7.400",
     livello: "Intermedio", giorni: "3–4 giorni",
     desc: "L'avventura completa senza l'estremo. San Martino, le valli dell'ovest e i grandi paesaggi, evitando il tratto a piedi del Col Margherita.",
     note: ["Pensato per chi vuole la distanza senza il tratto tecnico del Col Margherita", "Per la prima notte puntate su Molveno o Andalo — molte strutture di Madonna di Campiglio sono chiuse il 26/09"] },
-  { id: "lungo", nome: "Percorso Lungo", colore: "#c1121f", km: 374, dplus: "7.800",
+  { id: "lungo", nome: "Percorso Lungo", colore: "#c1121f", km: 374, dplus: "7.900",
     livello: "Impegnativo", giorni: "4–5 giorni",
     desc: "La sfida totale. Val di Fassa, Passo San Pellegrino, Col Margherita e Passo Rolle. Chilometraggio e dislivello da ultra-distance.",
     note: ["⚠️ Sul Col Margherita ci sono circa 2–2,5 km non pedalabili, ~50 minuti con bici a spinta. In cambio uno dei panorami più belli dell'arco alpino", "Per la prima notte puntate su Molveno o Andalo"] }
