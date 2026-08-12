@@ -394,8 +394,9 @@ function renderPoiList(){
 let stayCenter = null;
 function goBook(lat, lng){
   stayCenter = {lat, lng};
+  const alreadyInit = mapsInit.stay;
   openTab('dormire');
-  loadStay22();
+  if (alreadyInit) loadStay22();
 }
 function arrowLayer(ll, color, stepKm){
   const g = L.layerGroup();

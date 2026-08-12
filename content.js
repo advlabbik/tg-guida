@@ -160,6 +160,7 @@ dormire: {
   stay22: {
     titolo: "Prenota dalla mappa",
     testo: "Hotel, B&B e campeggi intorno a Rovereto per la notte di venerdì 25. Muovi la mappa lungo il percorso per prenotare anche le tappe successive — quello che vedi è prenotabile.",
+    // ✱ account provvisorio — sostituire `aid` (e `campaign` se cambia) con l'account business Stay22 quando arriva
     aid: "694570b3581ec595fca56708",
     campaign: "trentinogravel",
     lat: 45.8896, lng: 11.0440,
