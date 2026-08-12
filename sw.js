@@ -1,11 +1,11 @@
 // Service worker: le info chiave restano consultabili anche senza segnale.
-const CACHE = 'tg-guida-v15';
+const CACHE = 'tg-guida-v16';
 const ASSETS = [
   './', './index.html', './styles.css', './content.js', './tracks.js', './poi.js', './icons.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/sprite.svg',
   './fonts/bebas-neue-400.woff2', './fonts/barlow-condensed-700.woff2',
   './fonts/barlow-condensed-800.woff2', './fonts/dm-sans-400.woff2',
-  './fonts/dm-sans-500.woff2', './fonts/dm-mono-400.woff2', './fonts/dm-mono-500.woff2',
+  './fonts/dm-mono-400.woff2', './fonts/dm-mono-500.woff2',
   './assets/logo-light.svg', './assets/logo-forest.svg',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
