@@ -618,11 +618,6 @@ async function loadSunset(){
     return sunsetCache;
   } catch(e){ const box = $('#sunsetbox'); if (box) box.innerHTML = `${icon('sunset')} Tramonto non disponibile offline.`; }
 }
-async function fillHeroSunset(){
-  const s = await loadSunset();
-  const el = $('#herosunset');
-  if (el && s) el.innerHTML = `${icon('sunset')} Tramonto: <b>${s}</b> — occhio al buio.`;
-}
 async function meteoGPS(){
   const box = $('#meteogps');
   box.style.display = 'block';
