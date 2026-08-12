@@ -775,11 +775,6 @@ async function loadSunset(){
     return sunsetCache;
   } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = '🌇 Tramonto non disponibile offline.'; }
 }
-async function fillHeroSunset(){
-  const s = await loadSunset();
-  const el = $('#herosunset');
-  if (el && s) el.innerHTML = `🌇 Tramonto: <b>${s}</b> — occhio al buio.`;
-}
 async function meteoGPS(){
   const box = $('#meteogps');
   box.style.display = 'block';
