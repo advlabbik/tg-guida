@@ -176,6 +176,7 @@ dopo: {
   titolo: "È stata la prima. Grazie di averla scritta con noi.",
   testo: "La Pioneer Edition esiste una volta sola, e tu c'eri. Prima di rimettere le borse in cantina, tre cose.",
   azioni: [
+    // ✱ i 3 url sotto sono "#" finché non arrivano i link reali (questionario, galleria foto, generatore attestato) — sostituire qui, nessun'altra modifica necessaria
     { icona: "📝", titolo: "Raccontaci com'è andata", testo: "Il questionario di fine evento richiede 5 minuti e la seconda edizione la costruiamo sulle tue risposte.", cta: "Compila il questionario ✱", url: "#" },
     { icona: "📷", titolo: "Le foto ufficiali", testo: "Le foto dell'evento, la tua foto al banner finisher e il materiale da condividere.", cta: "Guarda le foto ✱", url: "#" },
     { icona: "🏆", titolo: "Attestato Pioneer", testo: "L'attestato ufficiale di finisher della Pioneer Edition, con il tuo nome. Da scaricare e incorniciare.", cta: "Scarica l'attestato ✱", url: "#" }

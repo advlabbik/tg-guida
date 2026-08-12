@@ -235,8 +235,10 @@ function renderHome(){
     const dopoIcons = ['pencil-line', 'camera', 'award'];
     h += C.dopo.azioni.map((a,i)=>`<div class="card"><h3>${icon(dopoIcons[i], 20)} ${esc(a.titolo)}</h3>
       <p>${esc(a.testo)}</p>
-      <div class="btnrow"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)}</a></div></div>`).join('');
-    h += `<div class="card" style="border:2px solid var(--gold)"><h2>${esc(C.dopo.prossimo.titolo)}</h2>
+      <div class="btnrow">${a.url === '#'
+        ? pendingCta('In arrivo')
+        : `<a class="btn" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)}</a>`}</div></div>`).join('');
+    h += `<div class="card" style="border:2px solid var(--terracotta)"><h2>${esc(C.dopo.prossimo.titolo)}</h2>
       <p>${esc(C.dopo.prossimo.testo)}</p>
       <div class="btnrow"><a class="btn" href="${C.dopo.prossimo.url}" target="_blank" rel="noopener">${esc(C.dopo.prossimo.cta)}</a></div></div>`;
   }
