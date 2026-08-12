@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>Trentino Gravel · La tua guida</title>
 <meta name="robots" content="noindex, nofollow"/>
-<meta name="theme-color" content="#68173D"/>
+<meta name="theme-color" content="#2C5E2E"/>
 <link rel="manifest" href="manifest.webmanifest"/>
 <link rel="icon" href="icons/icon-192.png"/>
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
@@ -508,7 +508,7 @@ function loadStay22(){
   const lat = stayCenter ? stayCenter.lat : s.lat;
   const lng = stayCenter ? stayCenter.lng : s.lng;
   const url = `https://www.stay22.com/embed/gm?aid=${s.aid}&campaign=${s.campaign}&lat=${lat}&lng=${lng}`+
-    `&checkin=${s.checkin}&checkout=${s.checkout}&maincolor=68173D&venue=${encodeURIComponent('Progetto Manifattura Rovereto')}&ljs=it`+
+    `&checkin=${s.checkin}&checkout=${s.checkout}&maincolor=2C5E2E&venue=${encodeURIComponent('Progetto Manifattura Rovereto')}&ljs=it`+
     `&gpx=${encodeURIComponent(gpxUrl(rid))}&gpxlinecolor=${p.colore.replace('#','')}&gpxlinethickness=4&gpxlineopacity=1.00&mapstyle=outdoors`;
   $('#stay22wrap').innerHTML = `<iframe src="${url}" allow="geolocation" loading="lazy"></iframe>`;
 }

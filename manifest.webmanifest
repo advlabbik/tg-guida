@@ -4,8 +4,8 @@
   "description": "La guida ufficiale del Trentino Gravel: percorsi, info, alloggi e live tracking.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f4f1ea",
-  "theme_color": "#68173D",
+  "background_color": "#1A3C1C",
+  "theme_color": "#2C5E2E",
   "lang": "it",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
