@@ -307,7 +307,7 @@ function renderPercorso(){
     ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
     <div class="btnrow">
       <a class="btn small" href="${C.mappeBase}percorso-${p.id}.html" target="_blank" rel="noopener">Mappa + altimetria</a>
-      <a class="btn small sec dl" href="${C.mappeBase}gpx/Trentino-Gravel-2026-${p.id[0].toUpperCase()+p.id.slice(1)}-V1.8.gpx" target="_blank" rel="noopener">↓ GPX</a>
+      <a class="btn small sec dl" href="${gpxUrl(p.id)}" target="_blank" rel="noopener">↓ GPX</a>
     </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
   h += `<div class="card" id="poicard"><h3>${icon('droplets',20)}${icon('utensils',20)}${icon('bed-double',20)} Servizi lungo il percorso</h3>
