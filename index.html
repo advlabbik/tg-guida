@@ -79,6 +79,9 @@
 const C = CONTENT.it;
 const $ = s => document.querySelector(s);
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function pendingCta(label){
+  return `<div class="pending">${esc(label)}</div>`;
+}
 
 /* ---------- accesso riservato ai partecipanti ---------- */
 /* Deterrente, non sicurezza vera: il codice arriva via email agli iscritti.
@@ -532,6 +535,12 @@ function renderLive(){
     <p class="muted" id="meteonote"></p>
     <div class="meteowrap"><table id="meteotab"></table></div>
     <div class="sunset" id="sunsetbox">${icon('sunset')} Calcolo l'orario del tramonto…</div></div>`;
+  h += `<div class="card"><h3>${icon('key-round',20)} ${esc(l.whip.titolo)}</h3>
+    <p>${esc(l.whip.testo)}</p>` +
+    (l.whip.embedUrl
+      ? `<div style="height:320px"><iframe src="${l.whip.embedUrl}" style="width:100%;height:100%;border:0" allow="fullscreen"></iframe></div>`
+      : `${pendingCta('Diretta in arrivo')}`) +
+    `</div>`;
   $('#tab-live').innerHTML = h;
   $('#gpsroute').value = myRoute();
   $('#gpsroute').addEventListener('change', e=>{

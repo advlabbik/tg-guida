@@ -146,6 +146,11 @@ live: {
   gps: {
     titolo: "Dove sono?",
     testo: "Attiva il GPS del telefono e la guida ti dice a che chilometro sei, cosa hai davanti — acqua, cibo, alloggi — e ti fa condividere la posizione con un tocco."
+  },
+  whip: {
+    titolo: "Diretta live",
+    testo: "Segui in tempo reale dove sono i partecipanti sulla mappa dell'evento.",
+    embedUrl: null // ✱ arriva il link/embed WHIP prima della partenza — vedi content.js:118-120 per il contesto
   }
 },
 
