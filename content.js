@@ -155,8 +155,8 @@ dormire: {
   stay22: {
     titolo: "Prenota dalla mappa",
     testo: "Hotel, B&B e campeggi intorno a Rovereto per la notte di venerdì 25. Muovi la mappa lungo il percorso per prenotare anche le tappe successive — quello che vedi è prenotabile.",
-    aid: "694570b3581ec595fca56708",
-    campaign: "trentinogravel",
+    aid: "adventurelabsrl",
+    campaign: "tgguida2026",
     lat: 45.8896, lng: 11.0440,
     checkin: "2026-09-25", checkout: "2026-09-26"
   },
