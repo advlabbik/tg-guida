@@ -323,6 +323,8 @@ nav button{flex:1;background:none;border:none;cursor:pointer;font-family:var(--f
 nav button.on{background:var(--offwhite);color:var(--forest);border-top:3px solid var(--terracotta);margin-top:-2px}
 ```
 
+**Nota — regola desktop da non ridisegnare ma da non rompere**: dentro `@media(min-width:900px)` esiste `nav button.on{background:var(--cream);border-right-color:var(--maroon)}` (sidebar desktop). Il breakpoint desktop non va ridisegnato (Global Constraints), ma `--maroon` non esiste più (già rimappata dalla Task 3) e `--cream` ora è il nuovo verde-oliva acceso del design system, non più il vecchio neutro chiaro — lasciarla così cambierebbe visivamente la sidebar desktop, cosa che la Task 3 non doveva fare e questa Task non deve fare nemmeno. In questa regola, e solo qui, usare `var(--offwhite)` al posto di `var(--cream)` (per restare vicino alla tinta neutra originale) e verificare che il `border-right-color` sia già stato rimappato a un colore valido dalla Task 3 (dovrebbe già leggere `var(--forest)`, coerente con l'uso strutturale).
+
 - [ ] **Step 5: Logomark nell'header**
 
 In `index.html:217-221`, aggiungere l'immagine prima del blocco titolo:
@@ -615,6 +617,14 @@ mark{background:var(--cream);padding:0 1px}
 #meteotab td{border-bottom:1px solid var(--sep);padding:5px 4px;text-align:center}
 #meteotab .loc{text-align:left;font-family:var(--f-label);font-weight:700;font-size:13px;
   text-transform:uppercase;white-space:nowrap}
+```
+
+Nella CSS originale, `#gpsinfo` e `#gpsahead` (box informativi della tab Live, "sei al km X" e "davanti a te") usano `background:var(--cream)`: con la Task 3 quel token è diventato il verde-oliva acceso del design system, non più adatto come sfondo neutro per un box di testo. Sostituire con un contenitore bordato coerente con lo stile "Davanti a te" dell'handoff:
+
+```css
+#gpsinfo{background:#fff;border:1px solid var(--line);padding:10px 14px;font-size:15.5px;margin-top:10px;display:none}
+#gpsahead{background:#fff;border:1px solid var(--line);padding:10px 14px;font-size:15.5px;margin-top:8px;display:none}
+#gpsahead b{color:var(--terracotta)}
 ```
 
 - [ ] **Step 3: Fix issue #6 — invalidateSize al cambio breakpoint**
@@ -1346,6 +1356,16 @@ git rebase main
 ```
 
 Risolvere eventuali conflitti (improbabili: nessun altro dovrebbe aver toccato questi file su `main` nel frattempo).
+
+- [ ] **Step 1bis: Verifica residui di `--cream` con significato sbagliato**
+
+La Task 3 ha ridefinito `--cream` da neutro chiaro a verde-oliva acceso senza rinominarlo — le Task 4 e 7 correggono gli usi noti (`nav button.on` desktop, `#gpsinfo`/`#gpsahead`), ma un residuo isolato è possibile. Controllo a rete:
+
+```bash
+grep -n "var(--cream)" styles.css
+```
+
+Per ogni risultato, verificare che sia un uso *intenzionale* del nuovo colore (testo su sfondo scuro, box "consigli"/tramonto — coerente con l'handoff) e non un vecchio sfondo neutro dimenticato. In caso di dubbio, confrontare con `design_handoff_tg_guida_restyle/README.md` sezione "Colori" (riga Cream: "ogni testo su scuro; campo pieno per i box 'consigli' e tramonto").
 
 - [ ] **Step 2: Smoke test manuale su telefono reale**
 
