@@ -1,0 +1,247 @@
+@font-face{font-family:"Bebas Neue";src:url("fonts/bebas-neue-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("fonts/barlow-condensed-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("fonts/barlow-condensed-800.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:"DM Sans";src:url("fonts/dm-sans-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"DM Sans";src:url("fonts/dm-sans-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"DM Mono";src:url("fonts/dm-mono-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"DM Mono";src:url("fonts/dm-mono-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+:root{
+  --forest:#2C5E2E; --deep-forest:#1A3C1C; --ink:#0A150A;
+  --terracotta:#C25832; --terracotta-h:#D46840;
+  --cream:#F2EEAE; --offwhite:#F5EDE0; --card:#fff;
+  --muted:rgba(10,21,10,.55); --line:rgba(10,21,10,.12); --sep:rgba(10,21,10,.08);
+  --muted-d:rgba(242,238,174,.5); --line-d:rgba(242,238,174,.24);
+  --nav-h:62px; --radius:0;
+  --f-display:"Bebas Neue",sans-serif; --f-label:"Barlow Condensed",sans-serif;
+  --f-body:"DM Sans",sans-serif; --f-mono:"DM Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--offwhite)}
+body{font-family:var(--f-body);color:var(--ink);line-height:1.6;font-size:15.5px}
+#phone{max-width:560px;margin:0 auto;background:var(--offwhite);min-height:100vh;position:relative;box-shadow:none}
+button,input{appearance:none;-webkit-appearance:none;border-radius:0;font-family:inherit}
+/* demo bar */
+#demobar{background:var(--ink);color:rgba(242,238,174,.6);font-family:var(--f-mono);
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;padding:6px 14px;
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#demobar b{color:var(--terracotta)}
+#demobar button{background:none;border:1px solid rgba(242,238,174,.3);color:rgba(242,238,174,.6);
+  border-radius:999px;padding:2px 10px;font-size:10px;font-family:var(--f-mono);
+  letter-spacing:.22em;text-transform:uppercase;cursor:pointer}
+#demobar button.on{background:var(--terracotta);border-color:var(--terracotta);color:#fff;font-weight:700}
+/* header */
+header{background:var(--forest);color:#fff;padding:12px 16px;border-bottom:2px solid var(--deep-forest);
+  position:sticky;top:0;z-index:600}
+header .row{display:flex;align-items:center;gap:10px}
+header .logomark{height:40px;flex:0 0 auto}
+header h1{font-family:var(--f-display);font-size:22px;margin:0;letter-spacing:.02em;line-height:1;color:var(--cream);flex:1}
+header .sub{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(242,238,174,.55);margin-top:3px}
+.langs{display:flex;border:1px solid rgba(242,238,174,.3)}
+.langs span{font-family:var(--f-mono);font-size:11px;font-weight:700;padding:5px 8px;opacity:.6}
+.langs .on{background:var(--cream);color:var(--forest);opacity:1}
+#searchbtn{background:none;border:1px solid rgba(242,238,174,.4);color:#fff;font-size:15px;
+  width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* search overlay */
+#searchov{position:fixed;inset:0;background:rgba(10,21,10,.6);z-index:900;display:none}
+#searchov.open{display:block}
+#searchbox{max-width:560px;margin:0 auto;background:var(--offwhite);padding:14px;min-height:40vh;
+  border-bottom:3px solid var(--terracotta);max-height:85vh;overflow-y:auto}
+#searchbox input{width:100%;font-family:var(--f-body);font-size:16px;padding:12px 14px;
+  border:1.5px solid var(--forest);outline:none;background:#fff}
+.sres{background:#fff;border:1px solid var(--line);padding:10px 14px;margin-top:10px;cursor:pointer}
+.sres b{display:block;font-family:var(--f-label);font-weight:700;font-size:16px}
+.sres span{font-family:var(--f-mono);font-size:11px;color:var(--terracotta);text-transform:uppercase}
+.snull{text-align:center;color:var(--muted);font-size:13.5px;padding:18px 0}
+/* main */
+main{padding:14px 14px calc(var(--nav-h) + 20px)}
+.tab{display:none}
+.tab.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);padding:16px;margin-bottom:12px;box-shadow:none}
+.card h2{font-family:var(--f-display);font-size:27px;margin:0 0 8px;line-height:1;letter-spacing:.02em;color:var(--forest)}
+.card h3{font-family:var(--f-display);font-size:22px;margin:0 0 6px;line-height:1}
+.card p{margin:0 0 8px;font-size:15.5px}
+.card p:last-child{margin-bottom:0}
+.muted{color:var(--muted);font-size:14px}
+.btn{display:inline-block;background:var(--terracotta);color:#fff;text-decoration:none;
+  font-family:var(--f-label);font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  font-size:12.5px;padding:11px 18px;border:none;cursor:pointer}
+.btn:hover{background:var(--terracotta-h)}
+.btn.sec{background:#fff;color:var(--forest);border:1.5px solid var(--forest)}
+.btn.small{font-size:11.5px;padding:8px 14px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+/* freccia in coda a ogni CTA (non su download, toggle di percorso e filtri POI) */
+.btn::after{content:" →"}
+.btn.dl::after,.btn.rpill::after,.btn.pfil::after{content:none}
+.pending{display:inline-block;background:var(--offwhite);border:1px dashed var(--line);
+  color:var(--muted);font-family:var(--f-label);font-size:12.5px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;padding:10px 18px}
+/* hero */
+.hero{background:var(--deep-forest);color:#fff;border:none;padding:26px 18px 20px}
+.hero h2{font-family:var(--f-display);color:var(--cream);font-size:52px;line-height:1;margin:0 0 4px}
+.hero p{color:rgba(242,238,174,.86);font-size:15.5px}
+#countdown{display:flex;margin:16px 0 4px;border-top:1.5px solid var(--line-d);border-bottom:1.5px solid var(--line-d)}
+#countdown div{padding:10px 0;text-align:center;flex:1;border-left:1.5px solid var(--line-d)}
+#countdown div:first-child{border-left:none}
+#countdown b{display:block;font-family:var(--f-display);font-size:42px;color:var(--cream);line-height:1}
+#countdown span{font-family:var(--f-mono);font-size:9px;text-transform:uppercase;letter-spacing:.28em;
+  color:var(--muted-d)}
+.kicker{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--terracotta);margin-bottom:6px}
+.hero .kicker{color:rgba(242,238,174,.7)}
+/* checklist */
+.chk{padding:11px 0;border-bottom:1px solid var(--sep)}
+.chk:last-child{border-bottom:none}
+.chk .top{display:flex;align-items:center;gap:10px}
+.chk input{appearance:none;width:19px;height:19px;border:1.5px solid var(--forest);flex:0 0 auto;
+  cursor:pointer;position:relative}
+.chk input:checked{background:var(--forest)}
+.chk input:checked::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.chk.done label{text-decoration:line-through;color:rgba(10,21,10,.4)}
+.chk label{font-family:var(--f-label);font-size:19px;font-weight:700;cursor:pointer;flex:1}
+.chk .det{font-size:14.5px;color:rgba(10,21,10,.62);margin:5px 0 0 29px}
+.chk.done .det{color:rgba(10,21,10,.35)}
+.chk .det a{color:var(--terracotta);font-weight:700;text-decoration:none;border-bottom:1.5px solid var(--terracotta)}
+/* avvisi */
+.avvisi{background:#fff;border-top:3px solid var(--terracotta);padding:14px 16px;margin-bottom:12px}
+.avvisi h3{margin:0 0 6px;font-family:var(--f-mono);font-size:11px;text-transform:uppercase;
+  letter-spacing:.24em;color:var(--terracotta);font-weight:400}
+.avvisi p{margin:0 0 7px;font-size:15.5px;color:var(--ink)}
+.avvisi p:last-child{margin-bottom:0}
+/* meteo */
+#meteotab{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:11px}
+#meteotab th{background:none;font-size:9px;text-transform:uppercase;border-bottom:1.5px solid var(--line);padding:5px 4px}
+#meteotab td{border-bottom:1px solid var(--sep);padding:5px 4px;text-align:center}
+#meteotab td .wi{font-size:17px;display:block}
+#meteotab td .tt{color:var(--muted)}
+#meteotab .loc{text-align:left;font-family:var(--f-label);font-weight:700;font-size:13px;
+  text-transform:uppercase;white-space:nowrap}
+.meteowrap{overflow-x:auto}
+#meteogps{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;font-size:14px;margin-top:10px;display:none}
+.sunset{background:var(--cream);padding:10px 14px;font-size:14.5px;margin-top:10px;color:var(--ink)}
+/* installa in home */
+#installcard{background:#fff;border:1px solid var(--line);box-shadow:0 24px 60px rgba(12,14,26,.06)}
+#installcard h3{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-size:26px}
+@media(min-width:900px){#installcard{display:none !important}}
+#iosmodal{position:fixed;inset:0;background:rgba(10,21,10,.7);z-index:1500;display:none;
+  align-items:flex-end;justify-content:center}
+#iosmodal .box{background:var(--offwhite);border-top:3px solid var(--terracotta);padding:22px 20px 30px;
+  max-width:560px;width:100%}
+#iosmodal h3{margin:0 0 10px;font-family:var(--f-display);font-size:28px;color:var(--forest)}
+#iosmodal .step{display:flex;gap:12px;align-items:center;padding:9px 0;font-size:14.5px;
+  border-bottom:1px solid var(--line)}
+#iosmodal .step:last-of-type{border-bottom:none}
+#iosmodal .n{color:var(--terracotta);font-family:var(--f-mono);font-weight:500;flex:0 0 auto;font-size:13px}
+.bigbtn.primary{grid-column:1/-1;background:var(--terracotta);border-color:var(--terracotta);color:#fff;padding:20px 12px}
+.bigbtn.primary .e{font-size:34px}
+.bigbtn.primary b{font-size:16px}
+/* gate */
+#gate{position:fixed;inset:0;background:var(--forest);z-index:2000;display:flex;
+  align-items:center;justify-content:center;padding:20px}
+#gate .box{background:var(--offwhite);border-top:3px solid var(--terracotta);padding:28px 24px;
+  max-width:380px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(12,14,26,.28)}
+#gate .logomark{height:56px;margin-bottom:14px}
+#gate .kicker{color:var(--terracotta)}
+#gate h2{margin:0 0 6px;font-family:var(--f-display);font-size:44px;color:var(--forest);line-height:1}
+#gate p{font-size:14.5px;color:var(--muted);margin:0 0 14px}
+#gate input{width:100%;font-family:var(--f-label);font-size:20px;font-weight:800;padding:12px;
+  border:1.5px solid var(--line);text-align:center;text-transform:uppercase;letter-spacing:.28em;outline:none}
+#gate input:focus{border-color:var(--forest)}
+#gate .err{color:var(--terracotta);font-family:var(--f-mono);font-size:10px;min-height:20px;margin:6px 0}
+#gate button{width:100%}
+/* big buttons (durante) */
+.bigbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bigbtn{background:#fff;border:1px solid var(--line);padding:16px 12px;text-align:center;
+  cursor:pointer;text-decoration:none;color:var(--ink);box-shadow:none;min-height:104px;
+  display:flex;flex-direction:column}
+.bigbtn .e{font-size:28px;display:block;margin-bottom:6px}
+.bigbtn b{font-family:var(--f-label);font-size:16px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;margin-top:auto}
+.bigbtn.alert{background:var(--terracotta);border-color:var(--terracotta);color:#fff}
+/* percorsi */
+.route{border-left:5px solid var(--col)}
+.route h3{color:var(--col)}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.badge{background:var(--offwhite);border:1px solid var(--line);padding:4px 12px;
+  font-family:var(--f-mono);font-size:11.5px;font-weight:500}
+.rnote{font-size:14.5px;color:#5c554d;padding-left:16px;margin:4px 0}
+#minimap,#gpsmap{height:340px;background:var(--deep-forest)}
+/* pills percorso / filtri poi */
+.rpill{background:#fff;border:1px solid var(--line);font-family:var(--f-label);font-size:12.5px;
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer}
+.rpill.on{background:var(--pill-color,var(--forest));border-color:var(--pill-color,var(--forest));color:#fff}
+.pfil{background:#fff;border:1px solid var(--line);font-family:var(--f-label);font-size:12.5px;
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:7px 13px;cursor:pointer}
+.pfil.on{background:var(--forest);border-color:var(--forest);color:var(--cream)}
+/* info */
+.icard .head{display:flex;align-items:center;gap:10px}
+.icard .head .e{font-size:22px}
+.icard .head h3{flex:1;margin:0}
+.icard .body{display:block;margin-top:8px}
+.itheme{font-family:var(--f-mono);font-size:14px;text-transform:uppercase;letter-spacing:.30em;
+  color:var(--terracotta);margin:20px 2px 10px;font-weight:400}
+.itheme:first-of-type{margin-top:4px}
+#infosearch{width:100%;font-family:var(--f-body);font-size:16px;padding:12px 14px;
+  border:1.5px solid var(--line);outline:none;background:#fff;margin-bottom:12px}
+mark{background:var(--cream);padding:0 1px}
+/* dormire */
+#stay22wrap{border:1px solid var(--line);height:420px}
+#stay22wrap iframe{width:100%;height:100%;border:0}
+/* live */
+.codebox{background:var(--cream);border:2px dashed var(--terracotta);border-radius:var(--radius);text-align:center;
+  padding:14px;font-size:26px;font-weight:800;letter-spacing:2px;color:var(--deep-forest);margin:10px 0}
+#gpsinfo{background:#fff;border:1px solid var(--line);padding:10px 14px;font-size:15.5px;margin-top:10px;display:none}
+#gpsahead{background:#fff;border:1px solid var(--line);padding:10px 14px;font-size:15.5px;margin-top:8px;display:none}
+#gpsahead b{color:var(--terracotta)}
+/* servizi lungo il percorso */
+.poilist{max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:var(--radius);padding:4px 12px;background:#fffdf9}
+.poirow{padding:8px 0;border-bottom:1px solid var(--sep);font-size:15px;display:flex;gap:8px;align-items:center}
+.poirow:last-child{border-bottom:none}
+.poikm{color:var(--terracotta);font-family:var(--f-mono);font-size:11.5px;flex:0 0 46px;font-weight:500}
+.poibook{margin-left:auto;background:var(--terracotta);color:#fff;padding:4px 12px;
+  font-family:var(--f-label);font-size:11.5px;text-decoration:none;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;flex:0 0 auto}
+/* sponsor */
+.sponsor{margin-top:18px}
+.sponsor h3{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);text-align:center;margin:0 0 10px}
+.sprow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.sp{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:8px 14px;text-align:center}
+.sp b{display:block;font-size:13px}
+.sp span{font-size:10.5px;color:var(--muted)}
+.legend{text-align:center;font-size:11.5px;color:var(--muted);margin:16px 0 4px}
+/* nav */
+nav{position:fixed;bottom:0;left:0;right:0;z-index:700;display:flex;justify-content:center;pointer-events:none}
+nav .in{pointer-events:auto;display:flex;width:100%;max-width:560px;background:#fff;
+  border-top:2px solid var(--deep-forest);height:var(--nav-h);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:none;cursor:pointer;font-family:var(--f-label);
+  color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+nav button.on{background:var(--offwhite);color:var(--forest);border-top:3px solid var(--terracotta);margin-top:-2px}
+nav button .e{font-size:20px}
+nav button.on .e{transform:scale(1.12)}
+.leaflet-container{font-family:inherit}
+/* ---------- desktop (le tracce si studiano da PC) ---------- */
+@media(min-width:900px){
+  #phone{max-width:1200px;display:grid;grid-template-columns:230px 1fr;grid-template-rows:auto auto 1fr}
+  #demobar{grid-column:1/-1}
+  header{grid-column:1/-1}
+  header h1{font-size:20px}
+  nav{position:static;grid-column:1;grid-row:3;display:block;align-self:stretch;background:#fff;border-right:1px solid var(--line)}
+  nav .in{flex-direction:column;height:auto;max-width:none;border-top:none;padding:16px 0;position:sticky;top:74px;background:none}
+  nav button{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:13px 22px;font-size:14.5px;width:100%;border-right:3px solid transparent}
+  nav button .e{font-size:20px}
+  nav button.on{background:var(--offwhite);border-right-color:var(--forest)}
+  main{grid-column:2;grid-row:3;padding:22px 28px 40px}
+  #searchbox{max-width:700px}
+  #tab-percorso.on{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+  #tab-percorso.on>.card{margin-bottom:0}
+  #tab-percorso.on>.card:first-child,#mapcard,#poicard{grid-column:1/-1}
+  .pfil.on{background:var(--forest);border-color:var(--forest);color:#fff}
+  #infolist{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #infolist .icard{margin-bottom:0}
+  .bigbtns{grid-template-columns:repeat(4,1fr)}
+  #minimap,#gpsmap{height:540px}
+  #stay22wrap{height:580px}
+  #countdown{max-width:420px}
+}
