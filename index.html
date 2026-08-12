@@ -35,7 +35,7 @@
         <div class="sub" id="h-sub"></div>
       </div>
       <div class="langs"><span class="on">IT</span><span title="presto">EN</span><span title="presto">DE</span></div>
-      <button id="searchbtn" title="Cerca">🔍</button>
+      <button id="searchbtn" title="Cerca"></button>
     </div>
   </header>
 
@@ -45,7 +45,7 @@
   </div></div>
 
   <div id="iosmodal"><div class="box">
-    <h3>📲 Salva la guida sull'iPhone</h3>
+    <h3><span class="e" id="iosmodal-icon"></span> Salva la guida sull'iPhone</h3>
     <div class="step"><span class="n">01 /</span><span>Tocca il tasto <b>Condividi</b> in basso in Safari (il quadrato con la freccia verso l'alto)</span></div>
     <div class="step"><span class="n">02 /</span><span>Scorri e scegli <b>"Aggiungi alla schermata Home"</b></span></div>
     <div class="step"><span class="n">03 /</span><span>Tocca <b>Aggiungi</b>: da ora la guida è un'icona sul telefono, un tocco e sei dentro</span></div>
@@ -62,17 +62,18 @@
   </main>
 
   <nav><div class="in">
-    <button data-tab="home"><span class="e">🏠</span>Home</button>
-    <button data-tab="percorso"><span class="e">🗺️</span>Percorso</button>
-    <button data-tab="info"><span class="e">ℹ️</span>Info</button>
-    <button data-tab="dormire"><span class="e">🛏️</span>Dormire</button>
-    <button data-tab="live"><span class="e">📡</span>Live</button>
+    <button data-tab="home"><span class="e"></span>Home</button>
+    <button data-tab="percorso"><span class="e"></span>Percorso</button>
+    <button data-tab="info"><span class="e"></span>Info</button>
+    <button data-tab="dormire"><span class="e"></span>Dormire</button>
+    <button data-tab="live"><span class="e"></span>Live</button>
   </div></nav>
 </div>
 
 <script src="content.js"></script>
 <script src="tracks.js"></script>
 <script src="poi.js"></script>
+<script src="icons.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const C = CONTENT.it;
@@ -193,7 +194,7 @@ function renderHome(){
   const ph = phase();
   let h = '';
   h += `<div class="card" id="installcard" style="display:none">
-    <h3>📲 Tieni la guida a portata di mano</h3>
+    <h3><span class="e">${icon('smartphone')}</span> Tieni la guida a portata di mano</h3>
     <p>Salvala sulla schermata Home. Diventa un'icona sul telefono — un tocco e sei dentro, anche senza segnale.</p>
     <div class="btnrow"><button class="btn small" id="installbtn">Salva sul telefono</button>
     <button class="btn small sec" id="installlater">Più tardi</button></div></div>`;
@@ -218,17 +219,18 @@ function renderHome(){
   }
   if (ph === 'durante') {
     h += `<div class="bigbtns">
-      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">📍</span><b>Live</b><br/><span style="font-size:13.5px;opacity:.9">Tocca qui e scopri dove sei, a che km, cosa hai davanti da mangiare e da dormire</span></div>
-      <a class="bigbtn alert" href="tel:112"><span class="e">🆘</span><b>Emergenze · 112</b></a>
-      <div class="bigbtn" data-tab="live" data-share="1"><span class="e">📤</span><b>Condividi posizione</b></div>
-      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">🌦️</span><b>Meteo e tramonto</b></div>
-      <div class="bigbtn" data-tab="dormire"><span class="e">🛏️</span><b>Dormire stanotte</b></div>
-      <div class="bigbtn" data-tab="info"><span class="e">ℹ️</span><b>Tutte le info</b></div>
+      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">${icon('crosshair')}</span><b>Live</b><br/><span style="font-size:13.5px;opacity:.9">Tocca qui e scopri dove sei, a che km, cosa hai davanti da mangiare e da dormire</span></div>
+      <a class="bigbtn alert" href="tel:112"><span class="e">${icon('siren')}</span><b>Emergenze · 112</b></a>
+      <div class="bigbtn" data-tab="live" data-share="1"><span class="e">${icon('share-2')}</span><b>Condividi posizione</b></div>
+      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">${icon('cloud-sun-rain')}</span><b>Meteo e tramonto</b></div>
+      <div class="bigbtn" data-tab="dormire"><span class="e">${icon('bed-double')}</span><b>Dormire stanotte</b></div>
+      <div class="bigbtn" data-tab="info"><span class="e">${icon('info')}</span><b>Tutte le info</b></div>
     </div>`;
   }
   if (ph === 'dopo') {
     h += `<div class="card hero"><h2>${esc(C.dopo.titolo)}</h2><p>${esc(C.dopo.testo)}</p></div>`;
-    h += C.dopo.azioni.map(a=>`<div class="card"><h3>${a.icona} ${esc(a.titolo)}</h3>
+    const dopoIcons = ['pencil-line', 'camera', 'award'];
+    h += C.dopo.azioni.map((a,i)=>`<div class="card"><h3>${icon(dopoIcons[i])} ${esc(a.titolo)}</h3>
       <p>${esc(a.testo)}</p>
       <div class="btnrow"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)}</a></div></div>`).join('');
     h += `<div class="card" style="border:2px solid var(--gold)"><h2>${esc(C.dopo.prossimo.titolo)}</h2>
@@ -303,16 +305,16 @@ function renderPercorso(){
       <a class="btn small sec dl" href="${C.mappeBase}gpx/Trentino-Gravel-2026-${p.id[0].toUpperCase()+p.id.slice(1)}-V1.8.gpx" target="_blank" rel="noopener">↓ GPX</a>
     </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
-  h += `<div class="card" id="poicard"><h3>⛲🍝🛏️ Servizi lungo il percorso</h3>
+  h += `<div class="card" id="poicard"><h3>${icon('droplets',20)}${icon('utensils',20)}${icon('bed-double',20)} Servizi lungo il percorso</h3>
     <p class="muted">Acqua, cibo e alloggi entro 500 m dalla traccia (fonte OpenStreetMap ✱). L'esistenza non garantisce l'apertura: per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa.</p>
     <div class="btnrow" id="poipills" style="margin-bottom:8px">` +
     C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
     `</div>
     <div class="btnrow" id="poifilters" style="margin-bottom:10px">
       <button class="btn small sec pfil on" data-f="tutti">Tutto</button>
-      <button class="btn small sec pfil" data-f="a">⛲ Acqua</button>
-      <button class="btn small sec pfil" data-f="m">🍝 Mangiare</button>
-      <button class="btn small sec pfil" data-f="d">🛏️ Dormire</button>
+      <button class="btn small sec pfil" data-f="a">${icon('droplets',15)} Acqua</button>
+      <button class="btn small sec pfil" data-f="m">${icon('utensils',15)} Mangiare</button>
+      <button class="btn small sec pfil" data-f="d">${icon('bed-double',15)} Dormire</button>
     </div><div id="poilist" class="poilist"></div></div>`;
   $('#tab-percorso').innerHTML = h;
   document.querySelectorAll('#poifilters .pfil').forEach(b=>b.addEventListener('click',()=>{
@@ -337,7 +339,7 @@ function poiRow(e){
     return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><b>${esc(e.nome)}</b>
       <span class="muted">${det}</span>${e.ns ? bookBtn(e) : ''}</div>`;
   }
-  const ico = {a:'⛲', m:'🍝', d:'🛏️'}[e.t];
+  const ico = icon({a:'droplets', m:'utensils', d:'bed-double'}[e.t], 15);
   const nome = (e.t === 'a' && e.n > 1)
     ? `${e.n} fontane fino al km ${Math.round(e.fino)}`
     : (e.nome || e.sub);
@@ -440,7 +442,7 @@ function renderInfo(){
       h += `<h2 class="itheme" data-tema="${esc(c.tema)}">${esc(c.tema)}</h2>`;
     }
     h += `<div class="card icard" id="info-${c.id}" data-tema="${esc(c.tema)}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase())}">
-      <div class="head"><span class="e">${c.icona}</span><h3>${esc(c.titolo)}</h3></div>
+      <div class="head"><span class="e">${icon(ICONS[c.id] || 'info', 20)}</span><h3>${esc(c.titolo)}</h3></div>
       <div class="body"><p>${esc(c.corpo)}</p>
       ${c.link ? `<a class="btn small sec" href="${c.link.url}" target="_blank" rel="noopener">${esc(c.link.testo)}</a>` : ''}</div>
     </div>`;
@@ -482,7 +484,7 @@ function setMyRoute(id){
 function renderDormire(){
   const s = C.dormire;
   let h = `<div class="card"><h2>${esc(s.titolo)}</h2><p>${esc(s.intro)}</p></div>`;
-  h += `<div class="card" style="border:2px solid var(--terracotta)"><h3>🗺️ ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
+  h += `<div class="card" style="border:2px solid var(--terracotta)"><h3>${icon('route')} ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
     <p style="margin:4px 0 8px"><span class="muted">La mappa mostra la traccia del tuo percorso:</span></p>
     <div class="btnrow" style="margin:0 0 10px">` +
     C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
@@ -514,7 +516,7 @@ function loadStay22(){
 /* ---------- LIVE ---------- */
 function renderLive(){
   const l = C.live;
-  let h = `<div class="card"><h2>📍 ${esc(l.gps.titolo)}</h2><p>${esc(l.gps.testo)}</p>
+  let h = `<div class="card"><h2>${icon('crosshair',22)} ${esc(l.gps.titolo)}</h2><p>${esc(l.gps.testo)}</p>
     <p><label class="muted">Il mio percorso</label>
     <select id="gpsroute" style="font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)">
       ${C.percorsi.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('')}
@@ -523,13 +525,13 @@ function renderLive(){
     <div id="gpsinfo"></div>
     <div id="gpsahead"></div>
     <div id="gpsmap" style="margin-top:10px;display:none"></div></div>`;
-  h += `<div class="card" id="meteosec"><h3>🌦️ Meteo</h3>
+  h += `<div class="card" id="meteosec"><h3>${icon('cloud-sun-rain')} Meteo</h3>
     <div class="btnrow"><button class="btn small" id="meteogpsbtn">Meteo dove sono</button></div>
     <div id="meteogps"></div>
     <h3 style="margin-top:16px">Le località dell'evento</h3>
     <p class="muted" id="meteonote"></p>
     <div class="meteowrap"><table id="meteotab"></table></div>
-    <div class="sunset" id="sunsetbox">🌇 Calcolo l'orario del tramonto…</div></div>`;
+    <div class="sunset" id="sunsetbox">${icon('sunset')} Calcolo l'orario del tramonto…</div></div>`;
   $('#tab-live').innerHTML = h;
   $('#gpsroute').value = myRoute();
   $('#gpsroute').addEventListener('change', e=>{
@@ -538,7 +540,7 @@ function renderLive(){
   });
   $('#gpsbtn').addEventListener('click', startGPS);
   $('#meteogpsbtn').addEventListener('click', meteoGPS);
-  $('#gpsinfo').addEventListener('click', e => { if (e.target.id === 'shareposbtn') sharePos(); });
+  $('#gpsinfo').addEventListener('click', e => { if (e.target.closest('#shareposbtn')) sharePos(); });
 }
 
 /* ---------- METEO (Open-Meteo, gratuito, senza chiave) ---------- */
@@ -600,14 +602,14 @@ async function loadSunset(){
       sunsetCache = r.daily.sunset[0].slice(11,16);
     }
     const box = $('#sunsetbox');
-    if (box) box.innerHTML = `🌇 <b>Tramonto oggi a Rovereto alle ${sunsetCache}</b> — pianifica di arrivare a destinazione prima del buio.`;
+    if (box) box.innerHTML = `${icon('sunset')} <b>Tramonto oggi a Rovereto alle ${sunsetCache}</b> — pianifica di arrivare a destinazione prima del buio.`;
     return sunsetCache;
-  } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = '🌇 Tramonto non disponibile offline.'; }
+  } catch(e){ const box = $('#sunsetbox'); if (box) box.innerHTML = `${icon('sunset')} Tramonto non disponibile offline.`; }
 }
 async function fillHeroSunset(){
   const s = await loadSunset();
   const el = $('#herosunset');
-  if (el && s) el.innerHTML = `🌇 Tramonto: <b>${s}</b> — occhio al buio.`;
+  if (el && s) el.innerHTML = `${icon('sunset')} Tramonto: <b>${s}</b> — occhio al buio.`;
 }
 async function meteoGPS(){
   const box = $('#meteogps');
@@ -626,7 +628,7 @@ async function meteoGPS(){
       const sunset = r.daily && r.daily.sunset ? r.daily.sunset[0].slice(11,16) : null;
       box.innerHTML = `<b>${wIcon(c.weather_code)} ${Math.round(c.temperature_2m)}°C</b> dove sei adesso · vento ${Math.round(c.wind_speed_10m)} km/h` +
         (prob !== null ? ` · pioggia nelle prossime ore: ${prob}%` : '') +
-        (sunset ? `<br/>🌇 Il sole qui tramonta alle <b>${sunset}</b>.` : '');
+        (sunset ? `<br/>${icon('sunset')} Il sole qui tramonta alle <b>${sunset}</b>.` : '');
     } catch(e){ box.textContent = 'Meteo non raggiungibile: serve connessione.'; }
   }, () => { box.textContent = 'Non riesco a leggere la posizione: controlla i permessi.'; },
   {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
@@ -656,9 +658,9 @@ function aheadHtml(rid, km){
     `<div class="poirow"><span>${ico}</span><span>${label} <b>tra ${Math.max(1, Math.round(e.km - km))} km</b>
      <span class="muted">(km ${Math.round(e.km)})</span></span>${book ? bookBtn(e) : ''}</div>`;
   let h = '<b>Davanti a te</b>';
-  if (w) h += row('⛲', w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} fontane)` : (w.n > 1 ? `${w.n} fontane` : 'fontana'), false);
-  if (f) h += row('🍝', f, f.t === 'c' ? esc(f.nome) + ` (${f.ne} posti)` : esc(f.nome || f.sub), false);
-  ss.forEach(e => h += row('🛏️', e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} alloggi)` : esc(e.nome || e.sub), true));
+  if (w) h += row(icon('droplets',16), w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} fontane)` : (w.n > 1 ? `${w.n} fontane` : 'fontana'), false);
+  if (f) h += row(icon('utensils',16), f, f.t === 'c' ? esc(f.nome) + ` (${f.ne} posti)` : esc(f.nome || f.sub), false);
+  ss.forEach(e => h += row(icon('bed-double',16), e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} alloggi)` : esc(e.nome || e.sub), true));
   return h;
 }
 function startGPS(){
@@ -690,7 +692,7 @@ function startGPS(){
     } else {
       info.innerHTML = `Sei circa al <b>km ${km.toFixed(0)}</b> di ${kmTot} del ${esc(p.nome)} — mancano <b>${Math.max(0,kmTot-km).toFixed(0)} km</b> all'arrivo a Rovereto. Forza! 💪`;
     }
-    info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">📤 Condividi la posizione</button></div>`;
+    info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">${icon('share-2',15)} Condividi la posizione</button></div>`;
     const aheadBox = $('#gpsahead');
     const ah = aheadHtml(rid, km);
     if (ah){ aheadBox.style.display = 'block'; aheadBox.innerHTML = ah; bindBook(aheadBox); }
@@ -750,6 +752,13 @@ $('#searchinput').addEventListener('input',e=>{
 /* ---------- avvio ---------- */
 initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
+document.querySelectorAll('nav button .e').forEach(el=>{
+  const map = {home:'house', percorso:'route', info:'info', dormire:'bed-double', live:'radio'};
+  const tab = el.closest('button').dataset.tab;
+  el.innerHTML = icon(map[tab], 19);
+});
+$('#searchbtn').innerHTML = icon('search', 16);
+$('#iosmodal-icon').innerHTML = icon('smartphone');
 paintDemo(); openTab('home');
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
