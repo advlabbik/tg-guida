@@ -44,9 +44,9 @@
 
   <div id="iosmodal"><div class="box">
     <h3>📲 Salva la guida sull'iPhone</h3>
-    <div class="step"><span class="n">1</span><span>Tocca il tasto <b>Condividi</b> in basso in Safari (il quadrato con la freccia verso l'alto)</span></div>
-    <div class="step"><span class="n">2</span><span>Scorri e scegli <b>"Aggiungi alla schermata Home"</b></span></div>
-    <div class="step"><span class="n">3</span><span>Tocca <b>Aggiungi</b>: da ora la guida è un'icona sul telefono, un tocco e sei dentro</span></div>
+    <div class="step"><span class="n">01 /</span><span>Tocca il tasto <b>Condividi</b> in basso in Safari (il quadrato con la freccia verso l'alto)</span></div>
+    <div class="step"><span class="n">02 /</span><span>Scorri e scegli <b>"Aggiungi alla schermata Home"</b></span></div>
+    <div class="step"><span class="n">03 /</span><span>Tocca <b>Aggiungi</b>: da ora la guida è un'icona sul telefono, un tocco e sei dentro</span></div>
     <div class="btnrow" style="margin-top:12px"><button class="btn" id="iosclose">Fatto</button></div>
   </div></div>
   <main>
@@ -175,6 +175,10 @@ function openTab(name){
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 
 /* ---------- HOME ---------- */
+function dataKicker(iso){
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+}
 function renderHome(){
   const ph = phase();
   let h = '';
@@ -188,7 +192,8 @@ function renderHome(){
       C.avvisi.map(a=>`<p>${esc(a.testo)}</p>`).join('') + `</div>`;
   }
   if (ph === 'prima') {
-    h += `<div class="card hero"><h2>${esc(C.intro.titolo)}</h2>
+    h += `<div class="card hero"><div class="kicker">Edizione Zero · ${dataKicker(C.meta.dataPartenza)}</div>
+      <h2>${esc(C.intro.titolo)}</h2>
       <div id="countdown"></div>
       <p>${esc(C.intro.testo)}</p></div>`;
     h += `<div class="card"><h2>Le cose da fare, in ordine</h2>
