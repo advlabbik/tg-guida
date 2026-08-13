@@ -1,8 +1,10 @@
 # TG Guida — Trentino Gravel
 
-Prototipo interno AdventureLab: la web app (PWA) che accompagna i partecipanti del **Trentino Gravel — Pioneer Edition** (26 settembre 2026, partenza/arrivo da Progetto Manifattura, Rovereto) prima, durante e dopo l'evento.
+Web app (PWA) che accompagna i partecipanti del **Trentino Gravel — Pioneer Edition** (26 settembre 2026, partenza/arrivo da Manifattura Tabacchi, Rovereto) prima, durante e dopo l'evento.
 
-Vanilla JS, nessun build step: `index.html` + tre file dati/logica caricati come script globali. Nessun bundler, nessuna dipendenza npm.
+Vanilla JS, nessun build step: `index.html` + file dati/logica/stile caricati come script/link globali. Nessun bundler, nessuna dipendenza npm.
+
+Design system: verde + logo/icone disegnate su misura ("veste grafica di Alessio"), tipografia e componenti in `styles.css`. Contenuti bilingue IT/EN (`content.js → CONTENT.it` / `CONTENT.en`).
 
 ## Come si apre
 
@@ -18,29 +20,58 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 
 ## Struttura
 
-| File | Contenuto |
+| File/cartella | Contenuto |
 |---|---|
-| `index.html` | Markup, CSS inline, tutta la logica dell'app (tab, gate d'accesso, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA) |
-| `content.js` | `window.CONTENT.it` — tutti i testi editoriali (checklist, percorsi, info-card, sponsor, meteo, fasi prima/durante/dopo). Struttura già pronta per altre lingue (`CONTENT.en`, ecc., non ancora popolate) |
+| `index.html` | Markup + tutta la logica dell'app (tab, gate d'accesso, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA, opt-in notifiche push, feed Comunicazioni) |
+| `staff.html` | Pagina riservata allo staff per inviare comunicazioni push a tutti i partecipanti iscritti (gate separato da `index.html`, chiama la Edge Function `tg-send-broadcast`) |
+| `styles.css` | Tutto il CSS del design system (token in `:root`, componenti, schermate) |
+| `icons.js` | Helper `icon(name, size)` per le icone (sprite SVG) e mappa id-scheda-info → nome icona |
+| `icons/sprite.svg` | Sprite SVG con i simboli usati nell'app (referenziato via `<use>`) |
+| `fonts/` | Font del design system self-hosted in woff2 — mai da CDN, per restare offline-first |
+| `assets/` | Loghi SVG/PNG (compreso quello degli sponsor) |
+| `content.js` | `window.CONTENT.it` / `window.CONTENT.en` — tutti i testi editoriali (checklist, percorsi, info-card, sponsor, meteo, fasi prima/durante/dopo, live tracking), bilingue con switch in alto |
 | `tracks.js` | `window.TRACKS` — coordinate GPX dei tre percorsi (corto/medio/lungo), usate per le mappe e per il calcolo posizione GPS |
-| `poi.js` | `window.POI` — punti di interesse lungo il percorso (acqua, cibo, alloggi) per km, fonte OpenStreetMap |
-| `manifest.webmanifest` | Manifest PWA (nome, icone, `display: standalone`) |
-| `sw.js` | Service worker: cache-first per gli asset dell'app, esclude mappe/meteo/Stay22 (troppo pesanti/dinamici da cachare) |
-| `icons/` | Icone PWA (192px, 512px) |
+| `poi.js` | `window.POI` — punti di interesse lungo il percorso (acqua, cibo, alloggi) per km, fonte OpenStreetMap, generati con `scripts/gen_poi.py` (procedura in `docs/generazione-poi.md`) |
+| `docs/liste-poi/` | Liste POI grezze per percorso, output intermedio dello script di generazione |
+| `manifest.webmanifest` | Manifest PWA (nome, icone, colori del brand, `display: standalone`) |
+| `sw.js` | Service worker: **network-first** per i file dell'app (chi ha rete vede sempre l'ultima versione), cache come rete di salvataggio quando il segnale manca. Mappe/meteo/Stay22 non passano di qui. Versione cache attuale: vedi costante `CACHE` in cima al file — **va incrementata a ogni modifica di `sw.js`** o dell'elenco asset, altrimenti i client con la PWA installata restano bloccati sulla versione precedente |
+| `icons/icon-192.png`, `icons/icon-512.png` | Icone PWA |
+| `supabase/` | Migrazioni e Edge Function (`tg-send-broadcast`) per le notifiche push — unica dipendenza runtime da un backend (progetto Supabase `kqsrtuzeeiljozdnjott`), il resto dell'app gira senza backend |
+| `scripts/gen_poi.py` | Script per rigenerare `poi.js` da OpenStreetMap quando cambia una traccia |
+| `anteprima-francesco/` | Snapshot statico storico di un branch di restyle (vedi sezione "Stato del repo e dei branch" sotto) — non è codice attivo, non editarlo pensando che finisca in produzione |
 
 ## Funzionalità principali
 
-- **Tre fasi dell'evento** (`prima` / `durante` / `dopo`), calcolate automaticamente da `content.js → meta.fasi` in base alla data, con una home diversa per fase. C'è un demobar per forzare manualmente la fase durante lo sviluppo/demo.
-- **Percorso**: tre tracciati (Corto 216 km, Medio 360 km, Lungo 374 km) con mappa Leaflet, download GPX, lista servizi lungo la traccia filtrabile (acqua/cibo/dormire) e avviso automatico dei tratti >20 km senza rifornimenti.
+- **Tre fasi dell'evento** (`prima` / `durante` / `dopo`), calcolate automaticamente da `content.js → meta.fasi` in base alla data, con una home diversa per fase. C'è un demobar per forzare manualmente la fase durante lo sviluppo/demo (dietro `?demo=1`, nascosta di default).
+- **Percorso**: tre tracciati (Corto 216 km, Medio 360 km, Lungo 374 km) con mappa Leaflet, download GPX, lista servizi lungo la traccia filtrabile (acqua/cibo/dormire) e avviso automatico dei tratti senza rifornimenti.
 - **Info**: schede a tema (prima di partire, arrivare a Rovereto, sul percorso, durante l'evento, regole e vantaggi) con ricerca full-text.
-- **Dormire**: mappa alloggi via iframe Stay22, centrata sulla traccia del percorso scelto.
-- **Live**: geolocalizzazione in tempo reale con calcolo del km percorso, POI davanti, condivisione posizione (WhatsApp/Web Share API), meteo (Open-Meteo, gratuito) per le località dell'evento e orario del tramonto.
-- **Offline-first**: service worker che cachea gli asset statici, così le info restano consultabili anche senza segnale in montagna.
+- **Dormire**: mappa alloggi via iframe Stay22 (account aziendale reale `adventurelabsrl`, campagna `tgguida2026`).
+- **Live**: geolocalizzazione in tempo reale con calcolo del km percorso, POI davanti, condivisione posizione (WhatsApp/Web Share API), meteo (Open-Meteo, gratuito) per le località dell'evento, orario del tramonto, e una sezione per il live tracking WHIP (in stato "in arrivo" finché non arriva il link reale).
+- **Offline-first**: service worker network-first con fallback su cache, font e icone self-hosted, così le info restano consultabili anche senza segnale in montagna.
 - **Installabile**: prompt "aggiungi a schermata Home" per Android (`beforeinstallprompt`) e istruzioni guidate per iOS.
+- **Notifiche push e Comunicazioni**: opt-in Web Push (VAPID) nella tab Live, ricevute da `sw.js` anche ad app chiusa, più un feed in-app "Comunicazioni" come fallback per chi non riceve il push (es. iOS senza PWA installata). Lo staff invia i messaggi da `staff.html`.
 
 ## Da sapere
 
-- I dati marcati con `✱` in `content.js` sono segnaposto da confermare prima della pubblicazione reale (orari, numeri di telefono, link, codici sconto, traccia GPX definitiva).
-- Il gate d'accesso (`GATE_CODE` in `index.html`) è un deterrente, non sicurezza vera — verrà sostituito dal login nell'area personale su bikeadventureseries.com.
+- I dati marcati con `✱` in `content.js` sono segnaposto residui da confermare prima della pubblicazione reale (orari, numeri di telefono, link, codici sconto, traccia GPX definitiva) — la maggior parte è già stata sostituita con dati reali, controllare `grep -n '✱' content.js` prima del go-live per l'elenco aggiornato.
+- Il gate d'accesso (`GATE_CODE` in `index.html`) è un deterrente, non sicurezza vera — verrà sostituito da un'autenticazione legata all'account BAS.
 - `<meta name="robots" content="noindex, nofollow">`: la pagina non deve essere indicizzata, è riservata ai partecipanti.
 - Le mappe usano tile Esri (minimappa percorsi) e CyclOSM (mappa GPS live); Leaflet è caricato da unpkg via CDN.
+
+### Checklist go-live notifiche push
+
+Prima della pubblicazione reale, da fare in quest'ordine:
+
+- [ ] Sostituire `STAFF_CODE` nel secret dell'Edge Function `tg-send-broadcast` su Supabase (`npx supabase secrets set STAFF_CODE=... --project-ref kqsrtuzeeiljozdnjott`) con il codice reale.
+- [ ] Sostituire la costante `STAFF_CODE` in `staff.html` con lo stesso valore — i due DEVONO combaciare esattamente, il primo update senza il secondo blocca tutto lo staff fuori.
+- [ ] Coordinare il ri-deploy del secret con chi ha già salvato il vecchio codice: `staff.html` salva il codice digitato in `localStorage`, quindi chi ha già sbloccato il gate con il placeholder non se ne accorge finché non prova a inviare (la Edge Function risponde 403).
+- [ ] Se si tocca di nuovo `sw.js`, incrementare `CACHE` — altrimenti i client con la PWA installata restano sulla versione cache precedente.
+- [ ] Verificare il fallback iOS su un iPhone reale — finora testato solo per via statica/logica.
+
+## Stato del repo e dei branch
+
+Deploy automatico su GitHub Pages da `main` (`https://advlabbik.github.io/tg-guida/`).
+
+**Branch attivo: solo `main`.** Tutto lo sviluppo corrente (design system, bilingue, POI, notifiche push, staff.html) procede direttamente qui.
+
+**`ds-restyle` è congelato, tenuto solo come reference storico — non va mergiato.** Era nato come branch di redesign parallelo (piano `docs/superpowers/plans/2026-08-12-golive-restyle.md`, non presente su `main`), ed è stato riconciliato più volte con `main` mentre entrambi i rami andavano avanti in parallelo sugli stessi file (vedi la storia di [issue #11](https://github.com/advlabbik/tg-guida/issues/11)). L'ultima riconciliazione risale al 12/08: da allora `main` ha ricevuto in autonomia la veste grafica ufficiale ("veste grafica di Alessio", 13/08) e i contenuti bilingue/POI/copy che la superano — `ds-restyle` non li ha. Le parti tecniche che aveva di utile (notifiche push, `staff.html`, service worker network-first) sono già presenti identiche su `main`. **Prima di considerare di nuovo un merge di `ds-restyle`, verificare a mano se `main` non l'ha già superato** — è già successo due volte che sembrasse "pronto, manca solo il subdominio" mentre nel frattempo `main` era andato avanti per conto suo.
