@@ -81,11 +81,16 @@
       <div id="rv-titles"><b id="rv-nome"></b><span id="rv-stats"></span></div>
       <a id="rv-gpx" href="#" target="_blank" rel="noopener"></a>
     </div>
-    <div id="rv-map"></div>
-    <div id="rv-bottom">
+    <div id="rv-scroll">
+      <div id="rv-map"></div>
       <div id="rv-filters"></div>
       <div id="rv-profwrap"><canvas id="rv-prof"></canvas><div id="rv-pins"></div><div id="rv-tip"></div></div>
       <div id="rv-foot"></div>
+      <div id="rv-listwrap">
+        <h3 id="rv-listtit"></h3>
+        <p id="rv-listintro"></p>
+        <div id="rv-list" class="poilist"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -485,30 +490,13 @@ function renderPercorso(){
       </div>
     </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>${esc(U.insieme)}</h3><div id="minimap"></div></div>`;
-  h += `<div class="card" id="poicard"><h3>${icon('droplets',20)}${icon('utensils',20)}${icon('bed-double',20)} ${esc(U.servizi)}</h3>
-    <p class="muted">${U.serviziIntro}</p>
-    <div class="btnrow" id="poipills" style="margin-bottom:8px">` +
-    C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.breve)}</button>`).join('') +
-    `</div>
-    <div class="btnrow" id="poifilters" style="margin-bottom:10px">
-      <button class="btn small sec pfil on" data-f="tutti">${esc(U.filtri.tutti)}</button>
-      <button class="btn small sec pfil" data-f="a">${icon('droplets',15)} ${esc(U.filtri.a)}</button>
-      <button class="btn small sec pfil" data-f="m">${icon('utensils',15)} ${esc(U.filtri.m)}</button>
-      <button class="btn small sec pfil" data-f="d">${icon('bed-double',15)} ${esc(U.filtri.d)}</button>
-    </div><div id="poilist" class="poilist"></div></div>`;
+  /* La lista servizi stava qui, staccata dal percorso e con un suo selettore:
+     una seconda scelta del percorso dopo quella appena fatta sulle schede, e
+     220-245 righe che ripetevano quello che ora si vede su mappa e altimetria.
+     Ora vive dentro la vista percorso, sotto la mappa e il profilo dello stesso
+     percorso, comandata dallo stesso filtro. */
   $('#tab-percorso').innerHTML = h;
   document.querySelectorAll('[data-rv]').forEach(b=>b.addEventListener('click',()=>openRouteView(b.dataset.rv)));
-  document.querySelectorAll('#poifilters .pfil').forEach(b=>b.addEventListener('click',()=>{
-    poiFilter = b.dataset.f;
-    document.querySelectorAll('#poifilters .pfil').forEach(x=>x.classList.toggle('on', x===b));
-    renderPoiList();
-  }));
-  document.querySelectorAll('#poipills .rpill').forEach(b=>b.addEventListener('click',()=>{
-    setMyRoute(b.dataset.route);
-    renderPoiList();
-    if (mapsInit.stay) { stayCenter = null; loadStay22(); }
-  }));
-  renderPoiList();
 }
 function bookBtn(e){
   return (e.lat ? `<a href="#" class="poibook" data-lat="${e.lat}" data-lng="${e.lng}">${esc(U.prenota)}</a>` : '');
@@ -536,7 +524,6 @@ function bindBook(root){
     goBook(+a.dataset.lat, +a.dataset.lng);
   }));
 }
-let poiFilter = 'tutti';
 function poiMatch(e, f){
   if (f === 'tutti') return true;
   if (e.t === 'c') return (f === 'a' && e.nf > 0) || (f === 'm' && e.ne > 0) || (f === 'd' && e.ns > 0);
@@ -552,28 +539,26 @@ function gapWarnings(list){
   }
   return out;
 }
-function renderPoiList(){
-  const el = document.getElementById('poilist');
-  if (!el) return;
-  const list = (window.POI && POI[myRoute()]) || [];
-  if (!list.length){
-    el.innerHTML = `<p class="muted" style="padding:10px 0">${esc(U.serviziInArrivo)}</p>`;
-    return;
-  }
-  const rows = list.filter(e => poiMatch(e, poiFilter)).map(e => ({km: e.km, html: poiRow(e)}));
-  if (poiFilter !== 'd'){
+// la lista servizi di un percorso, ordinata per km, con dentro gli avvisi sui buchi
+function poiListHtml(rid, filter){
+  const list = (window.POI && POI[rid]) || [];
+  if (!list.length) return `<p class="muted" style="padding:10px 0">${esc(U.serviziInArrivo)}</p>`;
+  const rows = list.filter(e => poiMatch(e, filter)).map(e => ({km: e.km, html: poiRow(e)}));
+  if (filter !== 'd'){
     gapWarnings(list).forEach(w => rows.push({km: w.km,
       html: `<div class="poirow" style="background:rgba(193,18,31,.08);border-radius:12px;padding:7px 8px"><span class="poiico t-w">${icon('triangle-alert', 15)}</span>
         <span><b>${w.gap} ${esc(U.buco)}</b> <span class="muted">${fmt(esc(U.bucoDettaglio), w.a, w.b)}</span></span></div>`}));
   }
   rows.sort((x, y) => x.km - y.km);
-  el.innerHTML = rows.map(r => r.html).join('');
-  bindBook(el);
+  return rows.map(r => r.html).join('');
 }
 let stayCenter = null;
 function goBook(lat, lng){
   stayCenter = {lat, lng};
   const alreadyLoaded = mapsInit.stay;
+  // Prenota si puo' premere anche dentro la vista percorso, che copre le tab:
+  // se resta aperta il tocco sembra non fare niente
+  if ($('#routeview').classList.contains('open')) closeRouteView(false);
   openTab('dormire');
   if (alreadyLoaded) loadStay22();
 }
@@ -682,6 +667,15 @@ function routeGeom(id){
     while (lo < hi){ const m = (lo+hi)>>1; if (kmAt[m] < km) lo = m+1; else hi = m; }
     return lo;
   };
+  /* Dove finisce un POI sulla mappa. Paesi e alloggi hanno le coordinate vere e
+     si usano quelle. Fontane e posti dove mangiare hanno solo il km, perche' lo
+     script di generazione butta lat/lon dopo aver calcolato la posizione lungo
+     il percorso: quelli si appoggiano al punto della traccia a quel km. Restano
+     comunque dentro il corridoio con cui sono stati cercati (500 m per il cibo,
+     300 m per l'acqua), quindi il segno dice "a questo km del percorso", non
+     "esattamente qui" — ed e' scritto nel testo sopra la lista. Per avere le
+     posizioni vere servirebbe rigenerare poi.js da OpenStreetMap. */
+  g.posOf = e => (e.lat != null) ? [e.lat, e.lng] : g.ll[g.idxFromKm(e.km)];
   rvGeom[id] = g;
   return g;
 }
@@ -712,8 +706,11 @@ function openRouteView(id){
     document.querySelectorAll('#rv-filters .pfil').forEach(x => x.classList.toggle('on', x === b));
     rvLayout();
   }));
+  $('#rv-listtit').textContent = U.servizi;
+  $('#rv-listintro').innerHTML = U.serviziIntro;
   view.classList.add('open');
   document.body.style.overflow = 'hidden';
+  $('#rv-scroll').scrollTop = 0; // riaprendo un altro percorso si riparte dalla mappa
   if (!rvPushed){ history.pushState({rv:1}, ''); rvPushed = true; }
   rvBuildMap();
   rvLayout(); // diretto, non in requestAnimationFrame: a scheda in secondo piano non partirebbe
@@ -745,6 +742,10 @@ function rvBuildMap(){
     };
     rvMap.on('click', pick);
     rvMap.on('mousemove', pick);
+    // i segni si ricalcolano a fine movimento: quali entrano dipende dallo zoom
+    rvMap.on('moveend', rvMapPoi);
+    // il bottone Prenota dentro un fumetto esiste solo da quando il fumetto si apre
+    rvMap.on('popupopen', ev => bindBook(ev.popup.getElement()));
   }
   if (rvLayer) rvMap.removeLayer(rvLayer);
   const ll = g.ll;
@@ -806,8 +807,77 @@ function rvDraw(){
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke(); ctx.lineWidth = 1;
   }
 }
-// il profilo si ridisegna a ogni tocco, le icone solo quando cambia l'ingombro
-function rvLayout(){ rvDraw(); rvDrawPins(); }
+/* Il profilo si ridisegna a ogni tocco. Icone, segni sulla mappa e lista solo
+   quando cambia il filtro o l'ingombro: sono le tre viste sugli stessi dati e
+   il filtro le comanda tutte insieme. */
+function rvLayout(){ rvDraw(); rvDrawPins(); rvMapPoi(); rvRenderList(); }
+function rvRenderList(){
+  const el = $('#rv-list');
+  if (!el || !rvId) return;
+  el.innerHTML = poiListHtml(rvId, rvFilter);
+  bindBook(el);
+}
+/* I segni sulla mappa. Come sul profilo si mettono prima i piu' importanti, ma
+   qui la distanza si misura in pixel sullo schermo.
+   Chi finisce addosso a un altro NON sparisce: entra nel suo gruppo, e il segno
+   porta il numero di quanti ne rappresenta. Serve perche' fontane e posti dove
+   mangiare non hanno le coordinate vere e vengono appoggiati al punto della
+   traccia al loro km: a Rovereto otto locali fra il km 2,3 e il km 3,0 cadono
+   sullo stesso identico punto e nessuno zoom li separerebbe mai. Senza il
+   numero la mappa direbbe "qui c'e' un posto" dove ce ne sono otto.
+   Si disegna solo cio' che sta nella finestra visibile, altrimenti a mappa
+   larga si costruirebbero 245 marcatori per vederne dieci. */
+let rvMk = null;
+function rvMapPoi(){
+  if (!rvMap || !rvId || !$('#routeview').classList.contains('open')) return;
+  const g = routeGeom(rvId);
+  if (rvMk) rvMap.removeLayer(rvMk);
+  rvMk = L.layerGroup().addTo(rvMap);
+  const vista = rvMap.getBounds().pad(0.1);
+  const pri = rvFilter === 'tutti' ? { c:0, a:1, m:2, d:3 } : { [rvFilter]:0, c:1 };
+  const rank = e => (pri[e.t] != null ? pri[e.t] : 2);
+  const gruppi = [];
+  ((window.POI && POI[rvId]) || [])
+    .filter(e => poiMatch(e, rvFilter))
+    .sort((a,b) => (rank(a)-rank(b)) || (a.km-b.km))
+    .forEach(e => {
+      const ll = g.posOf(e);
+      if (!ll || !vista.contains(ll)) return;
+      const q = rvMap.latLngToContainerPoint(ll);
+      const vicino = gruppi.find(gr => Math.abs(gr.q.x-q.x) < 28 && Math.abs(gr.q.y-q.y) < 28);
+      if (vicino) vicino.membri.push(e);
+      else gruppi.push({ q, ll, capo: e, membri: [e] });
+    });
+  gruppi.forEach(gr => {
+    const e = gr.capo, n = gr.membri.length;
+    rvMk.addLayer(L.marker(gr.ll, {icon: L.divIcon({className:'', iconSize:[24,24], iconAnchor:[12,12],
+      html:`<span class="rvmk t-${e.t}">${icon(RV_ICO[e.t], 13)}${n > 1 ? `<i class="n">${n}</i>` : ''}</span>`})})
+      .bindPopup(rvPopup(gr))
+      .on('click', () => rvShowAt(g.idxFromKm(e.km), rvPinLabel(e))));
+  });
+}
+function rvVoce(e){
+  let det;
+  if (e.t === 'c'){
+    det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null]
+      .filter(Boolean).join(' · ');
+  } else {
+    det = [(e.nome && e.t !== 'a') ? esc(subLingua(e.sub)) : null, e.luogo ? esc(e.luogo) : null]
+      .filter(Boolean).join(' · ');
+  }
+  const prenota = (e.t === 'd' || (e.t === 'c' && e.ns)) ? bookBtn(e) : '';
+  return `<b>${rvPinLabel(e).split('<br/>')[0]}</b><span class="km"> · km ${Math.round(e.km)}</span>` +
+    (det ? `<span class="det">${det}</span>` : '') + prenota;
+}
+const RV_POP_MAX = 8; // oltre questa soglia il fumetto diventa un muro di testo
+function rvPopup(gr){
+  if (gr.membri.length === 1) return `<div class="rvpop">${rvVoce(gr.capo)}</div>`;
+  const mostrati = gr.membri.slice(0, RV_POP_MAX);
+  const restanti = gr.membri.length - mostrati.length;
+  return `<div class="rvpop gruppo"><b class="tit">${fmt(esc(U.rv.quiCiSono), gr.membri.length)}</b>` +
+    mostrati.map(e => `<div class="voce">${rvVoce(e)}</div>`).join('') +
+    (restanti ? `<div class="voce muted">${fmt(esc(U.rv.eAltri), restanti)}</div>` : '') + `</div>`;
+}
 /* I punti stanno sul profilo alla loro quota. Su un telefono ci stanno una
    ventina di icone senza sovrapporsi, quindi si sceglie per importanza (paesi,
    poi acqua, poi cibo, poi alloggi) e si dice sempre quanti ne restano fuori. */
@@ -838,9 +908,10 @@ function rvDrawPins(){
     ev.stopPropagation();
     rvSelectPin(+b.dataset.pin);
   }));
-  $('#rv-foot').innerHTML = list.length
+  $('#rv-foot').innerHTML = (list.length
     ? `<span>${fmt(esc(U.rv.mostrati), '<b>'+rvPins.length+'</b>', '<b>'+list.length+'</b>')}</span>`
-    : `<span>${esc(U.rv.nessunPunto)}</span>`;
+    : `<span>${esc(U.rv.nessunPunto)}</span>`)
+    + `<span>${esc(U.rv.aiuto)}</span>`;
 }
 function rvPinLabel(e){
   if (e.t === 'c'){

@@ -216,12 +216,20 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 #rv-titles span{font-size:12px;font-weight:600;color:var(--muted)}
 #rv-gpx{flex:0 0 auto;font-size:12.5px;font-weight:700;color:var(--mint);text-decoration:none;
   border:1px solid var(--line);border-radius:999px;padding:8px 12px}
-#rv-map{flex:1 1 auto;min-height:150px;background:var(--card-2)}
-#rv-bottom{flex:0 0 auto;background:var(--ground);border-top:1px solid var(--line);
-  padding-bottom:env(safe-area-inset-bottom)}
-#rv-filters{display:flex;gap:6px;padding:8px 10px 2px;overflow-x:auto;scrollbar-width:none}
+/* la barra in alto resta ferma, tutto il resto scorre: mappa, altimetria e
+   servizi dello stesso percorso in un posto solo, e la via d'uscita non
+   scompare mai anche quando si e' in fondo alla lista */
+#rv-scroll{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  background:var(--ground);padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+#rv-map{height:46vh;min-height:200px;background:var(--card-2)}
+/* i filtri comandano mappa, altimetria e lista insieme, quindi restano
+   raggiungibili anche mentre si scorre la lista */
+#rv-filters{position:sticky;top:0;z-index:3;display:flex;gap:6px;padding:9px 10px;overflow-x:auto;
+  scrollbar-width:none;background:var(--ground);border-bottom:1px solid var(--line)}
 #rv-filters::-webkit-scrollbar{display:none}
-#rv-profwrap{position:relative;height:172px;touch-action:none}
+/* pan-y: il dito che scorre la pagina scorre, il dito che va di traverso
+   sfoglia il profilo */
+#rv-profwrap{position:relative;height:172px;touch-action:pan-y}
 #rv-prof{display:block;width:100%;height:100%}
 #rv-pins{position:absolute;inset:0;pointer-events:none}
 .rvpin{position:absolute;transform:translate(-50%,-50%);width:23px;height:23px;border-radius:50%;
@@ -237,12 +245,35 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 #rv-foot{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:2px 12px 9px;font-size:11.5px;
   font-weight:600;color:var(--muted)}
 #rv-foot b{color:var(--ink);font-weight:700}
-/* telefono girato: il profilo si accorcia, altrimenti mangia tutta la mappa */
+/* segni sulla mappa: stessa forma e stessi colori delle icone sul profilo */
+.rvmk{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;
+  border:1.5px solid #fff;box-shadow:0 1px 3px rgba(20,30,20,.4)}
+.rvmk.t-a{background:#1c7ed6;color:#fff}
+.rvmk.t-m{background:var(--mint);color:#fff}
+.rvmk.t-d{background:#7048e8;color:#fff}
+.rvmk.t-c{background:var(--ink);color:#fff}
+/* il numero dice quanti punti sta rappresentando quel segno */
+.rvmk{position:relative}
+.rvmk .n{position:absolute;top:-6px;right:-7px;min-width:16px;height:16px;padding:0 3px;border-radius:9px;
+  background:var(--cream);color:#3b3210;border:1.5px solid #fff;font-size:10.5px;font-weight:800;
+  font-style:normal;line-height:13px;text-align:center}
+.rvpop b{font-size:14px}
+.rvpop .km{color:var(--muted);font-weight:600;font-size:12.5px}
+.rvpop .det{display:block;color:var(--muted);font-weight:600;font-size:12.5px;margin-top:2px}
+.rvpop .poibook{display:inline-block;margin-top:7px}
+.rvpop.gruppo{max-height:210px;overflow-y:auto}
+.rvpop .tit{display:block;margin-bottom:5px}
+.rvpop .voce{padding:5px 0;border-top:1px solid var(--line)}
+.rvpop .voce b{font-size:13.5px}
+/* lista servizi dentro la vista percorso */
+#rv-listwrap{padding:12px 12px 0}
+#rv-listwrap h3{font-family:'Space Grotesk','Inter',sans-serif;font-size:15px;margin:0 0 4px}
+#rv-listintro{font-size:12.5px;color:var(--muted);font-weight:500;margin:0 0 8px}
+/* telefono girato: mappa e profilo si accorciano per restare visibili insieme */
 @media(max-height:560px){
-  #rv-profwrap{height:112px}
-  #rv-map{min-height:90px}
+  #rv-profwrap{height:118px}
+  #rv-map{height:62vh;min-height:150px}
   #rv-top{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:6px}
-  #rv-filters{padding-top:5px}
   #rv-foot{padding-bottom:5px}
 }
 /* pills percorso / filtri poi (già .btn.sec.small nel markup, qui solo lo stato attivo) */
