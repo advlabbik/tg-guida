@@ -212,6 +212,15 @@ ui: {
   percorsoScegli: "Scegli il tuo percorso",
   percorsoIntro: "Partenza e arrivo per tutti da |. Puoi cambiare idea sul percorso in qualsiasi momento, senza bisogno di comunicarcelo — ti vedremo dall'app di live tracking.",
   mappaAltimetria: "Mappa + altimetria", gpx: "↓ GPX",
+  rv: {
+    torna: "Percorsi",
+    aiuto: "Trascina il dito sull'altimetria e vedi il punto muoversi sulla mappa. Tocca un'icona per sapere cos'è.",
+    partenza: "Partenza · Rovereto", arrivo: "Arrivo · Rovereto",
+    mostrati: "| punti su | in vista — usa i filtri o gira il telefono per vederne di più",
+    nessunPunto: "Nessun punto di questo tipo su questo percorso.",
+    quota: "quota",
+    daQui: "Da qui all'arrivo | km e | m di dislivello"
+  },
   insieme: "I tre percorsi insieme",
   servizi: "Servizi lungo il percorso",
   serviziIntro: "Acqua, cibo e alloggi entro 500 metri dalla traccia. La lista dice che un posto esiste, non che è aperto — per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa.",
@@ -459,6 +468,15 @@ ui: {
   percorsoScegli: "Choose your route",
   percorsoIntro: "Start and finish for everyone at |. You can change your mind about the route at any time, with no need to tell us — we will see you on the live tracking app.",
   mappaAltimetria: "Map + elevation", gpx: "↓ GPX",
+  rv: {
+    torna: "Routes",
+    aiuto: "Drag your finger along the elevation profile and watch the point move on the map. Tap an icon to see what it is.",
+    partenza: "Start · Rovereto", arrivo: "Finish · Rovereto",
+    mostrati: "| points of | shown — use the filters or turn your phone to see more",
+    nessunPunto: "No points of this kind on this route.",
+    quota: "elevation",
+    daQui: "From here to the finish | km and | m of climbing"
+  },
   insieme: "The three routes together",
   servizi: "Services along the route",
   serviziIntro: "Water, food and places to sleep within 500 metres of the route. The list says a place exists, not that it is open — for accommodation press <b>Book</b> and see real prices and availability on the map.",

@@ -73,6 +73,21 @@
     <button data-tab="info"><span class="e"></span><span class="tlbl" data-t="info"></span></button>
     <button data-tab="dormire"><span class="e"></span><span class="tlbl" data-t="dormire"></span></button>
   </div></nav>
+
+  <!-- mappa + altimetria dentro l'app: prima era una pagina esterna senza ritorno -->
+  <div id="routeview">
+    <div id="rv-top">
+      <button id="rv-back"></button>
+      <div id="rv-titles"><b id="rv-nome"></b><span id="rv-stats"></span></div>
+      <a id="rv-gpx" href="#" target="_blank" rel="noopener"></a>
+    </div>
+    <div id="rv-map"></div>
+    <div id="rv-bottom">
+      <div id="rv-filters"></div>
+      <div id="rv-profwrap"><canvas id="rv-prof"></canvas><div id="rv-pins"></div><div id="rv-tip"></div></div>
+      <div id="rv-foot"></div>
+    </div>
+  </div>
 </div>
 
 <script src="content.js"></script>
@@ -315,6 +330,12 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
 window.addEventListener('resize', ()=>{
   if (miniMap) miniMap.invalidateSize();
   if (gpsMap) gpsMap.invalidateSize();
+  if (rvMap && $('#routeview').classList.contains('open')){
+    rvMap.invalidateSize();
+    $('#rv-tip').style.display = 'none';
+    rvSel = -1;
+    rvLayout();
+  }
 });
 
 /* ---------- HOME ---------- */
@@ -453,7 +474,7 @@ function renderPercorso(){
       <p>${esc(p.desc)}</p>
       ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
       <div class="btnrow rbtns" style="--col:${p.colore}">
-        <a class="btn" href="${C.mappeBase}percorso-${p.id}.html" target="_blank" rel="noopener">${icon('route',16)} ${esc(U.mappaAltimetria)}</a>
+        <button class="btn" data-rv="${p.id}">${icon('route',16)} ${esc(U.mappaAltimetria)}</button>
         <a class="btn sec dl" href="${gpxUrl(p.id)}" target="_blank" rel="noopener">${esc(U.gpx)}</a>
       </div>
     </div></div>`).join('');
@@ -470,6 +491,7 @@ function renderPercorso(){
       <button class="btn small sec pfil" data-f="d">${icon('bed-double',15)} ${esc(U.filtri.d)}</button>
     </div><div id="poilist" class="poilist"></div></div>`;
   $('#tab-percorso').innerHTML = h;
+  document.querySelectorAll('[data-rv]').forEach(b=>b.addEventListener('click',()=>openRouteView(b.dataset.rv)));
   document.querySelectorAll('#poifilters .pfil').forEach(b=>b.addEventListener('click',()=>{
     poiFilter = b.dataset.f;
     document.querySelectorAll('#poifilters .pfil').forEach(x=>x.classList.toggle('on', x===b));
@@ -585,6 +607,292 @@ function initMiniMap(){
     .addTo(miniMap).bindPopup('Partenza / Arrivo · Rovereto');
   miniMap.fitBounds(L.latLngBounds(all),{padding:[20,20]});
 }
+
+/* ---------- VISTA PERCORSO: mappa + altimetria dentro l'app ----------
+   Prima il bottone "Mappa + altimetria" apriva una pagina esterna che non aveva
+   nessun link di ritorno. Chi ha la guida salvata in home ci finiva in una
+   finestra senza barra del browser, quindi senza nemmeno il tasto indietro.
+   Ora la schermata vive qui, con l'uscita in alto a sinistra, il tasto indietro
+   di Android e il tasto Esc. */
+const rvGeom = {};
+function routeGeom(id){
+  if (rvGeom[id]) return rvGeom[id];
+  const T = TRACKS[id], c = T.coords, ele = T.ele;
+  const R = 6371, rad = Math.PI/180;
+  const cum = [0];
+  for (let i = 1; i < c.length; i++){
+    const la1 = c[i-1][1]*rad, la2 = c[i][1]*rad, dla = la2-la1, dlo = (c[i][0]-c[i-1][0])*rad;
+    const h = Math.sin(dla/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dlo/2)**2;
+    cum.push(cum[i-1] + 2*R*Math.asin(Math.sqrt(h)));
+  }
+  const tot = cum[cum.length-1];
+  const p = C.percorsi.find(x => x.id === id) || {};
+  const kmTot = p.km || Math.round(tot);
+  /* La traccia di tracks.js e' semplificata e misura il 2-3% in meno del GPX
+     completo, mentre i km dei POI arrivano dal GPX completo. Scalando tutto in
+     modo lineare una fontana finirebbe fino a 2,7 km piu' avanti di dov'e'
+     davvero, cioe' dalla parte sbagliata di una salita. I POI che hanno le
+     coordinate fanno da ancora: per ognuno si cerca il punto traccia piu'
+     vicino e si ottiene la coppia (km del POI, km sulla traccia). Fra un'ancora
+     e l'altra si interpola. */
+  const anchors = [[0, 0]];
+  const poi = (window.POI && POI[id]) || [];
+  poi.filter(e => e.lat != null).sort((a,b) => a.km - b.km).forEach(e => {
+    const cl = Math.cos(e.lat*rad);
+    let best = -1, bd = Infinity;
+    for (let i = 0; i < c.length; i++){
+      const dy = c[i][1]-e.lat, dx = (c[i][0]-e.lng)*cl;
+      const d = dx*dx + dy*dy;
+      if (d < bd){ bd = d; best = i; }
+    }
+    if (Math.sqrt(bd)*111 > 1) return; // troppo lontano dalla traccia per fidarsi
+    const prev = anchors[anchors.length-1];
+    if (e.km > prev[0]+0.05 && cum[best] > prev[1]+0.05) anchors.push([e.km, cum[best]]);
+  });
+  const last = anchors[anchors.length-1];
+  if (kmTot > last[0]+0.05 && tot > last[1]+0.05) anchors.push([kmTot, tot]);
+  const kmOf = d => {
+    let lo = 0, hi = anchors.length-1;
+    while (lo < hi-1){ const m = (lo+hi)>>1; if (anchors[m][1] <= d) lo = m; else hi = m; }
+    const a = anchors[lo], b = anchors[hi];
+    return a[0] + (b[0]-a[0]) * (d-a[1]) / ((b[1]-a[1]) || 1);
+  };
+  const kmAt = cum.map(kmOf);
+  /* Dislivello che resta da qui all'arrivo. La somma grezza dei dislivelli di una
+     traccia gonfia sempre il totale, quindi la si riporta in scala sul D+ ufficiale
+     del percorso: il numero mostrato resta coerente con quello comunicato. */
+  const upFrom = new Array(ele.length).fill(0);
+  for (let i = ele.length-2; i >= 0; i--){
+    const d = ele[i+1] - ele[i];
+    upFrom[i] = upFrom[i+1] + (d > 0 ? d : 0);
+  }
+  // p.dplus e' testo gia' formattato e cambia con la lingua ("7.900" it, "7,900" en)
+  const dpTot = parseInt(String(p.dplus || '').replace(/\D/g, ''), 10) || 0;
+  const k = dpTot && upFrom[0] ? dpTot / upFrom[0] : 1;
+  const g = { cum, tot, kmTot, kmAt, ele, ll: c.map(x => [x[1], x[0]]), colore: p.colore || '#2f9e44',
+              nome: p.nome || id, dplusFrom: upFrom.map(v => Math.round(v*k/10)*10) };
+  g.idxFromKm = km => {
+    let lo = 0, hi = kmAt.length-1;
+    while (lo < hi){ const m = (lo+hi)>>1; if (kmAt[m] < km) lo = m+1; else hi = m; }
+    return lo;
+  };
+  rvGeom[id] = g;
+  return g;
+}
+let rvId = null, rvMap = null, rvLayer = null, rvCur = null, rvFilter = 'tutti',
+    rvSel = -1, rvPins = [], rvPushed = false;
+const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', c:'landmark' };
+function rvX(km, W){ return 44 + (W-44-12) * km / routeGeom(rvId).kmTot; }
+function rvKmFromX(x, W){
+  const g = routeGeom(rvId);
+  return Math.max(0, Math.min(g.kmTot, (x-44)/(W-44-12) * g.kmTot));
+}
+function openRouteView(id){
+  rvId = id; rvSel = -1; rvFilter = 'tutti';
+  const g = routeGeom(id);
+  const p = C.percorsi.find(x => x.id === id) || {};
+  const view = $('#routeview');
+  view.style.setProperty('--rv-col', g.colore);
+  $('#rv-nome').textContent = g.nome;
+  $('#rv-stats').textContent = `${p.km} km · ${p.dplus} m D+`;
+  $('#rv-gpx').href = gpxUrl(id);
+  $('#rv-gpx').textContent = U.gpx;
+  $('#rv-filters').innerHTML =
+    `<button class="btn small sec pfil on" data-rf="tutti">${esc(U.filtri.tutti)}</button>` +
+    ['a','m','d'].map(t => `<button class="btn small sec pfil" data-rf="${t}">${icon(RV_ICO[t],15)} ${esc(U.filtri[t])}</button>`).join('');
+  document.querySelectorAll('#rv-filters .pfil').forEach(b => b.addEventListener('click', () => {
+    rvFilter = b.dataset.rf; rvSel = -1;
+    $('#rv-tip').style.display = 'none';
+    document.querySelectorAll('#rv-filters .pfil').forEach(x => x.classList.toggle('on', x === b));
+    rvLayout();
+  }));
+  view.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (!rvPushed){ history.pushState({rv:1}, ''); rvPushed = true; }
+  rvBuildMap();
+  rvLayout(); // diretto, non in requestAnimationFrame: a scheda in secondo piano non partirebbe
+}
+function closeRouteView(fromHistory){
+  $('#routeview').classList.remove('open');
+  document.body.style.overflow = '';
+  rvSel = -1;
+  if (rvPushed && !fromHistory){ rvPushed = false; history.back(); }
+  else rvPushed = false;
+}
+function rvBuildMap(){
+  const g = routeGeom(rvId);
+  if (!rvMap){
+    rvMap = L.map('rv-map');
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      {maxZoom:18, attribution:'© Esri'}).addTo(rvMap);
+    rvCur = L.circleMarker([0,0], {radius:7, color:'#fff', weight:2.5, fillColor:'#1971c2', fillOpacity:1, interactive:false});
+    const pick = e => {
+      const q = e.latlng, cl = Math.cos(q.lat*Math.PI/180);
+      const gg = routeGeom(rvId);
+      let best = -1, bd = Infinity;
+      for (let i = 0; i < gg.ll.length; i++){
+        const dy = gg.ll[i][0]-q.lat, dx = (gg.ll[i][1]-q.lng)*cl;
+        const d = dx*dx + dy*dy;
+        if (d < bd){ bd = d; best = i; }
+      }
+      if (Math.sqrt(bd)*111 < 2) rvShowAt(best); else rvHide();
+    };
+    rvMap.on('click', pick);
+    rvMap.on('mousemove', pick);
+  }
+  if (rvLayer) rvMap.removeLayer(rvLayer);
+  const ll = g.ll;
+  rvLayer = L.layerGroup([
+    L.polyline(ll, {color:'#fff', weight:8, opacity:.9}),
+    L.polyline(ll, {color:g.colore, weight:4.5}),
+    arrowLayer(ll, g.colore, 10),
+    L.circleMarker(ll[0], {radius:8, color:'#fff', weight:2, fillColor:g.colore, fillOpacity:1}).bindPopup(U.rv.partenza),
+    L.circleMarker(ll[ll.length-1], {radius:8, color:'#fff', weight:2, fillColor:'#c1121f', fillOpacity:1}).bindPopup(U.rv.arrivo)
+  ]).addTo(rvMap);
+  for (let km = 50; km < g.kmTot; km += 50){
+    rvLayer.addLayer(L.circleMarker(ll[g.idxFromKm(km)], {radius:5, color:'#fff', weight:1.5, fillColor:'#16211a', fillOpacity:1})
+      .bindTooltip('km ' + km, {direction:'top'}));
+  }
+  rvMap.invalidateSize();
+  rvMap.fitBounds(L.latLngBounds(ll), {padding:[24,24]});
+}
+let rvW = 0, rvH = 0, rvEmin = 0, rvEmax = 0;
+function rvY(e){ return 12 + (rvH-12-22) * (1 - (e-rvEmin)/((rvEmax-rvEmin) || 1)); }
+function rvDraw(){
+  if (!rvId) return;
+  const g = routeGeom(rvId);
+  const wrap = $('#rv-profwrap'), cv = $('#rv-prof'), ctx = cv.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  rvW = wrap.clientWidth; rvH = wrap.clientHeight;
+  cv.width = rvW*dpr; cv.height = rvH*dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const pad = (Math.max(...g.ele) - Math.min(...g.ele)) * 0.08;
+  rvEmin = Math.floor((Math.min(...g.ele)-pad)/100)*100;
+  rvEmax = Math.ceil((Math.max(...g.ele)+pad)/100)*100;
+  ctx.clearRect(0, 0, rvW, rvH);
+  ctx.font = '10.5px Inter, sans-serif';
+  const step = (rvEmax-rvEmin) > 1500 ? 500 : 250;
+  for (let e = Math.ceil(rvEmin/step)*step; e <= rvEmax; e += step){
+    const y = rvY(e);
+    ctx.strokeStyle = '#e8ece6'; ctx.beginPath(); ctx.moveTo(44, y); ctx.lineTo(rvW-12, y); ctx.stroke();
+    ctx.fillStyle = '#8a958a'; ctx.textAlign = 'right'; ctx.fillText(e + ' m', 40, y+3.5);
+  }
+  const kstep = g.kmTot > 300 ? 100 : 50;
+  for (let km = kstep; km < g.kmTot; km += kstep){
+    const x = rvX(km, rvW);
+    ctx.strokeStyle = '#f0f3ef'; ctx.beginPath(); ctx.moveTo(x, 12); ctx.lineTo(x, rvH-22); ctx.stroke();
+    ctx.fillStyle = '#8a958a'; ctx.textAlign = 'center'; ctx.fillText(km, x, rvH-7);
+  }
+  ctx.fillStyle = '#8a958a'; ctx.textAlign = 'right'; ctx.fillText('km', rvW-12, rvH-7);
+  ctx.beginPath(); ctx.moveTo(rvX(0, rvW), rvY(g.ele[0]));
+  for (let i = 1; i < g.ele.length; i++) ctx.lineTo(rvX(g.kmAt[i], rvW), rvY(g.ele[i]));
+  ctx.lineTo(rvX(g.kmTot, rvW), rvH-22); ctx.lineTo(rvX(0, rvW), rvH-22); ctx.closePath();
+  const grad = ctx.createLinearGradient(0, 12, 0, rvH-22);
+  grad.addColorStop(0, g.colore+'55'); grad.addColorStop(1, g.colore+'0d');
+  ctx.fillStyle = grad; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(rvX(0, rvW), rvY(g.ele[0]));
+  for (let i = 1; i < g.ele.length; i++) ctx.lineTo(rvX(g.kmAt[i], rvW), rvY(g.ele[i]));
+  ctx.strokeStyle = g.colore; ctx.lineWidth = 1.8; ctx.stroke(); ctx.lineWidth = 1;
+  if (rvSel >= 0){
+    const x = rvX(g.kmAt[rvSel], rvW), y = rvY(g.ele[rvSel]);
+    ctx.strokeStyle = '#16211a'; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(x, 12); ctx.lineTo(x, rvH-22); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.fillStyle = '#1971c2'; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke(); ctx.lineWidth = 1;
+  }
+}
+// il profilo si ridisegna a ogni tocco, le icone solo quando cambia l'ingombro
+function rvLayout(){ rvDraw(); rvDrawPins(); }
+/* I punti stanno sul profilo alla loro quota. Su un telefono ci stanno una
+   ventina di icone senza sovrapporsi, quindi si sceglie per importanza (paesi,
+   poi acqua, poi cibo, poi alloggi) e si dice sempre quanti ne restano fuori. */
+function rvDrawPins(){
+  const g = routeGeom(rvId), box = $('#rv-pins');
+  const list = ((window.POI && POI[rvId]) || []).filter(e => poiMatch(e, rvFilter));
+  /* Con "tutto" vengono prima i paesi, che riassumono gia' i servizi di una zona.
+     Con un filtro attivo vengono prima i punti di quella categoria, altrimenti i
+     paesi si prenderebbero tutti i posti e le fontane in mezzo al nulla — quelle
+     che contano davvero — non si vedrebbero mai. */
+  const pri = rvFilter === 'tutti' ? { c:0, a:1, m:2, d:3 } : { [rvFilter]:0, c:1 };
+  const rank = e => (pri[e.t] != null ? pri[e.t] : 2);
+  const taken = [];
+  rvPins = [];
+  list.slice().sort((a,b) => (rank(a)-rank(b)) || (a.km-b.km)).forEach(e => {
+    const x = rvX(e.km, rvW), y = rvY(g.ele[g.idxFromKm(e.km)]);
+    // le icone stanno alla quota del loro km: due vicine in km ma lontane in
+    // altezza non si toccano, quindi il controllo e' su tutte e due le direzioni
+    if (taken.some(t => Math.abs(t[0]-x) < 25 && Math.abs(t[1]-y) < 22)) return;
+    taken.push([x, y]);
+    rvPins.push(e);
+  });
+  box.innerHTML = rvPins.map((e,i) => {
+    const idx = g.idxFromKm(e.km);
+    return `<button class="rvpin t-${e.t}" data-pin="${i}" style="left:${rvX(e.km, rvW)}px;top:${rvY(g.ele[idx])}px">${icon(RV_ICO[e.t], 13)}</button>`;
+  }).join('');
+  box.querySelectorAll('.rvpin').forEach(b => b.addEventListener('click', ev => {
+    ev.stopPropagation();
+    rvSelectPin(+b.dataset.pin);
+  }));
+  $('#rv-foot').innerHTML = list.length
+    ? `<span>${fmt(esc(U.rv.mostrati), '<b>'+rvPins.length+'</b>', '<b>'+list.length+'</b>')}</span>`
+    : `<span>${esc(U.rv.nessunPunto)}</span>`;
+}
+function rvPinLabel(e){
+  if (e.t === 'c'){
+    const det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null]
+      .filter(Boolean).join(' · ');
+    return esc(e.nome) + (det ? `<br/>${det}` : '');
+  }
+  if (e.t === 'a' && e.n > 1) return `${e.n} ${esc(U.fontane)}`;
+  return esc(e.nome || subLingua(e.sub));
+}
+function rvSelectPin(i){
+  const e = rvPins[i];
+  if (!e) return;
+  const g = routeGeom(rvId);
+  rvShowAt(g.idxFromKm(e.km), rvPinLabel(e));
+  $('#rv-pins').querySelectorAll('.rvpin').forEach(b => b.classList.toggle('sel', +b.dataset.pin === i));
+}
+function rvShowAt(i, label){
+  const g = routeGeom(rvId);
+  rvSel = i;
+  rvDraw();
+  const tip = $('#rv-tip');
+  const km = g.kmAt[i];
+  tip.style.display = 'block';
+  tip.style.left = Math.min(Math.max(rvX(km, rvW), 54), rvW-54) + 'px';
+  tip.style.top = Math.max(rvY(g.ele[i]), 58) + 'px';
+  tip.innerHTML = (label ? `<b>${label}</b><br/>` : '') +
+    `km ${km.toFixed(1).replace('.', ',')} · ${g.ele[i]} m ${esc(U.rv.quota)}<br/>` +
+    fmt(esc(U.rv.daQui), Math.round(g.kmTot-km), g.dplusFrom[i]);
+  rvCur.setLatLng(g.ll[i]);
+  if (!rvMap.hasLayer(rvCur)) rvCur.addTo(rvMap);
+}
+function rvHide(){
+  rvSel = -1; rvDraw();
+  $('#rv-tip').style.display = 'none';
+  if (rvMap && rvMap.hasLayer(rvCur)) rvMap.removeLayer(rvCur);
+}
+function rvScrub(clientX){
+  const r = $('#rv-prof').getBoundingClientRect();
+  rvShowAt(routeGeom(rvId).idxFromKm(rvKmFromX(clientX-r.left, rvW)));
+}
+$('#rv-back').innerHTML =
+  `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+     stroke-linecap="round" stroke-linejoin="round"><path d="M15 18L9 12l6-6"/></svg>` + esc(U.rv.torna);
+$('#rv-back').addEventListener('click', () => closeRouteView(false));
+$('#rv-profwrap').addEventListener('mousemove', e => { if (rvId) rvScrub(e.clientX); });
+$('#rv-profwrap').addEventListener('mouseleave', () => { if (rvId) rvHide(); });
+$('#rv-profwrap').addEventListener('touchstart', e => { if (rvId && !e.target.closest('.rvpin')) rvScrub(e.touches[0].clientX); }, {passive:true});
+$('#rv-profwrap').addEventListener('touchmove', e => {
+  if (!rvId || e.target.closest('.rvpin')) return;
+  rvScrub(e.touches[0].clientX); e.preventDefault();
+}, {passive:false});
+window.addEventListener('popstate', () => {
+  if ($('#routeview').classList.contains('open')) closeRouteView(true);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('#routeview').classList.contains('open')) closeRouteView(false);
+});
 
 /* ---------- INFO ---------- */
 function renderInfo(){

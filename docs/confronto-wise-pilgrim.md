@@ -93,7 +93,12 @@ temi per menzioni — dormire 482, cibo 443, traccia e GPS 178, acqua 113).
 
 ### A — da fare, il valore è chiaro e i dati ci sono
 
-**A1. Altimetria dentro l'app, con acqua, cibo e paesi sopra il profilo**
+**A1. Altimetria dentro l'app, con acqua, cibo e paesi sopra il profilo** — ✅ **fatto il
+13 agosto**, in produzione. Dettagli nel README, sezione "Vista percorso dentro l'app".
+Due sorprese trovate strada facendo, entrambe annotate nel README: la traccia di
+`tracks.js` è semplificata e misura il 2-3% in meno del GPX da cui vengono i km dei POI
+(corretto con le ancore, errore residuo sotto i 500 metri), e `dplus` in `content.js` è
+testo formattato che cambia con la lingua, non un numero.
 Oggi il bottone "Mappa e altimetria" porta fuori, su un altro sito. Il profilo va portato
 dentro la tab Percorso, con i punti disegnati sopra e la lista sotto sincronizzata.
 *Utilità* — alta. È la risposta alla domanda che si fa chiunque prima di partire, dove

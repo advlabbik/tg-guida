@@ -201,6 +201,50 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
   font-size:12.5px;font-weight:700;color:var(--ink)}
 .rnote{font-size:14px;color:var(--muted);font-weight:500;padding-left:16px;margin:4px 0}
 #minimap,#gpsmap{height:340px;border-radius:18px;background:var(--card-2)}
+/* vista percorso a schermo intero: mappa + altimetria dentro l'app, con la via d'uscita sempre visibile */
+#routeview{position:fixed;inset:0;z-index:950;background:var(--page);display:none;flex-direction:column}
+#routeview.open{display:flex}
+#rv-top{flex:0 0 auto;display:flex;align-items:center;gap:10px;background:var(--ground);
+  border-bottom:1px solid var(--line);padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top))}
+#rv-back{display:flex;align-items:center;gap:5px;flex:0 0 auto;font-family:inherit;font-size:14px;font-weight:700;
+  color:var(--lime);background:var(--card-2);border:1px solid var(--line);border-radius:999px;
+  padding:9px 15px 9px 12px;cursor:pointer}
+#rv-back:active{background:var(--card-hi)}
+#rv-titles{flex:1;min-width:0}
+#rv-titles b{display:block;font-family:'Space Grotesk','Inter',sans-serif;font-size:16px;line-height:1.2;
+  color:var(--rv-col,var(--lime));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rv-titles span{font-size:12px;font-weight:600;color:var(--muted)}
+#rv-gpx{flex:0 0 auto;font-size:12.5px;font-weight:700;color:var(--mint);text-decoration:none;
+  border:1px solid var(--line);border-radius:999px;padding:8px 12px}
+#rv-map{flex:1 1 auto;min-height:150px;background:var(--card-2)}
+#rv-bottom{flex:0 0 auto;background:var(--ground);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom)}
+#rv-filters{display:flex;gap:6px;padding:8px 10px 2px;overflow-x:auto;scrollbar-width:none}
+#rv-filters::-webkit-scrollbar{display:none}
+#rv-profwrap{position:relative;height:172px;touch-action:none}
+#rv-prof{display:block;width:100%;height:100%}
+#rv-pins{position:absolute;inset:0;pointer-events:none}
+.rvpin{position:absolute;transform:translate(-50%,-50%);width:23px;height:23px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;pointer-events:auto;cursor:pointer;
+  border:1.5px solid #fff;box-shadow:0 1px 3px rgba(20,30,20,.35);padding:0}
+.rvpin.t-a{background:#1c7ed6;color:#fff}
+.rvpin.t-m{background:var(--mint);color:#fff}
+.rvpin.t-d{background:#7048e8;color:#fff}
+.rvpin.t-c{background:var(--ink);color:#fff}
+.rvpin.sel{outline:2.5px solid var(--cream-dp);outline-offset:1px}
+#rv-tip{position:absolute;pointer-events:none;display:none;max-width:62%;background:rgba(22,33,26,.94);color:#fff;
+  font-size:12px;font-weight:600;line-height:1.35;padding:5px 9px;border-radius:9px;transform:translate(-50%,-136%)}
+#rv-foot{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:2px 12px 9px;font-size:11.5px;
+  font-weight:600;color:var(--muted)}
+#rv-foot b{color:var(--ink);font-weight:700}
+/* telefono girato: il profilo si accorcia, altrimenti mangia tutta la mappa */
+@media(max-height:560px){
+  #rv-profwrap{height:112px}
+  #rv-map{min-height:90px}
+  #rv-top{padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:6px}
+  #rv-filters{padding-top:5px}
+  #rv-foot{padding-bottom:5px}
+}
 /* pills percorso / filtri poi (già .btn.sec.small nel markup, qui solo lo stato attivo) */
 .rpill.on{background:var(--pill-color,var(--lime));border-color:var(--pill-color,var(--lime));color:#fff}
 .pfil.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
