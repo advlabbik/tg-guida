@@ -31,30 +31,27 @@
 </div>
 <script>
 const $ = s => document.querySelector(s);
-// ✱ segnaposto, usato SOLO per il confronto locale (UX del gate). La Edge Function
-// valida il codice server-side comunque: il valore inviato nella richiesta e' sempre
-// quello digitato dallo staff (staffCode qui sotto), mai questa costante.
-const STAFF_CODE = 'PIONEER26-STAFF';
 const FUNCTION_URL = 'https://kqsrtuzeeiljozdnjott.supabase.co/functions/v1/tg-send-broadcast';
 let staffCode = localStorage.getItem('tg-staff-access') || '';
 
-function initGate(){
-  if (staffCode === STAFF_CODE) return;
-  $('#gate').style.display = 'flex';
-  const tryCode = () => {
-    const v = $('#gatecode').value.trim().toUpperCase();
-    if (v === STAFF_CODE){
-      staffCode = v;
-      localStorage.setItem('tg-staff-access', v);
-      $('#gate').style.display = 'none';
-    } else {
-      $('#gateerr').textContent = 'Codice non valido.';
-    }
-  };
-  $('#gatebtn').addEventListener('click', tryCode);
-  $('#gatecode').addEventListener('keydown', e => { if (e.key === 'Enter') tryCode(); });
-}
-initGate();
+// Nessuna copia locale del codice staff: l'unica fonte di verità è il secret
+// STAFF_CODE della Edge Function. Qui ci limitiamo a salvare quello che viene
+// digitato; la validazione vera avviene al primo invio reale (vedi sendbtn),
+// che su 403 pulisce il codice salvato e riapre il gate.
+function showGate(){ $('#gate').style.display = 'flex'; }
+function hideGate(){ $('#gate').style.display = 'none'; }
+
+if (staffCode) hideGate(); else showGate();
+
+$('#gatebtn').addEventListener('click', () => {
+  const v = $('#gatecode').value.trim().toUpperCase();
+  if (!v){ $('#gateerr').textContent = 'Inserisci un codice.'; return; }
+  staffCode = v;
+  localStorage.setItem('tg-staff-access', v);
+  $('#gateerr').textContent = '';
+  hideGate();
+});
+$('#gatecode').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gatebtn').click(); });
 
 $('#sendbtn').addEventListener('click', async () => {
   const title = $('#msgtitle').value.trim();
@@ -73,7 +70,16 @@ $('#sendbtn').addEventListener('click', async () => {
       body: JSON.stringify({ title, body, staffCode })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Invio fallito');
+    if (!res.ok) {
+      if (res.status === 403) {
+        localStorage.removeItem('tg-staff-access');
+        staffCode = '';
+        $('#gatecode').value = '';
+        $('#gateerr').textContent = 'Codice staff non valido — reinseriscilo.';
+        showGate();
+      }
+      throw new Error(data.error || 'Invio fallito');
+    }
     status.textContent = `Inviato a ${data.sent} di ${data.total} iscritti.`;
     $('#msgtitle').value = '';
     $('#msgbody').value = '';

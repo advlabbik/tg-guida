@@ -62,9 +62,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 
 Prima della pubblicazione reale, da fare in quest'ordine:
 
-- [ ] Sostituire `STAFF_CODE` nel secret dell'Edge Function `tg-send-broadcast` su Supabase (`npx supabase secrets set STAFF_CODE=... --project-ref kqsrtuzeeiljozdnjott`) con il codice reale.
-- [ ] Sostituire la costante `STAFF_CODE` in `staff.html` con lo stesso valore — i due DEVONO combaciare esattamente, il primo update senza il secondo blocca tutto lo staff fuori.
-- [ ] Coordinare il ri-deploy del secret con chi ha già salvato il vecchio codice: `staff.html` salva il codice digitato in `localStorage`, quindi chi ha già sbloccato il gate con il placeholder non se ne accorge finché non prova a inviare (la Edge Function risponde 403).
+- [ ] Sostituire `STAFF_CODE` nel secret dell'Edge Function `tg-send-broadcast` su Supabase (`npx supabase secrets set STAFF_CODE=... --project-ref kqsrtuzeeiljozdnjott`) con il codice reale. `staff.html` non ha più una copia locale del codice (fix #16): valida solo il server, e su 403 pulisce da sola il codice salvato in `localStorage` e riapre il gate — non serve coordinare un secondo update né avvisare chi ha già sbloccato il gate col placeholder.
 - [ ] Se si tocca di nuovo `sw.js`, incrementare `CACHE` — altrimenti i client con la PWA installata restano sulla versione cache precedente.
 - [ ] Verificare il fallback iOS su un iPhone reale — finora testato solo per via statica/logica.
 
