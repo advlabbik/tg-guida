@@ -323,6 +323,11 @@ $('#h-sub').textContent = C.meta.sottotitolo;
 /* ---------- tabs ---------- */
 let mapsInit = {};
 function openTab(name){
+  // un cambio tab chiude la vista percorso, da qualunque strada arrivi (bottone,
+  // tocco su una notifica push, codice): altrimenti la tab cambia sotto l'overlay
+  // e lo schermo sembra non reagire
+  const rv = $('#routeview');
+  if (rv && rv.classList.contains('open')) closeRouteView(false);
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   $('#tab-'+name).classList.add('on');
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on', b.dataset.tab===name));
@@ -336,6 +341,13 @@ function openTab(name){
   // resta libera di rifare fetch ad ogni apertura: è leggera e mostra messaggi nuovi.
   if (name==='live' && !mapsInit.notif) { mapsInit.notif = true; refreshNotifCard(); }
   if (name==='live') { loadComunicazioni(); }
+  // il profilo del Live si ridisegna solo qui e al fix GPS: se un fix e' arrivato
+  // a tab nascosta il disegno era stato saltato, e questo rientro lo recupera
+  if (name==='live' && lvRid && lvKm != null){
+    if (gpsMap) gpsMap.invalidateSize({animate:false});
+    lvAggiorna(lvRid, lvKm);
+    lvPoiMappa();
+  }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 window.addEventListener('resize', ()=>{
@@ -343,9 +355,15 @@ window.addEventListener('resize', ()=>{
   if (gpsMap) gpsMap.invalidateSize();
   if (rvMap && $('#routeview').classList.contains('open')){
     rvMap.invalidateSize();
-    $('#rv-tip').style.display = 'none';
-    rvSel = -1;
+    rvHide();
     rvLayout();
+  }
+  // anche il profilo del Live: ruotando il telefono il canvas altrimenti resta
+  // stirato alla larghezza vecchia e i pin puntano ai km sbagliati
+  if (lvRid && lvKm != null && $('#tab-live').classList.contains('on')){
+    $('#lv-tip').style.display = 'none';
+    lvAggiorna(lvRid, lvKm);
+    lvPoiMappa();
   }
 });
 
@@ -556,10 +574,7 @@ let stayCenter = null;
 function goBook(lat, lng){
   stayCenter = {lat, lng};
   const alreadyLoaded = mapsInit.stay;
-  // Prenota si puo' premere anche dentro la vista percorso, che copre le tab:
-  // se resta aperta il tocco sembra non fare niente
-  if ($('#routeview').classList.contains('open')) closeRouteView(false);
-  openTab('dormire');
+  openTab('dormire'); // openTab chiude da solo la vista percorso se e' aperta
   if (alreadyLoaded) loadStay22();
 }
 function arrowLayer(ll, color, stepKm){
@@ -686,6 +701,11 @@ const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', c:'landmark' };
 function kmDec(v){ const s = v.toFixed(1); return LANG === 'it' ? s.replace('.', ',') : s; }
 function openRouteView(id){
   rvId = id; rvSel = -1; rvFilter = 'tutti';
+  // aprire un percorso lo elegge a "mio percorso" per Live e Dormire, come
+  // faceva la vecchia lista servizi: senza questa riga la tab Percorso non
+  // aveva piu' nessun punto che lo impostasse
+  setMyRoute(id);
+  if (rvMap) rvMap.closePopup(); // niente fumetti del percorso precedente
   const g = routeGeom(id);
   const p = C.percorsi.find(x => x.id === id) || {};
   const view = $('#routeview');
@@ -698,8 +718,8 @@ function openRouteView(id){
     `<button class="btn small sec pfil on" data-rf="tutti">${esc(U.filtri.tutti)}</button>` +
     ['a','m','d'].map(t => `<button class="btn small sec pfil" data-rf="${t}">${icon(RV_ICO[t],15)} ${esc(U.filtri[t])}</button>`).join('');
   document.querySelectorAll('#rv-filters .pfil').forEach(b => b.addEventListener('click', () => {
-    rvFilter = b.dataset.rf; rvSel = -1;
-    $('#rv-tip').style.display = 'none';
+    rvFilter = b.dataset.rf;
+    rvHide(); // tooltip E cursore sulla mappa, non solo il tooltip
     document.querySelectorAll('#rv-filters .pfil').forEach(x => x.classList.toggle('on', x === b));
     rvLayout();
   }));
@@ -715,6 +735,9 @@ function openRouteView(id){
 function closeRouteView(fromHistory){
   $('#routeview').classList.remove('open');
   document.body.style.overflow = '';
+  // ripulire subito: senza queste righe tooltip, cursore e fumetto del percorso
+  // vecchio ricomparivano intatti aprendo un percorso diverso
+  if (rvMap){ rvHide(); rvMap.closePopup(); }
   rvSel = -1;
   if (rvPushed && !fromHistory){ rvPushed = false; history.back(); }
   else rvPushed = false;
@@ -741,8 +764,7 @@ function rvBuildMap(){
     rvMap.on('mousemove', pick);
     // i segni si ricalcolano a fine movimento: quali entrano dipende dallo zoom
     rvMap.on('moveend', rvMapPoi);
-    // il bottone Prenota dentro un fumetto esiste solo da quando il fumetto si apre
-    rvMap.on('popupopen', ev => bindBook(ev.popup.getElement()));
+    agganciaPopup(rvMap, rvMapPoi);
   }
   if (rvLayer) rvMap.removeLayer(rvLayer);
   const ll = g.ll;
@@ -771,6 +793,8 @@ function creaProfilo(pref){
   P.X = km => 44 + (P.W-44-12) * (km-P.da) / ((P.a-P.da) || 1);
   P.Y = e  => 12 + (P.H-12-22) * (1 - (e-P.emin)/((P.emax-P.emin) || 1));
   P.kmDaX = x => P.da + Math.max(0, Math.min(1, (x-44)/((P.W-44-12) || 1))) * (P.a-P.da);
+  // posizione del tooltip, agganciata ai bordi cosi' non esce dal riquadro
+  P.tipXY = (km, ele) => ({ x: Math.min(Math.max(P.X(km), 54), P.W-54), y: Math.max(P.Y(ele), 58) });
   return P;
 }
 const rvProf = creaProfilo('rv'), lvProf = creaProfilo('lv');
@@ -784,7 +808,9 @@ function profDisegna(P, g, da, a, selKm){
   /* La scala verticale si misura sulla finestra mostrata, non su tutto il
      percorso: con la scala del Lungo i prossimi 25 km in fondovalle
      sembrerebbero una riga piatta. */
-  const i0 = g.idxFromKm(da), i1 = Math.max(g.idxFromKm(a), i0+1);
+  // il clamp finale tiene i1 dentro l'array: con un ultimo segmento di traccia
+  // lungo piu' del look-back, i0+1 sforerebbe e il profilo verrebbe vuoto
+  const i0 = g.idxFromKm(da), i1 = Math.min(g.kmAt.length-1, Math.max(g.idxFromKm(a), i0+1));
   let lo = Infinity, hi = -Infinity;
   for (let i = i0; i <= i1; i++){ if (g.ele[i] < lo) lo = g.ele[i]; if (g.ele[i] > hi) hi = g.ele[i]; }
   const pad = Math.max((hi-lo)*0.12, 25);
@@ -898,6 +924,15 @@ function rvRenderList(){
    numero la mappa direbbe "qui c'e' un posto" dove ce ne sono otto.
    Si disegna solo cio' che sta nella finestra visibile, altrimenti a mappa
    larga si costruirebbero 245 marcatori per vederne dieci. */
+function poiDi(rid){ return (window.POI && POI[rid]) || []; }
+/* Un fumetto aperto e' sacro: i rebuild dei segni (moveend, fix GPS) lo
+   distruggerebbero un attimo dopo l'apertura, perche' l'autoPan del fumetto
+   stesso muove la mappa e fa scattare moveend. Finche' e' aperto i rebuild si
+   saltano; alla chiusura si recupera quello eventualmente saltato. */
+function agganciaPopup(map, ricostruisci){
+  map.on('popupopen', ev => { map._fumettoAperto = true; bindBook(ev.popup.getElement()); });
+  map.on('popupclose', () => { map._fumettoAperto = false; ricostruisci(); });
+}
 function poiSuMappa(map, g, lista, filtro, onTap){
   const strato = L.layerGroup().addTo(map);
   const vista = map.getBounds().pad(0.1);
@@ -912,31 +947,39 @@ function poiSuMappa(map, g, lista, filtro, onTap){
     const e = gr.capo, n = gr.membri.length;
     const mk = L.marker(gr.pos, {icon: L.divIcon({className:'', iconSize:[24,24], iconAnchor:[12,12],
       html:`<span class="rvmk t-${e.t}">${icon(RV_ICO[e.t], 13)}${n > 1 ? `<i class="n">${n}</i>` : ''}</span>`})})
-      .bindPopup(rvPopup(gr));
+      .bindPopup(() => rvPopup(gr)); // pigro: l'HTML si costruisce solo se il fumetto si apre
     if (onTap) mk.on('click', () => onTap(gr));
     strato.addLayer(mk);
   });
   return strato;
 }
-let rvMk = null;
+let rvMk = null, rvMkSig = null;
 function rvMapPoi(){
   if (!rvMap || !rvId || !$('#routeview').classList.contains('open')) return;
+  if (rvMap._fumettoAperto) return; // si ricostruisce alla chiusura del fumetto
+  // stessa vista, stesso percorso, stesso filtro: niente da rifare — evita anche
+  // il doppio rebuild all'apertura (fitBounds scatena moveend, poi arriva rvLayout)
+  const sig = rvId + '|' + rvFilter + '|' + rvMap.getBounds().toBBoxString();
+  if (sig === rvMkSig) return;
+  rvMkSig = sig;
   const g = routeGeom(rvId);
   if (rvMk) rvMap.removeLayer(rvMk);
-  rvMk = poiSuMappa(rvMap, g, (window.POI && POI[rvId]) || [], rvFilter,
+  rvMk = poiSuMappa(rvMap, g, poiDi(rvId), rvFilter,
     gr => rvShowAt(g.idxFromKm(gr.capo.km), gruppoLabel(gr)));
 }
+// il blocco "quanti posti per mangiare / dormire / fontane" di un paese,
+// identico in lista, tooltip e fumetti: UNA copia sola
+function contiDet(e){
+  return [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null]
+    .filter(Boolean).join(' · ');
+}
 function rvVoce(e){
-  let det;
-  if (e.t === 'c'){
-    det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null]
-      .filter(Boolean).join(' · ');
-  } else {
-    det = [(e.nome && e.t !== 'a') ? esc(subLingua(e.sub)) : null, e.luogo ? esc(e.luogo) : null]
-      .filter(Boolean).join(' · ');
-  }
+  const det = (e.t === 'c')
+    ? contiDet(e)
+    : [(e.nome && e.t !== 'a') ? esc(subLingua(e.sub)) : null, e.luogo ? esc(e.luogo) : null]
+        .filter(Boolean).join(' · ');
   const prenota = (e.t === 'd' || (e.t === 'c' && e.ns)) ? bookBtn(e) : '';
-  return `<b>${rvPinLabel(e).split('<br/>')[0]}</b><span class="km"> · km ${Math.round(e.km)}</span>` +
+  return `<b>${rvNome(e)}</b><span class="km"> · km ${Math.round(e.km)}</span>` +
     (det ? `<span class="det">${det}</span>` : '') + prenota;
 }
 const RV_POP_MAX = 8; // oltre questa soglia il fumetto diventa un muro di testo
@@ -950,21 +993,27 @@ function rvPopup(gr){
 }
 function rvDrawPins(){
   const g = routeGeom(rvId);
-  const list = ((window.POI && POI[rvId]) || []).filter(e => poiMatch(e, rvFilter));
-  rvPins = profPin(rvProf, g, (window.POI && POI[rvId]) || [], rvFilter, (gr, i) => rvSelectPin(i));
-  $('#rv-foot').innerHTML = (list.length
-    ? `<span>${fmt(esc(U.rv.mostrati), '<b>'+rvPins.length+'</b>', '<b>'+list.length+'</b>')}</span>`
+  rvPins = profPin(rvProf, g, poiDi(rvId), rvFilter, (gr, i) => rvSelectPin(i));
+  // il totale esce dai gruppi stessi: ogni punto filtrato sta in un gruppo,
+  // quindi la somma dei membri E' la popolazione davvero disegnata
+  const totale = rvPins.reduce((n, gr) => n + gr.membri.length, 0);
+  $('#rv-foot').innerHTML = (totale
+    ? `<span>${fmt(esc(U.rv.mostrati), '<b>'+totale+'</b>', '<b>'+rvPins.length+'</b>')}</span>`
     : `<span>${esc(U.rv.nessunPunto)}</span>`)
     + `<span>${esc(U.rv.aiuto)}</span>`;
 }
-function rvPinLabel(e){
-  if (e.t === 'c'){
-    const det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null]
-      .filter(Boolean).join(' · ');
-    return esc(e.nome) + (det ? `<br/>${det}` : '');
-  }
+// solo il nome di un punto, senza dettagli
+function rvNome(e){
+  if (e.t === 'c') return esc(e.nome);
   if (e.t === 'a' && e.n > 1) return `${e.n} ${esc(U.fontane)}`;
   return esc(e.nome || subLingua(e.sub));
+}
+function rvPinLabel(e){
+  if (e.t === 'c'){
+    const det = contiDet(e);
+    return rvNome(e) + (det ? `<br/>${det}` : '');
+  }
+  return rvNome(e);
 }
 // l'etichetta di un gruppo: il primo per nome, e quanti altri stanno li' sotto
 function gruppoLabel(gr){
@@ -986,9 +1035,10 @@ function rvShowAt(i, label){
   rvDraw();
   const tip = $('#rv-tip');
   const km = g.kmAt[i];
+  const at = rvProf.tipXY(km, g.ele[i]);
   tip.style.display = 'block';
-  tip.style.left = Math.min(Math.max(rvProf.X(km), 54), rvProf.W-54) + 'px';
-  tip.style.top = Math.max(rvProf.Y(g.ele[i]), 58) + 'px';
+  tip.style.left = at.x + 'px';
+  tip.style.top = at.y + 'px';
   tip.innerHTML = (label ? `<b>${label}</b><br/>` : '') +
     `km ${kmDec(km)} · ${g.ele[i]} m ${esc(U.rv.quota)}<br/>` +
     fmt(esc(U.rv.daQui), Math.round(g.kmTot-km), g.dplusFrom[i]);
@@ -1013,7 +1063,10 @@ $('#rv-profwrap').addEventListener('mouseleave', () => { if (rvId) rvHide(); });
 $('#rv-profwrap').addEventListener('touchstart', e => { if (rvId && !e.target.closest('.rvpin')) rvScrub(e.touches[0].clientX); }, {passive:true});
 $('#rv-profwrap').addEventListener('touchmove', e => {
   if (!rvId || e.target.closest('.rvpin')) return;
-  rvScrub(e.touches[0].clientX); e.preventDefault();
+  rvScrub(e.touches[0].clientX);
+  // con touch-action:pan-y il browser puo' aver gia' preso in carico lo scroll
+  // verticale: quegli eventi non sono annullabili e preventDefault li' e' un warning
+  if (e.cancelable) e.preventDefault();
 }, {passive:false});
 window.addEventListener('popstate', () => {
   if ($('#routeview').classList.contains('open')) closeRouteView(true);
@@ -1140,7 +1193,16 @@ function renderLive(){
   $('#tab-live').innerHTML = h;
   $('#gpsroute').value = myRoute();
   $('#gpsroute').addEventListener('change', e=>{
-    localStorage.setItem('tg-route', e.target.value);
+    setMyRoute(e.target.value); // aggiorna anche le pill in Dormire, non solo localStorage
+    /* Il percorso e' cambiato: via subito profilo e segni del percorso vecchio,
+       i nuovi arrivano col prossimo fix. Da fermi puo' tardare — meglio un
+       pannello vuoto che uno che dichiara il km del percorso sbagliato. */
+    lvRid = null; lvKm = null; gpsMkSig = null;
+    if (gpsMk && gpsMap){ gpsMap.removeLayer(gpsMk); gpsMk = null; }
+    const wrap = $('#lv-wrap');
+    if (wrap) wrap.style.display = 'none';
+    const aheadBox = $('#gpsahead');
+    if (aheadBox) aheadBox.style.display = 'none';
     if (mapsInit.stay) loadStay22();
   });
   document.querySelectorAll('#lv-vista button').forEach(b => b.addEventListener('click', () => {
@@ -1247,20 +1309,28 @@ async function meteoGPS(){
    sella. I segni sulla mappa sono gli stessi della vista percorso. */
 const LV_FINESTRA = 25;   // km davanti mostrati
 const LV_INDIETRO = 3;    // km dietro, per capire da dove arrivi
-let lvRid = null, lvKm = null, lvVista = 'vicino', lvPins = [], gpsMk = null;
+let lvRid = null, lvKm = null, lvVista = 'vicino', gpsMk = null, gpsMkSig = null, lvTipTimer = null;
 function lvFinestra(g, km){
   if (lvVista === 'tutto') return [0, g.kmTot];
-  return [Math.max(0, km - LV_INDIETRO), Math.min(g.kmTot, Math.max(km + LV_FINESTRA, km + 8))];
+  // vicino all'arrivo la finestra non si restringe sotto i 12 km: una striscia
+  // di 3 km spalmata su tutto il canvas non si legge
+  const a = Math.min(g.kmTot, km + LV_FINESTRA);
+  const da = Math.max(0, Math.min(km - LV_INDIETRO, a - 12));
+  return [da, a];
 }
 function lvAggiorna(rid, km){
+  // lo stato si salva SEMPRE, anche a tab nascosta: e' quello che permette a
+  // openTab('live') e al resize di ridisegnare al rientro
   lvRid = rid; lvKm = km;
   const wrap = $('#lv-wrap');
   if (!wrap) return;
+  if (!$('#tab-live').classList.contains('on')) return; // si ridisegna al rientro
   wrap.style.display = 'block';
+  $('#lv-tip').style.display = 'none'; // la finestra scorre, il tip vecchio non punta piu' li'
   const g = routeGeom(rid);
   const [da, a] = lvFinestra(g, km);
   if (!profDisegna(lvProf, g, da, a, km)) return;
-  lvPins = profPin(lvProf, g, (window.POI && POI[rid]) || [], 'tutti', gr => lvTip(gr));
+  profPin(lvProf, g, poiDi(rid), 'tutti', gr => lvTip(gr));
   const i = g.idxFromKm(km);
   $('#lv-foot').innerHTML =
     `<span>${fmt(esc(U.rv.seiQui), '<b>'+kmDec(km)+'</b>', g.ele[i])}</span>` +
@@ -1268,20 +1338,25 @@ function lvAggiorna(rid, km){
 }
 function lvTip(gr){
   const g = routeGeom(lvRid), tip = $('#lv-tip');
-  const i = g.idxFromKm(gr.capo.km);
+  const at = lvProf.tipXY(gr.capo.km, g.ele[g.idxFromKm(gr.capo.km)]);
   tip.style.display = 'block';
-  tip.style.left = Math.min(Math.max(lvProf.X(gr.capo.km), 54), lvProf.W-54) + 'px';
-  tip.style.top = Math.max(lvProf.Y(g.ele[i]), 58) + 'px';
+  tip.style.left = at.x + 'px';
+  tip.style.top = at.y + 'px';
   const via = Math.round(gr.capo.km - (lvKm || 0));
   tip.innerHTML = `<b>${gruppoLabel(gr)}</b><br/>` +
     (via > 0 ? `${esc(U.tra)} <b>${via}</b> ${esc(U.km)} · ` : '') + `km ${Math.round(gr.capo.km)}`;
-  clearTimeout(lvTip.t);
-  lvTip.t = setTimeout(() => { tip.style.display = 'none'; }, 4000);
+  clearTimeout(lvTipTimer);
+  lvTipTimer = setTimeout(() => { tip.style.display = 'none'; }, 4000);
 }
 function lvPoiMappa(){
   if (!gpsMap || !lvRid) return;
+  if (!$('#tab-live').classList.contains('on')) return; // mappa nascosta: bounds degeneri, lavoro inutile
+  if (gpsMap._fumettoAperto) return; // si ricostruisce alla chiusura del fumetto
+  const sig = lvRid + '|' + gpsMap.getBounds().toBBoxString();
+  if (sig === gpsMkSig) return; // stessa vista, stesso percorso: i segni sono gia' giusti
+  gpsMkSig = sig;
   if (gpsMk) gpsMap.removeLayer(gpsMk);
-  gpsMk = poiSuMappa(gpsMap, routeGeom(lvRid), (window.POI && POI[lvRid]) || [], 'tutti');
+  gpsMk = poiSuMappa(gpsMap, routeGeom(lvRid), poiDi(lvRid), 'tutti');
 }
 let gpsMap, gpsMarker, gpsLine, gpsLineRoute, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
 function sharePos(){
@@ -1341,23 +1416,34 @@ function startGPS(){
     const km = g.kmAt[best];
     const distTrack = haversine(me, track[best]);
     const kmTot = p.km;
-    if (distTrack > 3){
-      info.innerHTML = fmt(esc(U.gpsLontano), `<b>${distTrack.toFixed(1)}</b>`, esc(p.nome), `<b>${km.toFixed(0)}</b>`);
+    const lontano = distTrack > 3;
+    if (lontano){
+      info.innerHTML = fmt(esc(U.gpsLontano), `<b>${kmDec(distTrack)}</b>`, esc(p.nome), `<b>${km.toFixed(0)}</b>`);
     } else {
       info.innerHTML = fmt(esc(U.gpsPosizione), `<b>${km.toFixed(0)}</b>`, kmTot, esc(p.nome), `<b>${Math.max(0,kmTot-km).toFixed(0)}</b>`);
     }
     info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">${esc(U.condividiPos)}</button></div>`;
+    /* Lontani dal percorso il km del punto piu' vicino non significa niente:
+       "davanti a te", profilo e "sei al km X" si nascondono invece di
+       dichiarare una posizione sul percorso a chi e' a casa a 50 km.
+       Traccia e segni sulla mappa restano, servono anche per avvicinarsi. */
     const aheadBox = $('#gpsahead');
-    const ah = aheadHtml(rid, km);
-    if (ah){ aheadBox.style.display = 'block'; aheadBox.innerHTML = ah; bindBook(aheadBox); }
-    else aheadBox.style.display = 'none';
+    if (lontano){
+      aheadBox.style.display = 'none';
+      const wrap = $('#lv-wrap');
+      if (wrap) wrap.style.display = 'none';
+    } else {
+      const ah = aheadHtml(rid, km);
+      if (ah){ aheadBox.style.display = 'block'; aheadBox.innerHTML = ah; bindBook(aheadBox); }
+      else aheadBox.style.display = 'none';
+    }
     const mapEl = $('#gpsmap');
     mapEl.style.display = 'block';
     if (!gpsMap){
       gpsMap = L.map('gpsmap');
       L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© CyclOSM · © OpenStreetMap'}).addTo(gpsMap);
       gpsMap.on('moveend', lvPoiMappa);
-      gpsMap.on('popupopen', ev => bindBook(ev.popup.getElement()));
+      agganciaPopup(gpsMap, lvPoiMappa);
     }
     if (gpsLineRoute !== rid){
       if (gpsLine) gpsMap.removeLayer(gpsLine);
@@ -1371,11 +1457,16 @@ function startGPS(){
     }
     if (gpsMarker) gpsMap.removeLayer(gpsMarker);
     gpsMarker = L.circleMarker(me,{radius:9,color:'#fff',weight:2.5,fillColor:'#1971c2',fillOpacity:1}).addTo(gpsMap).bindPopup('Sei qui');
+    /* Ricentra solo al primo fix o quando la posizione esce dall'inquadratura.
+       Ricentrare a ogni fix rendeva impossibile spostare la mappa a mano — la
+       riportava indietro dopo pochi secondi — e ogni ricentraggio ricostruiva
+       i segni per pochi metri di movimento. */
     if (gpsMap.getZoom() == null) gpsMap.setView(me, 13);
-    else gpsMap.setView(me, gpsMap.getZoom(), {animate:false}); // rispetta lo zoom scelto a mano
-    lvRid = rid;
+    else if (!gpsMap.getBounds().pad(-0.2).contains(me)) gpsMap.setView(me, gpsMap.getZoom(), {animate:false});
+    // lvAggiorna salva lvRid/lvKm (anche a tab nascosta), poi i segni sulla mappa
+    if (lontano){ lvRid = rid; lvKm = null; }
+    else lvAggiorna(rid, km);
     lvPoiMappa();
-    lvAggiorna(rid, km);
   }, err=>{
     info.textContent = U.gpsNegato;
   }, {enableHighAccuracy:true, maximumAge:10000, timeout:15000});

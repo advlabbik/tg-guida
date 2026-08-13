@@ -81,7 +81,7 @@ Prima della pubblicazione reale, da fare in quest'ordine:
 
 Deploy automatico su GitHub Pages da `main` (`https://advlabbik.github.io/tg-guida/`).
 
-**Branch attivo: solo `main`.** Tutto lo sviluppo corrente (design system, bilingue, POI, notifiche push, staff.html) procede direttamente qui.
+**Branch attivo: solo `main`.** Tutto lo sviluppo corrente procede qui con branch di vita breve mergiati appena pronti. Il branch `feat/poi-mappa-altimetria` (vista percorso, POI su mappa e altimetria, revisione del Live — 13 agosto) è stato sviluppato a parte su richiesta di Andrea, revisionato e mergiato: dopo il merge non va più usato.
 
 **`ds-restyle` è congelato, tenuto solo come reference storico — non va mergiato.** Era nato come branch di redesign parallelo (piano `docs/superpowers/plans/2026-08-12-golive-restyle.md`, non presente su `main`), ed è stato riconciliato più volte con `main` mentre entrambi i rami andavano avanti in parallelo sugli stessi file (vedi la storia di [issue #11](https://github.com/advlabbik/tg-guida/issues/11)). L'ultima riconciliazione risale al 12/08: da allora `main` ha ricevuto in autonomia la veste grafica ufficiale ("veste grafica di Alessio", 13/08) e i contenuti bilingue/POI/copy che la superano — `ds-restyle` non li ha. Le parti tecniche che aveva di utile (notifiche push, `staff.html`, service worker network-first) sono già presenti identiche su `main`. **Prima di considerare di nuovo un merge di `ds-restyle`, verificare a mano se `main` non l'ha già superato** — è già successo due volte che sembrasse "pronto, manca solo il subdominio" mentre nel frattempo `main` era andato avanti per conto suo.
 
@@ -100,12 +100,17 @@ Le pagine `percorso-*.html` del repo mappe **restano** perché servono agli embe
 Notion, ma non sono più raggiungibili dalla guida. Il piano completo da cui nasce questo
 lavoro è in [`docs/confronto-wise-pilgrim.md`](docs/confronto-wise-pilgrim.md), voce A1.
 
-**Cosa non è ancora fatto** — i punti stanno sul profilo ma non sulla mappa, perché acqua
-e cibo in `poi.js` hanno solo il km e non le coordinate (le hanno solo paesi e alloggi).
-Serve prima rigenerare i POI conservando lat/lon, voci A2 e A3 dello stesso documento.
+**Aggiornamento, stesso 13 agosto** — le voci A2 e A3 sono state fatte in giornata,
+in modo diverso da come le immaginava il documento. I punti stanno **anche sulla mappa**
+(vista percorso e Live) senza rigenerare `poi.js`: dove mancano le coordinate il punto si
+appoggia alla traccia al suo km tramite `g.posOf()`, con la posizione dichiarata
+indicativa nel testo sopra la lista. La rigenerazione dei POI da OpenStreetMap **non è un
+prerequisito di niente**, serve solo se un giorno si vorranno le posizioni esatte di
+fontane e locali (vedi la voce dedicata in "Da sapere").
 
-Su un telefono in verticale ci stanno una quindicina di icone, in orizzontale una ventina:
-quante ne restano fuori è scritto sotto il profilo, non nascosto.
+I punti che si sovrappongono non vengono scartati ma **raggruppati**, e il segno porta il
+numero di quanti ne rappresenta — sul profilo come sulla mappa. Il conteggio sotto il
+profilo dice quanti punti sono in vista e in quanti segni sono raggruppati.
 
 ## Punto della situazione (13 agosto 2026)
 

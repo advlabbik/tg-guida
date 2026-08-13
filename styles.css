@@ -240,27 +240,24 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .rvpin.t-d{background:#7048e8;color:#fff}
 .rvpin.t-c{background:var(--ink);color:#fff}
 .rvpin.sel{outline:2.5px solid var(--cream-dp);outline-offset:1px}
-/* stesso numero dei segni sulla mappa: dice quanti punti sta rappresentando */
-.rvpin .n{position:absolute;top:-6px;right:-7px;min-width:16px;height:16px;padding:0 3px;border-radius:9px;
+/* il numero sul segno — profilo o mappa, e' lo stesso badge: dice quanti punti
+   sta rappresentando. UNA regola sola, cosi' non possono divergere */
+.rvpin .n,.rvmk .n{position:absolute;top:-6px;right:-7px;min-width:16px;height:16px;padding:0 3px;border-radius:9px;
   background:var(--cream);color:#3b3210;border:1.5px solid #fff;font-size:10.5px;font-weight:800;
   font-style:normal;line-height:13px;text-align:center}
-#rv-tip{position:absolute;pointer-events:none;display:none;max-width:62%;background:rgba(22,33,26,.94);color:#fff;
+/* stesso discorso per il tooltip del profilo, nella vista percorso e nel Live */
+#rv-tip,#lv-tip{position:absolute;pointer-events:none;display:none;max-width:62%;background:rgba(22,33,26,.94);color:#fff;
   font-size:12px;font-weight:600;line-height:1.35;padding:5px 9px;border-radius:9px;transform:translate(-50%,-136%)}
 #rv-foot{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:2px 12px 9px;font-size:11.5px;
   font-weight:600;color:var(--muted)}
 #rv-foot b{color:var(--ink);font-weight:700}
 /* segni sulla mappa: stessa forma e stessi colori delle icone sul profilo */
-.rvmk{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;
+.rvmk{position:relative;display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;
   border:1.5px solid #fff;box-shadow:0 1px 3px rgba(20,30,20,.4)}
 .rvmk.t-a{background:#1c7ed6;color:#fff}
 .rvmk.t-m{background:var(--mint);color:#fff}
 .rvmk.t-d{background:#7048e8;color:#fff}
 .rvmk.t-c{background:var(--ink);color:#fff}
-/* il numero dice quanti punti sta rappresentando quel segno */
-.rvmk{position:relative}
-.rvmk .n{position:absolute;top:-6px;right:-7px;min-width:16px;height:16px;padding:0 3px;border-radius:9px;
-  background:var(--cream);color:#3b3210;border:1.5px solid #fff;font-size:10.5px;font-weight:800;
-  font-style:normal;line-height:13px;text-align:center}
 .rvpop b{font-size:14px}
 .rvpop .km{color:var(--muted);font-weight:600;font-size:12.5px}
 .rvpop .det{display:block;color:var(--muted);font-weight:600;font-size:12.5px;margin-top:2px}
@@ -274,8 +271,6 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
   background:var(--card-2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 #lv-prof{display:block;width:100%;height:100%}
 #lv-pins{position:absolute;inset:0;pointer-events:none}
-#lv-tip{position:absolute;pointer-events:none;display:none;max-width:62%;background:rgba(22,33,26,.94);color:#fff;
-  font-size:12px;font-weight:600;line-height:1.35;padding:5px 9px;border-radius:9px;transform:translate(-50%,-136%)}
 #lv-foot{display:flex;flex-wrap:wrap;gap:4px 10px;padding:7px 2px 0;font-size:12px;font-weight:600;color:var(--muted)}
 #lv-foot b{color:var(--ink);font-weight:700}
 #lv-vista .on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
@@ -283,6 +278,10 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 #rv-listwrap{padding:12px 12px 0}
 #rv-listwrap h3{font-family:'Space Grotesk','Inter',sans-serif;font-size:15px;margin:0 0 4px}
 #rv-listintro{font-size:12.5px;color:var(--muted);font-weight:500;margin:0 0 8px}
+/* .poilist nasceva per la vecchia card nella pagina che scorreva da sola: qui
+   dentro #rv-scroll il suo max-height creava uno scroll dentro lo scroll e il
+   dito ci restava intrappolato. Scorre tutto la pagina, la lista no. */
+#rv-list{max-height:none;overflow-y:visible}
 /* telefono girato: mappa e profilo si accorciano per restare visibili insieme */
 @media(max-height:560px){
   #rv-profwrap{height:118px}
@@ -381,7 +380,7 @@ nav button.fab{color:var(--lime);font-weight:700}
   #searchbox{max-width:700px}
   #tab-percorso.on{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;align-items:stretch}
   #tab-percorso.on>.card{margin-bottom:0}
-  #tab-percorso.on>.card:first-child,#mapcard,#poicard{grid-column:1/-1}
+  #tab-percorso.on>.card:first-child,#mapcard{grid-column:1/-1}
   #infolist{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;align-items:stretch}
   #infolist .icard{margin-bottom:0}
   #infolist .itheme{grid-column:1/-1}
