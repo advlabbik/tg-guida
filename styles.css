@@ -200,7 +200,12 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .badge{background:var(--card-2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;
   font-size:12.5px;font-weight:700;color:var(--ink)}
 .rnote{font-size:14px;color:var(--muted);font-weight:500;padding-left:16px;margin:4px 0}
-#minimap,#gpsmap{height:340px;border-radius:18px;background:var(--card-2)}
+/* z-index:0 chiude ogni mappa nel suo contesto: i controlli interni di Leaflet
+   hanno z-index 1000 e senza questo recinto trapassano i pannelli a schermo
+   intero (il +/- della minimappa affiorava dentro la vista percorso, z 950,
+   e resterebbe in agguato anche sotto la ricerca, z 900) */
+#minimap,#gpsmap{position:relative;z-index:0;height:340px;border-radius:18px;background:var(--card-2)}
+#rv-map{position:relative;z-index:0}
 /* vista percorso a schermo intero: mappa + altimetria dentro l'app, con la via d'uscita sempre visibile */
 #routeview{position:fixed;inset:0;z-index:950;background:var(--page);display:none;flex-direction:column}
 #routeview.open{display:flex}
