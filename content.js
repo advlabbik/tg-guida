@@ -240,6 +240,17 @@ ui: {
   tramontoOffline: "🌇 Tramonto non disponibile offline.",
   meteoOffline: "Meteo non raggiungibile, serve connessione.",
   legenda: "Trentino Gravel · Guida in versione beta — la miglioriamo ogni settimana",
+  notifiche: {
+    titolo: "Notifiche evento",
+    testo: "Attiva le notifiche per ricevere le comunicazioni dello staff durante l'evento, anche ad app chiusa.",
+    attiva: "Attiva le notifiche",
+    attive: "Notifiche attive. Riceverai le comunicazioni dello staff durante l'evento.",
+    bloccate: "Notifiche bloccate dal browser. Se vuoi riceverle, abilitale dalle impostazioni del sito.",
+    errore: "Errore nell'attivazione delle notifiche, riprova.",
+    comunicazioni: "Comunicazioni",
+    nessuna: "Nessuna comunicazione al momento.",
+    erroreCarico: "Non riesco a caricare le comunicazioni. Controlla la connessione."
+  },
   poiSub: {}
 },
 
@@ -476,6 +487,17 @@ ui: {
   tramontoOffline: "🌇 Sunset not available offline.",
   meteoOffline: "Weather unavailable, connection needed.",
   legenda: "Trentino Gravel · Beta guide — we improve it every week",
+  notifiche: {
+    titolo: "Event notifications",
+    testo: "Turn on notifications to receive staff updates during the event, even with the app closed.",
+    attiva: "Turn on notifications",
+    attive: "Notifications are on. You will receive staff updates during the event.",
+    bloccate: "Notifications are blocked by the browser. Enable them in the site settings if you want them.",
+    errore: "Could not turn on notifications, try again.",
+    comunicazioni: "Updates",
+    nessuna: "No updates at the moment.",
+    erroreCarico: "Cannot load the updates. Check your connection."
+  },
   poiSub: { ristorante: "restaurant", bar: "bar", "fast food": "fast food", pub: "pub",
             gelateria: "ice cream shop", supermercato: "supermarket", alimentari: "grocery",
             panificio: "bakery", fontana: "fountain", hotel: "hotel", "B&B": "B&B",

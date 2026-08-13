@@ -2,7 +2,7 @@
 // Strategia: network-first per i file dell'app (chi ha rete vede SEMPRE l'ultima
 // versione, senza doppia apertura), cache come rete di salvataggio quando il
 // segnale manca. Le tile mappa, il meteo e Stay22 non passano di qui.
-const CACHE = 'tg-guida-v18';
+const CACHE = 'tg-guida-v19';
 const ASSETS = [
   './', './index.html', './content.js', './tracks.js', './poi.js',
   './styles.css', './icons.js', './icons/sprite.svg',
@@ -55,5 +55,31 @@ self.addEventListener('fetch', e => {
       }
       return res;
     }))
+  );
+});
+
+// ---------- notifiche push (sistema di Francesco, PR #13) ----------
+self.addEventListener('push', e => {
+  let data = { title: 'Trentino Gravel', body: '' };
+  try { data = e.data.json(); } catch (err) {}
+  e.waitUntil(self.registration.showNotification(data.title || 'Trentino Gravel', {
+    body: data.body || '',
+    icon: './icons/icon-192.png',
+    badge: './icons/icon-192.png'
+  }));
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      for (const client of clientList) {
+        if ('focus' in client) {
+          client.postMessage({ type: 'open-live' });
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) return clients.openWindow('./?tab=live');
+    })
   );
 });
