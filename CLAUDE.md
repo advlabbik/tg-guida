@@ -11,3 +11,11 @@ Quindi, ogni volta che una sessione su questo repo:
 - **lavora su un branch diverso da `main` che rischia di divergere** (restyle, feature lunghe) → nota nel README o nell'issue collegata *quando* è stato riconciliato l'ultima volta con `main`, così chi legge sa se l'informazione è ancora fresca invece di darla per buona a tempo indeterminato.
 
 Prima di dichiarare un branch "pronto per il merge" o un'issue "risolta", verifica lo stato reale con `git log`/`git diff` contro `origin/main` aggiornato (non fidarti di un README/issue non toccati da un po' — potrebbero essere già superati, come è successo qui) e ricontrolla che `git status`/`git fetch` riflettano davvero il remote prima di fare affermazioni sullo stato dei branch.
+
+## Verificare in locale prima di pushare — non serve pushare per "vedere se funziona"
+
+`main` fa deploy automatico su GitHub Pages (produzione, vedi "Stato del repo e dei branch" nel README) ed è già usato da persone reali. Non c'è bisogno di pushare e aspettare il deploy per controllare l'effetto di una modifica: basta un server statico locale, già documentato nel README sotto "Come si apre" (`npx serve .` o `python3 -m http.server 8000` — serve HTTPS/localhost per geolocalizzazione e service worker). Apri `index.html` lì, verifica la modifica a occhio, e pusha solo dopo. Il push su `main` non è l'ambiente di anteprima: se lo si usa come tale, ogni tentativo/errore diventa un deploy in produzione visibile a chiunque stia usando l'app in quel momento.
+
+Per modifiche a `sw.js` o alla cache: il service worker resta appiccicato alla versione precedente finché non bumpi `CACHE`, e nel browser locale i DevTools (Application → Service Workers → "Update on reload", oppure "Bypass for network") permettono di verificare il comportamento offline/cache senza dover pushare più volte per trovare il numero giusto.
+
+Questo non cambia lo stile di lavoro già in uso su questo repo (branch di vita breve → merge appena pronto, niente PR ferme in attesa di review) — riguarda solo *cosa* si verifica prima di quel merge/push, non *come* si brancha.
