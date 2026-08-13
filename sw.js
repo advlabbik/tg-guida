@@ -4,7 +4,7 @@
 // segnale manca. Le tile mappa, il meteo e Stay22 non passano di qui.
 const CACHE = 'tg-guida-v21';
 const ASSETS = [
-  './', './index.html', './content.js', './tracks.js', './poi.js',
+  './', './index.html', './config.js', './content.js', './tracks.js', './poi.js',
   './styles.css', './icons.js', './icons/sprite.svg',
   './assets/tg-logo-full.svg',
   './assets/percorsi/corto.jpg', './assets/percorsi/medio.jpg', './assets/percorsi/lungo.jpg',

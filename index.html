@@ -90,6 +90,7 @@
   </div>
 </div>
 
+<script src="config.js"></script>
 <script src="content.js"></script>
 <script src="tracks.js"></script>
 <script src="poi.js"></script>
@@ -114,7 +115,7 @@ const $ = s => document.querySelector(s);
    INTERRUTTORE: con false la card sparisce e non parte nessuna richiesta.
    Per lo spegnimento immediato basta cambiare questa riga e ripubblicare. */
 const NOTIFICHE_ATTIVE = false; // spente su decisione di Andrea (13/08), si riaccendono da qui
-const SUPABASE_URL = 'https://kqsrtuzeeiljozdnjott.supabase.co';
+const SUPABASE_URL = window.TG_SUPABASE_URL;
 const SUPABASE_ANON_KEY = 'sb_publishable_kL1z4KhZWlxIpqE55KIQvw_rr3kZbih';
 const VAPID_PUBLIC_KEY = 'BM20wU_676VT3P7CjS6j_9kFYXLnFzlODCAMTa6DZi8FftYWn4_hVDBtwAcW1GhiwFDXEi8A1NyR_Kgga90ZyFM';
 const PUSH_ENDPOINT_KEY = 'tg-push-saved-endpoint';
@@ -324,7 +325,12 @@ function openTab(name){
   if (name==='percorso' && !mapsInit.mini) { mapsInit.mini = true; setTimeout(initMiniMap, 60); }
   if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; loadStay22(); }
   if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
-  if (name==='live') { refreshNotifCard(); loadComunicazioni(); }
+  // refreshNotifCard() trigger verifyPushSubscription() (service worker ready +
+  // getSubscription + eventuale POST): va bene farlo una volta per sessione come
+  // gli altri init qui sopra, non ad ogni rientro nella tab. loadComunicazioni()
+  // resta libera di rifare fetch ad ogni apertura: è leggera e mostra messaggi nuovi.
+  if (name==='live' && !mapsInit.notif) { mapsInit.notif = true; refreshNotifCard(); }
+  if (name==='live') { loadComunicazioni(); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 window.addEventListener('resize', ()=>{
