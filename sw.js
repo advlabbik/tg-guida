@@ -2,9 +2,12 @@
 // Strategia: network-first per i file dell'app (chi ha rete vede SEMPRE l'ultima
 // versione, senza doppia apertura), cache come rete di salvataggio quando il
 // segnale manca. Le tile mappa, il meteo e Stay22 non passano di qui.
-const CACHE = 'tg-guida-v17';
+const CACHE = 'tg-guida-v18';
 const ASSETS = [
   './', './index.html', './content.js', './tracks.js', './poi.js',
+  './styles.css', './icons.js', './icons/sprite.svg',
+  './assets/tg-logo-full.svg',
+  './assets/percorsi/corto.jpg', './assets/percorsi/medio.jpg', './assets/percorsi/lungo.jpg',
   './icons/icon-192.png', './icons/icon-512.png',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
@@ -42,10 +45,11 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  // librerie esterne versionate (Leaflet): cache-first, non cambiano mai
+  // librerie e font esterni versionati: cache-first, non cambiano mai
   e.respondWith(
     caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
-      if (res && res.ok && url.hostname === 'unpkg.com') {
+      if (res && res.ok && (url.hostname === 'unpkg.com' ||
+          url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com')) {
         const clone = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, clone));
       }
