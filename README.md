@@ -73,3 +73,42 @@ Deploy automatico su GitHub Pages da `main` (`https://advlabbik.github.io/tg-gui
 **Branch attivo: solo `main`.** Tutto lo sviluppo corrente (design system, bilingue, POI, notifiche push, staff.html) procede direttamente qui.
 
 **`ds-restyle` è congelato, tenuto solo come reference storico — non va mergiato.** Era nato come branch di redesign parallelo (piano `docs/superpowers/plans/2026-08-12-golive-restyle.md`, non presente su `main`), ed è stato riconciliato più volte con `main` mentre entrambi i rami andavano avanti in parallelo sugli stessi file (vedi la storia di [issue #11](https://github.com/advlabbik/tg-guida/issues/11)). L'ultima riconciliazione risale al 12/08: da allora `main` ha ricevuto in autonomia la veste grafica ufficiale ("veste grafica di Alessio", 13/08) e i contenuti bilingue/POI/copy che la superano — `ds-restyle` non li ha. Le parti tecniche che aveva di utile (notifiche push, `staff.html`, service worker network-first) sono già presenti identiche su `main`. **Prima di considerare di nuovo un merge di `ds-restyle`, verificare a mano se `main` non l'ha già superato** — è già successo due volte che sembrasse "pronto, manca solo il subdominio" mentre nel frattempo `main` era andato avanti per conto suo.
+
+## Punto della situazione (13 agosto 2026)
+
+L'app è **pronta per l'invio ai partecipanti**. Prima di riprendere lo sviluppo, questo è
+quello che è deciso e quello che manca.
+
+### Deciso e fatto
+- Contenuti allineati all'email delle tracce, **niente segnaposto visibili**: nell'app c'è
+  solo ciò che è stato comunicato. La barra demo delle fasi è nascosta ai partecipanti e
+  si attiva col parametro `?demo=1`.
+- **Bilingue IT/EN** con switch a bandierine. Il tedesco è escluso per scelta.
+  Ogni testo nuovo va aggiunto in **entrambe** le lingue in `content.js`.
+- **Regola di scrittura**: mai i due punti `:` nella prosa dei testi rivolti ai
+  partecipanti (ok negli orari, tipo 17:00) — decisione di Andrea, vale per tutte le lingue.
+- **POI completi** sui tre percorsi. Per rigenerarli leggere prima `docs/generazione-poi.md`.
+- **Notifiche push spente** con `NOTIFICHE_ATTIVE = false` in `index.html`: il sistema resta
+  integro e si riaccende cambiando quella riga. Spente per poter promuovere l'app senza
+  ancora gestire le comunicazioni.
+- **Airbnb non si mette.** O compare dentro la mappa Stay22 accanto a Booking, oppure niente:
+  i link esterni sono stati scartati (motivazione tecnica completa nella PR #9 chiusa).
+
+### In sospeso, con la dipendenza che li blocca
+| Cosa | Chi sblocca |
+|---|---|
+| Dominio `app.trentinogravel.com` | Francesco, 1 record DNS su Cloudflare → [issue #14](https://github.com/advlabbik/tg-guida/issues/14) |
+| Analytics (Umami, piano gratuito) | Andrea, crea l'account su cloud.umami.is e passa il Website ID |
+| Link della diretta WHIP, contatti taxi, orari definitivi del pacco | informazioni non ancora disponibili |
+| Riaccensione notifiche push | decisione di Andrea, dopo il dominio (le iscrizioni sono legate all'indirizzo) |
+
+### Trappole note
+- Chi ha già salvato l'app in home **non vede la nuova icona**: i telefoni la congelano al
+  salvataggio, va rimossa e risalvata.
+- Le iscrizioni alle notifiche sono legate al dominio: attivare il dominio **prima** di
+  invitare i partecipanti ad attivarle, altrimenti si perdono.
+- La cartella `fonts/` contiene font di una versione precedente e **non è più usata**:
+  il design system attuale carica Inter e Space Grotesk da Google Fonts (`index.html`).
+  Se serve tornare offline-first sui font, vanno scaricati quelli giusti.
+- Bumpare sempre `CACHE` in `sw.js` quando si modificano i file, altrimenti chi ha l'app
+  installata resta indietro di una versione.
