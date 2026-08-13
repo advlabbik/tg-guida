@@ -217,7 +217,9 @@ ui: {
     aiuto: "Trascina il dito sull'altimetria e vedi il punto muoversi sulla mappa. Sulla mappa ingrandisci per far comparire più punti.",
     partenza: "Partenza · Rovereto", arrivo: "Arrivo · Rovereto",
     mostrati: "| punti su | in vista — usa i filtri o gira il telefono per vederne di più",
-    quiCiSono: "Qui ci sono | punti", eAltri: "e altri |",
+    quiCiSono: "Qui ci sono | punti", eAltri: "e altri |", altriQui: "e altri | qui",
+    prossimi: "Prossimi | km", tuttoIlPercorso: "Tutto il percorso",
+    seiQui: "Sei al km | · quota | m",
     nessunPunto: "Nessun punto di questo tipo su questo percorso.",
     quota: "quota",
     daQui: "Da qui all'arrivo | km e | m di dislivello"
@@ -474,7 +476,9 @@ ui: {
     aiuto: "Drag your finger along the elevation profile and watch the point move on the map. Zoom in on the map to make more points appear.",
     partenza: "Start · Rovereto", arrivo: "Finish · Rovereto",
     mostrati: "| points of | shown — use the filters or turn your phone to see more",
-    quiCiSono: "| points here", eAltri: "and | more",
+    quiCiSono: "| points here", eAltri: "and | more", altriQui: "and | more here",
+    prossimi: "Next | km", tuttoIlPercorso: "Whole route",
+    seiQui: "You are at km | · elevation | m",
     nessunPunto: "No points of this kind on this route.",
     quota: "elevation",
     daQui: "From here to the finish | km and | m of climbing"

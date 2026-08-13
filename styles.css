@@ -240,6 +240,10 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .rvpin.t-d{background:#7048e8;color:#fff}
 .rvpin.t-c{background:var(--ink);color:#fff}
 .rvpin.sel{outline:2.5px solid var(--cream-dp);outline-offset:1px}
+/* stesso numero dei segni sulla mappa: dice quanti punti sta rappresentando */
+.rvpin .n{position:absolute;top:-6px;right:-7px;min-width:16px;height:16px;padding:0 3px;border-radius:9px;
+  background:var(--cream);color:#3b3210;border:1.5px solid #fff;font-size:10.5px;font-weight:800;
+  font-style:normal;line-height:13px;text-align:center}
 #rv-tip{position:absolute;pointer-events:none;display:none;max-width:62%;background:rgba(22,33,26,.94);color:#fff;
   font-size:12px;font-weight:600;line-height:1.35;padding:5px 9px;border-radius:9px;transform:translate(-50%,-136%)}
 #rv-foot{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:2px 12px 9px;font-size:11.5px;
@@ -265,6 +269,16 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .rvpop .tit{display:block;margin-bottom:5px}
 .rvpop .voce{padding:5px 0;border-top:1px solid var(--line)}
 .rvpop .voce b{font-size:13.5px}
+/* altimetria dentro il Live: stessi mattoni della vista percorso, ma dentro una card */
+#lv-profwrap{position:relative;height:150px;margin-top:8px;touch-action:pan-y;
+  background:var(--card-2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#lv-prof{display:block;width:100%;height:100%}
+#lv-pins{position:absolute;inset:0;pointer-events:none}
+#lv-tip{position:absolute;pointer-events:none;display:none;max-width:62%;background:rgba(22,33,26,.94);color:#fff;
+  font-size:12px;font-weight:600;line-height:1.35;padding:5px 9px;border-radius:9px;transform:translate(-50%,-136%)}
+#lv-foot{display:flex;flex-wrap:wrap;gap:4px 10px;padding:7px 2px 0;font-size:12px;font-weight:600;color:var(--muted)}
+#lv-foot b{color:var(--ink);font-weight:700}
+#lv-vista .on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
 /* lista servizi dentro la vista percorso */
 #rv-listwrap{padding:12px 12px 0}
 #rv-listwrap h3{font-family:'Space Grotesk','Inter',sans-serif;font-size:15px;margin:0 0 4px}
