@@ -205,10 +205,10 @@ nav button.on .e{transform:scale(1.12)}
 <div id="phone">
   <div id="gate" style="display:none"><div class="box">
     <h2>Trentino Gravel</h2>
-    <p>Questa guida è riservata ai partecipanti.<br/>Inserisci il codice che trovi nell'email con le tracce.</p>
-    <input id="gatecode" type="text" placeholder="CODICE" autocomplete="off"/>
+    <p id="gatetesto"></p>
+    <input id="gatecode" type="text" placeholder="" autocomplete="off"/>
     <div class="err" id="gateerr"></div>
-    <button class="btn" id="gatebtn">Entra</button>
+    <button class="btn" id="gatebtn"></button>
   </div></div>
   <div id="demobar"><b>PROTOTIPO</b> Vista:
     <button data-ph="auto">Auto</button><button data-ph="prima">Prima</button>
@@ -220,22 +220,20 @@ nav button.on .e{transform:scale(1.12)}
         <h1 id="h-title"></h1>
         <div class="sub" id="h-sub"></div>
       </div>
-      <div class="langs"><span class="on">IT</span><span title="presto">EN</span><span title="presto">DE</span></div>
+      <div class="langs" id="langsw"></div>
       <button id="searchbtn" title="Cerca">🔍</button>
     </div>
   </header>
 
   <div id="searchov"><div id="searchbox">
-    <input id="searchinput" type="search" placeholder="Cerca: parcheggi, tenda, orari, treno…" autocomplete="off"/>
+    <input id="searchinput" type="search" placeholder="" autocomplete="off"/>
     <div id="searchres"></div>
   </div></div>
 
   <div id="iosmodal"><div class="box">
-    <h3>📲 Salva la guida sull'iPhone</h3>
-    <div class="step"><span class="n">1</span><span>Tocca il tasto <b>Condividi</b> in basso in Safari (il quadrato con la freccia verso l'alto)</span></div>
-    <div class="step"><span class="n">2</span><span>Scorri e scegli <b>"Aggiungi alla schermata Home"</b></span></div>
-    <div class="step"><span class="n">3</span><span>Tocca <b>Aggiungi</b>: da ora la guida è un'icona sul telefono, un tocco e sei dentro</span></div>
-    <div class="btnrow" style="margin-top:12px"><button class="btn" id="iosclose">Fatto</button></div>
+    <h3 id="iostitolo"></h3>
+    <div id="iospassi"></div>
+    <div class="btnrow" style="margin-top:12px"><button class="btn" id="iosclose"></button></div>
   </div></div>
   <main>
     <section class="tab" id="tab-home"></section>
@@ -244,15 +242,15 @@ nav button.on .e{transform:scale(1.12)}
     <section class="tab" id="tab-dormire"></section>
     <section class="tab" id="tab-live"></section>
     <div class="sponsor" id="sponsorbar"></div>
-    <div class="legend">Trentino Gravel · Guida in versione beta — la miglioriamo ogni settimana</div>
+    <div class="legend" id="legenda"></div>
   </main>
 
   <nav><div class="in">
-    <button data-tab="home"><span class="e">🏠</span>Home</button>
-    <button data-tab="percorso"><span class="e">🗺️</span>Percorso</button>
-    <button data-tab="info"><span class="e">ℹ️</span>Info</button>
-    <button data-tab="dormire"><span class="e">🛏️</span>Dormire</button>
-    <button data-tab="live"><span class="e">📡</span>Live</button>
+    <button data-tab="home"><span class="e">🏠</span><span class="tlbl" data-t="home"></span></button>
+    <button data-tab="percorso"><span class="e">🗺️</span><span class="tlbl" data-t="percorso"></span></button>
+    <button data-tab="info"><span class="e">ℹ️</span><span class="tlbl" data-t="info"></span></button>
+    <button data-tab="dormire"><span class="e">🛏️</span><span class="tlbl" data-t="dormire"></span></button>
+    <button data-tab="live"><span class="e">📡</span><span class="tlbl" data-t="live"></span></button>
   </div></nav>
 </div>
 
@@ -261,7 +259,13 @@ nav button.on .e{transform:scale(1.12)}
 <script src="poi.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const C = CONTENT.it;
+const LANG = (localStorage.getItem('tg-lang') === 'en') ? 'en' : 'it';
+const C = CONTENT[LANG];
+const U = C.ui;
+document.documentElement.lang = LANG;
+// riempie i segnaposto | di una stringa del dizionario
+function fmt(tpl){ const p = tpl.split('|'); let o = p[0];
+  for (let i = 1; i < arguments.length; i++) o += arguments[i] + (p[i] || ''); return o; }
 const $ = s => document.querySelector(s);
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -278,7 +282,7 @@ function initGate(){
       localStorage.setItem('tg-access', GATE_CODE);
       $('#gate').style.display = 'none';
     } else {
-      $('#gateerr').textContent = 'Codice non valido. Controlla l\'email di benvenuto.';
+      $('#gateerr').textContent = U.gate.errore;
     }
   };
   $('#gatebtn').addEventListener('click', tryCode);
@@ -376,36 +380,36 @@ function renderHome(){
   const ph = phase();
   let h = '';
   h += `<div class="card" id="installcard" style="display:none">
-    <h3>📲 Tieni la guida a portata di mano</h3>
-    <p>Salvala sulla schermata Home. Diventa un'icona sul telefono — un tocco e sei dentro, anche senza segnale.</p>
-    <div class="btnrow"><button class="btn small" id="installbtn">Salva sul telefono</button>
-    <button class="btn small sec" id="installlater">Più tardi</button></div></div>`;
+    <h3>${esc(U.installa.titolo)}</h3>
+    <p>${esc(U.installa.testo)}</p>
+    <div class="btnrow"><button class="btn small" id="installbtn">${esc(U.installa.salva)}</button>
+    <button class="btn small sec" id="installlater">${esc(U.installa.dopo)}</button></div></div>`;
   if (C.avvisi && C.avvisi.length){
-    h += `<div class="avvisi"><h3>📌 Da sapere adesso</h3>` +
+    h += `<div class="avvisi"><h3>${esc(U.avvisiTitolo)}</h3>` +
       C.avvisi.map(a=>`<p>${esc(a.testo)}</p>`).join('') + `</div>`;
   }
   if (ph === 'prima') {
     h += `<div class="card hero"><h2>${esc(C.intro.titolo)}</h2>
       <div id="countdown"></div>
       <p>${esc(C.intro.testo)}</p></div>`;
-    h += `<div class="card"><h2>Le cose da fare, in ordine</h2>
-      <p class="muted">Segui l'ordine e spunta quello che completi. La lista si ricorda di te.</p><div id="cklist">` +
+    h += `<div class="card"><h2>${esc(U.checklistTitolo)}</h2>
+      <p class="muted">${esc(U.checklistSotto)}</p><div id="cklist">` +
       C.checklist.map(c=>`<div class="chk" data-id="${c.id}">
         <div class="top"><input type="checkbox" id="ck-${c.id}"/><label for="ck-${c.id}">${esc(c.testo)}</label></div>
         <div class="det">${esc(c.dettaglio||'')} ${c.url
           ? `<a href="${c.url}" target="_blank" rel="noopener">${esc(c.cta||'Apri')} ›</a>`
-          : `<a href="#" data-tab="${c.tab}">Vai ›</a>`}</div>
+          : `<a href="#" data-tab="${c.tab}">${esc(U.vai)} ›</a>`}</div>
       </div>`).join('') + `</div></div>`;
     h += cardPercorsiBrevi();
   }
   if (ph === 'durante') {
     h += `<div class="bigbtns">
-      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">📍</span><b>Live</b><br/><span style="font-size:13.5px;opacity:.9">Tocca qui e scopri dove sei, a che km, cosa hai davanti da mangiare e da dormire</span></div>
-      <a class="bigbtn alert" href="tel:112"><span class="e">🆘</span><b>Emergenze · 112</b></a>
-      <div class="bigbtn" data-tab="live" data-share="1"><span class="e">📤</span><b>Condividi posizione</b></div>
-      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">🌦️</span><b>Meteo e tramonto</b></div>
-      <div class="bigbtn" data-tab="dormire"><span class="e">🛏️</span><b>Dormire stanotte</b></div>
-      <div class="bigbtn" data-tab="info"><span class="e">ℹ️</span><b>Tutte le info</b></div>
+      <div class="bigbtn primary" data-tab="live" data-gps="1"><span class="e">📍</span><b>Live</b><br/><span style="font-size:13.5px;opacity:.9">${esc(U.durante.liveSotto)}</span></div>
+      <a class="bigbtn alert" href="tel:112"><span class="e">🆘</span><b>${esc(U.durante.emergenze)}</b></a>
+      <div class="bigbtn" data-tab="live" data-share="1"><span class="e">📤</span><b>${esc(U.durante.condividi)}</b></div>
+      <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">🌦️</span><b>${esc(U.durante.meteo)}</b></div>
+      <div class="bigbtn" data-tab="dormire"><span class="e">🛏️</span><b>${esc(U.durante.dormire)}</b></div>
+      <div class="bigbtn" data-tab="info"><span class="e">ℹ️</span><b>${esc(U.durante.info)}</b></div>
     </div>`;
   }
   if (ph === 'dopo') {
@@ -424,12 +428,12 @@ function renderHome(){
   maybeShowInstall();
 }
 function cardPercorsiBrevi(){
-  return `<div class="card"><h2>I tre percorsi</h2>` +
+  return `<div class="card"><h2>${esc(U.trePercorsi)}</h2>` +
     C.percorsi.map(p=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 0">
       <span style="width:11px;height:11px;border-radius:50%;background:${p.colore};flex:0 0 auto"></span>
       <b style="font-size:14.5px">${esc(p.nome)}</b>
       <span class="muted">${p.km} km · ${p.dplus} m D+</span></div>`).join('') +
-    `<div class="btnrow"><button class="btn sec" data-tab="percorso">Vai ai percorsi</button></div></div>`;
+    `<div class="btnrow"><button class="btn sec" data-tab="percorso">${esc(U.vaiPercorsi)}</button></div></div>`;
 }
 function bindTabLinks(root){
   root.querySelectorAll('[data-tab]').forEach(el=>{
@@ -451,8 +455,8 @@ function startCountdown(){
     const d = Math.max(0, t - Date.now());
     const gg = Math.floor(d/864e5), hh = Math.floor(d%864e5/36e5), mm = Math.floor(d%36e5/6e4);
     const el = $('#countdown');
-    if (el) el.innerHTML = `<div><b>${gg}</b><span>giorni</span></div>
-      <div><b>${hh}</b><span>ore</span></div><div><b>${mm}</b><span>minuti</span></div>`;
+    if (el) el.innerHTML = `<div><b>${gg}</b><span>${esc(U.countdown.giorni)}</span></div>
+      <div><b>${hh}</b><span>${esc(U.countdown.ore)}</span></div><div><b>${mm}</b><span>${esc(U.countdown.minuti)}</span></div>`;
   }
   tick(); setInterval(tick, 30000);
 }
@@ -472,8 +476,8 @@ function bindChecklist(){
 
 /* ---------- PERCORSO ---------- */
 function renderPercorso(){
-  let h = `<div class="card"><h2>Scegli il tuo percorso</h2>
-    <p>Partenza e arrivo per tutti da <b>${esc(C.meta.hub)}</b>. Puoi cambiare idea sul percorso in qualsiasi momento, senza bisogno di comunicarcelo — ti vedremo dall'app di live tracking.</p></div>`;
+  let h = `<div class="card"><h2>${esc(U.percorsoScegli)}</h2>
+    <p>${fmt(esc(U.percorsoIntro), '<b>' + esc(C.meta.hub) + '</b>')}</p></div>`;
   h += C.percorsi.map(p=>`<div class="card route" style="--col:${p.colore}">
     <h3 style="color:${p.colore}">${esc(p.nome)}</h3>
     <div class="badges"><span class="badge">${p.km} km</span><span class="badge">${p.dplus} m D+</span>
@@ -481,20 +485,20 @@ function renderPercorso(){
     <p>${esc(p.desc)}</p>
     ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
     <div class="btnrow">
-      <a class="btn small" href="${C.mappeBase}percorso-${p.id}.html" target="_blank" rel="noopener">Mappa + altimetria</a>
-      <a class="btn small sec" href="${gpxUrl(p.id)}" target="_blank" rel="noopener">↓ GPX</a>
+      <a class="btn small" href="${C.mappeBase}percorso-${p.id}.html" target="_blank" rel="noopener">${esc(U.mappaAltimetria)}</a>
+      <a class="btn small sec" href="${gpxUrl(p.id)}" target="_blank" rel="noopener">${esc(U.gpx)}</a>
     </div></div>`).join('');
-  h += `<div class="card" id="mapcard"><h3>I tre percorsi insieme</h3><div id="minimap"></div></div>`;
-  h += `<div class="card" id="poicard"><h3>⛲🍝🛏️ Servizi lungo il percorso</h3>
-    <p class="muted">Acqua, cibo e alloggi entro 500 metri dalla traccia. La lista dice che un posto esiste, non che è aperto — per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa.</p>
+  h += `<div class="card" id="mapcard"><h3>${esc(U.insieme)}</h3><div id="minimap"></div></div>`;
+  h += `<div class="card" id="poicard"><h3>${esc(U.servizi)}</h3>
+    <p class="muted">${U.serviziIntro}</p>
     <div class="btnrow" id="poipills" style="margin-bottom:8px">` +
-    C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
+    C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.breve)}</button>`).join('') +
     `</div>
     <div class="btnrow" id="poifilters" style="margin-bottom:10px">
-      <button class="btn small sec pfil on" data-f="tutti">Tutto</button>
-      <button class="btn small sec pfil" data-f="a">⛲ Acqua</button>
-      <button class="btn small sec pfil" data-f="m">🍝 Mangiare</button>
-      <button class="btn small sec pfil" data-f="d">🛏️ Dormire</button>
+      <button class="btn small sec pfil on" data-f="tutti">${esc(U.filtri.tutti)}</button>
+      <button class="btn small sec pfil" data-f="a">${esc(U.filtri.a)}</button>
+      <button class="btn small sec pfil" data-f="m">${esc(U.filtri.m)}</button>
+      <button class="btn small sec pfil" data-f="d">${esc(U.filtri.d)}</button>
     </div><div id="poilist" class="poilist"></div></div>`;
   $('#tab-percorso').innerHTML = h;
   document.querySelectorAll('#poifilters .pfil').forEach(b=>b.addEventListener('click',()=>{
@@ -510,20 +514,21 @@ function renderPercorso(){
   renderPoiList();
 }
 function bookBtn(e){
-  return (e.lat ? `<a href="#" class="poibook" data-lat="${e.lat}" data-lng="${e.lng}">Prenota</a>` : '');
+  return (e.lat ? `<a href="#" class="poibook" data-lat="${e.lat}" data-lng="${e.lng}">${esc(U.prenota)}</a>` : '');
 }
+function subLingua(s){ return U.poiSub[s] || s; }
 function poiRow(e){
   if (e.t === 'c'){
-    const det = [e.ne?`${e.ne} mangiare`:null, e.ns?`${e.ns} alloggi`:null, e.nf?`${e.nf} fontane`:null]
+    const det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null]
       .filter(Boolean).join(' · ');
     return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><b>${esc(e.nome)}</b>
       <span class="muted">${det}</span>${e.ns ? bookBtn(e) : ''}</div>`;
   }
   const ico = {a:'⛲', m:'🍝', d:'🛏️'}[e.t];
   const nome = (e.t === 'a' && e.n > 1)
-    ? `${e.n} fontane fino al km ${Math.round(e.fino)}`
-    : (e.nome || e.sub);
-  const sub = (e.nome && e.t !== 'a') ? ` <span class="muted">(${esc(e.sub)}${e.luogo ? ' · ' + esc(e.luogo) : ''})</span>`
+    ? `${e.n} ${U.fontane} → km ${Math.round(e.fino)}`
+    : (e.nome || subLingua(e.sub));
+  const sub = (e.nome && e.t !== 'a') ? ` <span class="muted">(${esc(subLingua(e.sub))}${e.luogo ? ' · ' + esc(e.luogo) : ''})</span>`
             : (e.luogo ? ` <span class="muted">(${esc(e.luogo)})</span>` : '');
   return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><span>${ico}</span>
     <span>${esc(nome)}${sub}</span>${e.t === 'd' ? bookBtn(e) : ''}</div>`;
@@ -555,14 +560,14 @@ function renderPoiList(){
   if (!el) return;
   const list = (window.POI && POI[myRoute()]) || [];
   if (!list.length){
-    el.innerHTML = '<p class="muted" style="padding:10px 0">La lista servizi di questo percorso è in preparazione, arriva a breve.</p>';
+    el.innerHTML = `<p class="muted" style="padding:10px 0">${esc(U.serviziInArrivo)}</p>`;
     return;
   }
   const rows = list.filter(e => poiMatch(e, poiFilter)).map(e => ({km: e.km, html: poiRow(e)}));
   if (poiFilter !== 'd'){
     gapWarnings(list).forEach(w => rows.push({km: w.km,
       html: `<div class="poirow" style="background:#fff5f5;border-radius:8px;padding:7px 8px">⚠️
-        <span><b>${w.gap} km senza acqua né cibo</b> <span class="muted">dal km ${w.a} al km ${w.b} — fai scorta prima</span></span></div>`}));
+        <span><b>${w.gap} ${esc(U.buco)}</b> <span class="muted">${fmt(esc(U.bucoDettaglio), w.a, w.b)}</span></span></div>`}));
   }
   rows.sort((x, y) => x.km - y.km);
   el.innerHTML = rows.map(r => r.html).join('');
@@ -664,13 +669,13 @@ function renderDormire(){
   const s = C.dormire;
   let h = `<div class="card"><h2>${esc(s.titolo)}</h2><p>${esc(s.intro)}</p></div>`;
   h += `<div class="card" style="border:2px solid var(--gold)"><h3>🗺️ ${esc(s.stay22.titolo)}</h3><p>${esc(s.stay22.testo)}</p>
-    <p style="margin:4px 0 8px"><span class="muted">La mappa mostra la traccia del tuo percorso</span></p>
+    <p style="margin:4px 0 8px"><span class="muted">${esc(U.mappaTraccia)}</span></p>
     <div class="btnrow" style="margin:0 0 10px">` +
-    C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.nome.replace('Percorso ',''))}</button>`).join('') +
+    C.percorsi.map(p=>`<button class="btn small sec rpill" data-route="${p.id}">${esc(p.breve)}</button>`).join('') +
     `</div>
-    <div id="stay22wrap"><div style="padding:40px;text-align:center;color:var(--muted)">Caricamento mappa alloggi…</div></div></div>`;
+    <div id="stay22wrap"><div style="padding:40px;text-align:center;color:var(--muted)">${esc(U.caricamentoAlloggi)}</div></div></div>`;
   if (s.consigli && s.consigli.length)
-    h += `<div class="card"><h3>Consigli dal team</h3>` +
+    h += `<div class="card"><h3>Consigli</h3>` +
       s.consigli.map(c=>`<div class="rnote">• ${esc(c)}</div>`).join('') + `</div>`;
   $('#tab-dormire').innerHTML = h;
   document.querySelectorAll('#tab-dormire .rpill').forEach(b=>b.addEventListener('click',()=>{
@@ -687,7 +692,7 @@ function loadStay22(){
   const lat = stayCenter ? stayCenter.lat : s.lat;
   const lng = stayCenter ? stayCenter.lng : s.lng;
   const url = `https://www.stay22.com/embed/gm?aid=${s.aid}&campaign=${s.campaign}&lat=${lat}&lng=${lng}`+
-    `&checkin=${s.checkin}&checkout=${s.checkout}&maincolor=68173D&venue=${encodeURIComponent('Progetto Manifattura Rovereto')}&ljs=it`+
+    `&checkin=${s.checkin}&checkout=${s.checkout}&maincolor=68173D&venue=${encodeURIComponent('Progetto Manifattura Rovereto')}&ljs=${U.stay22lang}`+
     `&gpx=${encodeURIComponent(gpxUrl(rid))}&gpxlinecolor=${p.colore.replace('#','')}&gpxlinethickness=4&gpxlineopacity=1.00&mapstyle=outdoors`;
   $('#stay22wrap').innerHTML = `<iframe src="${url}" allow="geolocation" loading="lazy"></iframe>`;
 }
@@ -696,18 +701,18 @@ function loadStay22(){
 function renderLive(){
   const l = C.live;
   let h = `<div class="card"><h2>📍 ${esc(l.gps.titolo)}</h2><p>${esc(l.gps.testo)}</p>
-    <p><label class="muted">Il mio percorso</label>
+    <p><label class="muted">${esc(U.mioPercorso)}</label>
     <select id="gpsroute" style="font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)">
       ${C.percorsi.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('')}
     </select></p>
-    <div class="btnrow"><button class="btn" id="gpsbtn">Attiva il GPS</button></div>
+    <div class="btnrow"><button class="btn" id="gpsbtn">${esc(U.attivaGps)}</button></div>
     <div id="gpsinfo"></div>
     <div id="gpsahead"></div>
     <div id="gpsmap" style="margin-top:10px;display:none"></div></div>`;
-  h += `<div class="card" id="meteosec"><h3>🌦️ Meteo</h3>
-    <div class="btnrow"><button class="btn small" id="meteogpsbtn">Meteo dove sono</button></div>
+  h += `<div class="card" id="meteosec"><h3>${esc(U.meteoTitolo)}</h3>
+    <div class="btnrow"><button class="btn small" id="meteogpsbtn">${esc(U.meteoDoveSono)}</button></div>
     <div id="meteogps"></div>
-    <h3 style="margin-top:16px">Le località dell'evento</h3>
+    <h3 style="margin-top:16px">${esc(U.meteoLocalita)}</h3>
     <p class="muted" id="meteonote"></p>
     <div class="meteowrap"><table id="meteotab"></table></div>
     <div class="sunset" id="sunsetbox">🌇 Calcolo l'orario del tramonto…</div></div>`;
@@ -737,7 +742,7 @@ function wIcon(code){
 }
 function fmtDay(iso){
   const d = new Date(iso + 'T12:00:00');
-  return ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'][d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1);
+  return U.giorniSett[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1);
 }
 function meteoDays(){
   const todayIso = new Date().toISOString().slice(0,10);
@@ -747,7 +752,7 @@ function meteoDays(){
   }
   const days = [];
   for (let i = 0; i < 6; i++) days.push(new Date(Date.now() + i*864e5).toISOString().slice(0,10));
-  return { days, nota: 'Anteprima con i prossimi giorni — durante l\'evento questa tabella mostra il 25–30 settembre.' };
+  return { days, nota: U.meteoNota };
 }
 async function loadMeteoTable(){
   const { days, nota } = meteoDays();
@@ -781,15 +786,15 @@ async function loadSunset(){
       sunsetCache = r.daily.sunset[0].slice(11,16);
     }
     const box = $('#sunsetbox');
-    if (box) box.innerHTML = `🌇 <b>Tramonto oggi a Rovereto alle ${sunsetCache}</b> — pianifica di arrivare a destinazione prima del buio.`;
+    if (box) box.innerHTML = fmt(U.tramonto, sunsetCache);
     return sunsetCache;
-  } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = '🌇 Tramonto non disponibile offline.'; }
+  } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = U.tramontoOffline; }
 }
 async function meteoGPS(){
   const box = $('#meteogps');
   box.style.display = 'block';
-  if (!navigator.geolocation){ box.textContent = 'GPS non disponibile.'; return; }
-  box.textContent = 'Cerco la tua posizione…';
+  if (!navigator.geolocation){ box.textContent = U.gpsNo; return; }
+  box.textContent = U.gpsCerco;
   navigator.geolocation.getCurrentPosition(async pos => {
     try {
       const u = `https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}` +
@@ -800,18 +805,18 @@ async function meteoGPS(){
       const hNow = new Date().getHours();
       const prob = r.hourly && r.hourly.precipitation_probability ? r.hourly.precipitation_probability[hNow] : null;
       const sunset = r.daily && r.daily.sunset ? r.daily.sunset[0].slice(11,16) : null;
-      box.innerHTML = `<b>${wIcon(c.weather_code)} ${Math.round(c.temperature_2m)}°C</b> dove sei adesso · vento ${Math.round(c.wind_speed_10m)} km/h` +
-        (prob !== null ? ` · pioggia nelle prossime ore: ${prob}%` : '') +
-        (sunset ? `<br/>🌇 Il sole qui tramonta alle <b>${sunset}</b>.` : '');
-    } catch(e){ box.textContent = 'Meteo non raggiungibile: serve connessione.'; }
-  }, () => { box.textContent = 'Non riesco a leggere la posizione: controlla i permessi.'; },
+      box.innerHTML = `<b>${wIcon(c.weather_code)} ${Math.round(c.temperature_2m)}°C</b> ${esc(U.meteoAdesso)} · ${esc(U.vento)} ${Math.round(c.wind_speed_10m)} km/h` +
+        (prob !== null ? ` · ${esc(U.pioggia)} ${prob}%` : '') +
+        (sunset ? `<br/>${esc(U.tramontaQui)} <b>${sunset}</b>.` : '');
+    } catch(e){ box.textContent = U.meteoOffline; }
+  }, () => { box.textContent = U.gpsNegato; },
   {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
 }
 let gpsMap, gpsMarker, gpsLine, gpsLineRoute, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
 function sharePos(){
   if (!lastPos) return;
   const url = `https://maps.google.com/?q=${lastPos[0].toFixed(5)},${lastPos[1].toFixed(5)}`;
-  const text = `La mia posizione al Trentino Gravel: ${url}`;
+  const text = `${U.condividiTesto} — ${url}`;
   if (navigator.share) navigator.share({text}).catch(()=>{});
   else window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
 }
@@ -829,20 +834,20 @@ function aheadHtml(rid, km){
   const f = ahead.find(e => e.t === 'm' || (e.t === 'c' && e.ne > 0));
   const ss = ahead.filter(e => e.t === 'd' || (e.t === 'c' && e.ns > 0)).slice(0, 2);
   const row = (ico, e, label, book) =>
-    `<div class="poirow"><span>${ico}</span><span>${label} <b>tra ${Math.max(1, Math.round(e.km - km))} km</b>
+    `<div class="poirow"><span>${ico}</span><span>${label} <b>${esc(U.tra)} ${Math.max(1, Math.round(e.km - km))} ${esc(U.km)}</b>
      <span class="muted">(km ${Math.round(e.km)})</span></span>${book ? bookBtn(e) : ''}</div>`;
-  let h = '<b>Davanti a te</b>';
-  if (w) h += row('⛲', w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} fontane)` : (w.n > 1 ? `${w.n} fontane` : 'fontana'), false);
-  if (f) h += row('🍝', f, f.t === 'c' ? esc(f.nome) + ` (${f.ne} posti)` : esc(f.nome || f.sub), false);
-  ss.forEach(e => h += row('🛏️', e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} alloggi)` : esc(e.nome || e.sub), true));
+  let h = `<b>${esc(U.davanti)}</b>`;
+  if (w) h += row('⛲', w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} ${esc(U.fontane)})` : (w.n > 1 ? `${w.n} ${esc(U.fontane)}` : esc(U.fontana)), false);
+  if (f) h += row('🍝', f, f.t === 'c' ? esc(f.nome) + ` (${f.ne} ${esc(U.posti)})` : esc(f.nome || subLingua(f.sub)), false);
+  ss.forEach(e => h += row('🛏️', e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} ${esc(U.alloggi)})` : esc(e.nome || subLingua(e.sub)), true));
   return h;
 }
 function startGPS(){
   openTab('live');
   const info = $('#gpsinfo');
   info.style.display = 'block';
-  if (!navigator.geolocation){ info.textContent = 'GPS non disponibile su questo dispositivo.'; return; }
-  info.textContent = 'Ricerca posizione…';
+  if (!navigator.geolocation){ info.textContent = U.gpsNo; return; }
+  info.textContent = U.gpsCerco;
   if (gpsWatch) navigator.geolocation.clearWatch(gpsWatch);
   gpsWatch = navigator.geolocation.watchPosition(pos=>{
     const me = [pos.coords.latitude, pos.coords.longitude];
@@ -862,11 +867,11 @@ function startGPS(){
     const distTrack = haversine(me, track[best]);
     const kmTot = p.km;
     if (distTrack > 3){
-      info.innerHTML = `Sei a <b>${distTrack.toFixed(1)} km</b> dal percorso ${esc(p.nome)}. Il punto più vicino è al km <b>${km.toFixed(0)}</b>.`;
+      info.innerHTML = fmt(esc(U.gpsLontano), `<b>${distTrack.toFixed(1)}</b>`, esc(p.nome), `<b>${km.toFixed(0)}</b>`);
     } else {
-      info.innerHTML = `Sei circa al <b>km ${km.toFixed(0)}</b> di ${kmTot} del ${esc(p.nome)} — mancano <b>${Math.max(0,kmTot-km).toFixed(0)} km</b> all'arrivo a Rovereto. Forza! 💪`;
+      info.innerHTML = fmt(esc(U.gpsPosizione), `<b>${km.toFixed(0)}</b>`, kmTot, esc(p.nome), `<b>${Math.max(0,kmTot-km).toFixed(0)}</b>`);
     }
-    info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">📤 Condividi la posizione</button></div>`;
+    info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">${esc(U.condividiPos)}</button></div>`;
     const aheadBox = $('#gpsahead');
     const ah = aheadHtml(rid, km);
     if (ah){ aheadBox.style.display = 'block'; aheadBox.innerHTML = ah; bindBook(aheadBox); }
@@ -891,7 +896,7 @@ function startGPS(){
     gpsMarker = L.circleMarker(me,{radius:9,color:'#fff',weight:2.5,fillColor:'#1971c2',fillOpacity:1}).addTo(gpsMap).bindPopup('Sei qui');
     gpsMap.setView(me, 13);
   }, err=>{
-    info.textContent = 'Non riesco a leggere la posizione: ' + (err.code===1 ? 'permesso negato dal telefono.' : 'riprova all\'aperto.');
+    info.textContent = U.gpsNegato;
   }, {enableHighAccuracy:true, maximumAge:10000, timeout:15000});
 }
 
@@ -917,7 +922,7 @@ $('#searchinput').addEventListener('input',e=>{
   const hits = INDEX.filter(i=>q.split(/\s+/).every(w=>i.k.includes(w))).slice(0,8);
   box.innerHTML = hits.length
     ? hits.map((h,i)=>`<div class="sres" data-i="${INDEX.indexOf(h)}"><b>${esc(h.t)}</b><span>${esc(h.s)}</span></div>`).join('')
-    : `<div class="snull">Niente per «${esc(q)}». Prova con un'altra parola.</div>`;
+    : `<div class="snull">${esc(U.cercaNulla)}</div>`;
   box.querySelectorAll('.sres').forEach(r=>r.addEventListener('click',()=>{
     const h = INDEX[+r.dataset.i];
     $('#searchov').classList.remove('open');
@@ -927,7 +932,25 @@ $('#searchinput').addEventListener('input',e=>{
   }));
 });
 
-/* ---------- avvio ---------- */
+/* ---------- avvio: testi statici in lingua ---------- */
+(function(){
+  const g = U.gate;
+  $('#gatetesto').innerHTML = esc(g.testo).replace('|', '<br/>');
+  $('#gatecode').placeholder = g.placeholder;
+  $('#gatebtn').textContent = g.bottone;
+  $('#iostitolo').textContent = U.installa.iosTitolo;
+  $('#iospassi').innerHTML = U.installa.iosPassi.map((p, i) =>
+    `<div class="step"><span class="n">${i+1}</span><span>${p}</span></div>`).join('');
+  $('#iosclose').textContent = U.installa.iosFatto;
+  document.querySelectorAll('.tlbl').forEach(el => el.textContent = U.tabs[el.dataset.t]);
+  $('#legenda').textContent = U.legenda;
+  $('#searchinput').placeholder = U.cercaGlobale;
+  $('#langsw').innerHTML = ['it','en'].map(l =>
+    `<span class="${l===LANG?'on':''}" data-lang="${l}" style="cursor:pointer">${l.toUpperCase()}</span>`).join('');
+  document.querySelectorAll('#langsw span').forEach(el => el.addEventListener('click', () => {
+    if (el.dataset.lang !== LANG){ localStorage.setItem('tg-lang', el.dataset.lang); location.reload(); }
+  }));
+})();
 initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
 paintDemo(); openTab('home');
