@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Trentino Gravel · Staff</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>.staffwrap{max-width:560px;margin:0 auto;padding:16px}</style>
+</head>
+<body>
+<div id="gate" style="display:none"><div class="box">
+  <div class="kicker">Trentino Gravel · Staff</div>
+  <h2>Comunicazioni</h2>
+  <p>Inserisci il codice staff per inviare un messaggio a tutti i partecipanti.</p>
+  <input id="gatecode" type="text" placeholder="CODICE" autocomplete="off"/>
+  <div class="err" id="gateerr"></div>
+  <button class="btn" id="gatebtn">Entra</button>
+</div></div>
+<div class="staffwrap">
+  <div class="card">
+    <h2>Invia comunicazione</h2>
+    <p class="muted">Il messaggio arriva come notifica push a tutti i partecipanti iscritti, e resta visibile nella guida (tab Live) a chi la riapre durante l'evento.</p>
+    <p><label class="muted">Titolo</label><br/>
+    <input id="msgtitle" type="text" maxlength="80" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:15px"/></p>
+    <p><label class="muted">Messaggio</label><br/>
+    <textarea id="msgbody" rows="4" maxlength="500" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:15px"></textarea></p>
+    <div class="btnrow"><button class="btn" id="sendbtn">Invia a tutti</button></div>
+    <p id="sendstatus" class="muted"></p>
+  </div>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+// ✱ segnaposto, usato SOLO per il confronto locale (UX del gate). La Edge Function
+// valida il codice server-side comunque: il valore inviato nella richiesta e' sempre
+// quello digitato dallo staff (staffCode qui sotto), mai questa costante.
+const STAFF_CODE = 'PIONEER26-STAFF';
+const FUNCTION_URL = 'https://kqsrtuzeeiljozdnjott.supabase.co/functions/v1/tg-send-broadcast';
+let staffCode = localStorage.getItem('tg-staff-access') || '';
+
+function initGate(){
+  if (staffCode === STAFF_CODE) return;
+  $('#gate').style.display = 'flex';
+  const tryCode = () => {
+    const v = $('#gatecode').value.trim().toUpperCase();
+    if (v === STAFF_CODE){
+      staffCode = v;
+      localStorage.setItem('tg-staff-access', v);
+      $('#gate').style.display = 'none';
+    } else {
+      $('#gateerr').textContent = 'Codice non valido.';
+    }
+  };
+  $('#gatebtn').addEventListener('click', tryCode);
+  $('#gatecode').addEventListener('keydown', e => { if (e.key === 'Enter') tryCode(); });
+}
+initGate();
+
+$('#sendbtn').addEventListener('click', async () => {
+  const title = $('#msgtitle').value.trim();
+  const body = $('#msgbody').value.trim();
+  const status = $('#sendstatus');
+  if (!title || !body){
+    status.textContent = 'Scrivi sia il titolo sia il messaggio.';
+    return;
+  }
+  $('#sendbtn').disabled = true;
+  status.textContent = 'Invio in corso…';
+  try {
+    const res = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, body, staffCode })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Invio fallito');
+    status.textContent = `Inviato a ${data.sent} di ${data.total} iscritti.`;
+    $('#msgtitle').value = '';
+    $('#msgbody').value = '';
+  } catch (err){
+    status.textContent = 'Errore — ' + err.message;
+  } finally {
+    $('#sendbtn').disabled = false;
+  }
+});
+</script>
+</body>
+</html>

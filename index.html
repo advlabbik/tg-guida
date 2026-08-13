@@ -94,6 +94,120 @@ document.documentElement.lang = LANG;
 function fmt(tpl){ const p = tpl.split('|'); let o = p[0];
   for (let i = 1; i < arguments.length; i++) o += arguments[i] + (p[i] || ''); return o; }
 const $ = s => document.querySelector(s);
+
+/* ---------- notifiche push (sistema di Francesco, PR #13) ----------
+   INTERRUTTORE: con false la card sparisce e non parte nessuna richiesta.
+   Per lo spegnimento immediato basta cambiare questa riga e ripubblicare. */
+const NOTIFICHE_ATTIVE = true;
+const SUPABASE_URL = 'https://kqsrtuzeeiljozdnjott.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_kL1z4KhZWlxIpqE55KIQvw_rr3kZbih';
+const VAPID_PUBLIC_KEY = 'BM20wU_676VT3P7CjS6j_9kFYXLnFzlODCAMTa6DZi8FftYWn4_hVDBtwAcW1GhiwFDXEi8A1NyR_Kgga90ZyFM';
+const PUSH_ENDPOINT_KEY = 'tg-push-saved-endpoint';
+
+function urlBase64ToUint8Array(base64String){
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g,'+').replace(/_/g,'/');
+  const raw = atob(base64);
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+function pushSupported(){
+  return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+}
+async function saveSubscription(sub){
+  const subJson = sub.toJSON();
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_push_subscriptions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ endpoint: subJson.endpoint, p256dh: subJson.keys.p256dh, auth: subJson.keys.auth })
+  });
+  if (!res.ok && res.status !== 409) throw new Error('salvataggio subscription fallito');
+  localStorage.setItem(PUSH_ENDPOINT_KEY, subJson.endpoint);
+}
+// Il permesso resta 'granted' anche se il salvataggio era fallito o il browser
+// ha ruotato l'endpoint: verifica silenziosa e ri-salvataggio quando serve.
+async function verifyPushSubscription(){
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub){
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+    const savedEndpoint = localStorage.getItem(PUSH_ENDPOINT_KEY);
+    if (sub.endpoint !== savedEndpoint) await saveSubscription(sub);
+  } catch (err){ /* silenzioso, si riprova al prossimo giro */ }
+}
+async function refreshNotifCard(){
+  const card = $('#notifcard');
+  if (!card) return;
+  if (!NOTIFICHE_ATTIVE || !pushSupported() || phase() === 'dopo'){
+    card.style.display = 'none';
+    return;
+  }
+  card.style.display = '';
+  const btn = $('#notifbtn');
+  const status = $('#notifstatus');
+  if (Notification.permission === 'granted'){
+    btn.style.display = 'none';
+    status.textContent = U.notifiche.attive;
+    verifyPushSubscription();
+  } else if (Notification.permission === 'denied'){
+    btn.style.display = 'none';
+    status.textContent = U.notifiche.bloccate;
+  } else {
+    btn.style.display = '';
+    status.textContent = '';
+  }
+}
+async function activatePush(){
+  const status = $('#notifstatus');
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted'){ refreshNotifCard(); return; }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub){
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+    await saveSubscription(sub);
+    refreshNotifCard();
+  } catch (err){
+    status.textContent = U.notifiche.errore;
+  }
+}
+async function loadComunicazioni(){
+  const sec = $('#commssec');
+  const list = $('#commslist');
+  if (!sec || !list) return;
+  if (!NOTIFICHE_ATTIVE || phase() !== 'durante'){
+    sec.style.display = 'none';
+    return;
+  }
+  sec.style.display = '';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_broadcast_messages?select=title,body,created_at&order=created_at.desc`, {
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    if (!res.ok) throw new Error('fetch fallita');
+    const msgs = await res.json();
+    list.innerHTML = msgs.length
+      ? msgs.map(m => `<div class="avvisi"><h3>${esc(m.title)} · ${new Date(m.created_at).toLocaleTimeString(LANG === 'en' ? 'en-GB' : 'it-IT',{hour:'2-digit',minute:'2-digit'})}</h3><p>${esc(m.body)}</p></div>`).join('')
+      : `<p class="muted">${esc(U.notifiche.nessuna)}</p>`;
+  } catch (err){
+    list.innerHTML = `<p class="muted">${esc(U.notifiche.erroreCarico)}</p>`;
+  }
+}
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- accesso riservato ai partecipanti ---------- */
@@ -195,6 +309,7 @@ function openTab(name){
   if (name==='percorso' && !mapsInit.mini) { mapsInit.mini = true; setTimeout(initMiniMap, 60); }
   if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; loadStay22(); }
   if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
+  if (name==='live') { refreshNotifCard(); loadComunicazioni(); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 window.addEventListener('resize', ()=>{
@@ -554,7 +669,15 @@ function loadStay22(){
 /* ---------- LIVE ---------- */
 function renderLive(){
   const l = C.live;
-  let h = `<div class="card"><h2>${icon('crosshair',22)} ${esc(l.gps.titolo)}</h2><p>${esc(l.gps.testo)}</p>
+  let h = `<div class="card" id="notifcard" style="display:none">
+    <h3>${icon('megaphone',20)} ${esc(U.notifiche.titolo)}</h3>
+    <p>${esc(U.notifiche.testo)}</p>
+    <div class="btnrow"><button class="btn" id="notifbtn">${esc(U.notifiche.attiva)}</button></div>
+    <p class="muted" id="notifstatus"></p></div>`;
+  h += `<div id="commssec" style="display:none">
+    <h3 style="margin:4px 0 8px">${icon('megaphone',20)} ${esc(U.notifiche.comunicazioni)}</h3>
+    <div id="commslist"></div></div>`;
+  h += `<div class="card"><h2>${icon('crosshair',22)} ${esc(l.gps.titolo)}</h2><p>${esc(l.gps.testo)}</p>
     <p><label class="muted">${esc(U.mioPercorso)}</label>
     <select id="gpsroute" style="font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)">
       ${C.percorsi.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join('')}
@@ -578,6 +701,7 @@ function renderLive(){
   });
   $('#gpsbtn').addEventListener('click', startGPS);
   $('#meteogpsbtn').addEventListener('click', meteoGPS);
+  $('#notifbtn').addEventListener('click', activatePush);
   $('#gpsinfo').addEventListener('click', e => { if (e.target.id === 'shareposbtn') sharePos(); });
 }
 
@@ -820,7 +944,12 @@ $('#searchinput').addEventListener('input',e=>{
 initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
 paintDemo(); openTab('home');
+const tabRichiesta = new URLSearchParams(location.search).get('tab');
+if (['home','percorso','info','dormire','live'].includes(tabRichiesta)) openTab(tabRichiesta);
 if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', ev => {
+    if (ev.data && ev.data.type === 'open-live') openTab('live');
+  });
   // se arriva una versione nuova mentre l'app è aperta, si ricarica da sola
   const avevaSW = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.register('sw.js').catch(()=>{});
