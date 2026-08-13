@@ -7,6 +7,7 @@
 <meta name="robots" content="noindex, nofollow"/>
 <link rel="stylesheet" href="styles.css"/>
 <style>.staffwrap{max-width:560px;margin:0 auto;padding:16px}</style>
+<script src="config.js"></script>
 </head>
 <body>
 <div id="gate" style="display:none"><div class="box">
@@ -31,7 +32,7 @@
 </div>
 <script>
 const $ = s => document.querySelector(s);
-const FUNCTION_URL = 'https://kqsrtuzeeiljozdnjott.supabase.co/functions/v1/tg-send-broadcast';
+const FUNCTION_URL = `${window.TG_SUPABASE_URL}/functions/v1/tg-send-broadcast`;
 let staffCode = localStorage.getItem('tg-staff-access') || '';
 
 // Nessuna copia locale del codice staff: l'unica fonte di verità è il secret

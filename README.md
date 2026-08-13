@@ -24,6 +24,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 |---|---|
 | `index.html` | Markup + tutta la logica dell'app (tab, gate d'accesso, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA, opt-in notifiche push, feed Comunicazioni) |
 | `staff.html` | Pagina riservata allo staff per inviare comunicazioni push a tutti i partecipanti iscritti (gate separato da `index.html`, chiama la Edge Function `tg-send-broadcast`) |
+| `config.js` | Unica fonte per `TG_SUPABASE_URL`, caricato sia da `index.html` sia da `staff.html` — evita di tenere sincronizzato a mano lo stesso URL in più file |
 | `styles.css` | Tutto il CSS del design system (token in `:root`, componenti, schermate) |
 | `icons.js` | Helper `icon(name, size)` per le icone (sprite SVG) e mappa id-scheda-info → nome icona |
 | `icons/sprite.svg` | Sprite SVG con i simboli usati nell'app (referenziato via `<use>`) |
