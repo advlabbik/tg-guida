@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
   const payloadStr = JSON.stringify({ title, body });
   const allSubs = subs ?? [];
   let sent = 0;
-  let removed = 0;
+  const staleIds: string[] = [];
 
   for (let i = 0; i < allSubs.length; i += BATCH_SIZE) {
     const batch = allSubs.slice(i, i + BATCH_SIZE);
@@ -90,11 +90,30 @@ Deno.serve(async (req) => {
       } catch (err) {
         const statusCode = (err as { statusCode?: number })?.statusCode;
         if (statusCode === 404 || statusCode === 410) {
-          await supabase.from("tg_push_subscriptions").delete().eq("id", sub.id);
-          removed++;
+          // endpoint non più valido (utente ha disinstallato/revocato): va rimosso,
+          // non è un fallimento da segnalare.
+          staleIds.push(sub.id);
+        } else {
+          // qualsiasi altro errore (es. credenziali VAPID non valide, push service
+          // down) va loggato: altrimenti sparisce senza lasciare traccia e uno
+          // "sent: 0" sembra "nessun iscritto", non "invio rotto".
+          console.error(`invio push fallito per subscription ${sub.id}:`, err);
         }
       }
     }));
+  }
+
+  let removed = 0;
+  if (staleIds.length) {
+    const { error: deleteError, count } = await supabase
+      .from("tg_push_subscriptions")
+      .delete({ count: "exact" })
+      .in("id", staleIds);
+    if (deleteError) {
+      console.error("rimozione subscription scadute fallita:", deleteError);
+    } else {
+      removed = count ?? staleIds.length;
+    }
   }
 
   return json({ sent, removed, total: allSubs.length });
