@@ -753,10 +753,9 @@ function rvBuildMap(){
     L.circleMarker(ll[0], {radius:8, color:'#fff', weight:2, fillColor:g.colore, fillOpacity:1}).bindPopup(U.rv.partenza),
     L.circleMarker(ll[ll.length-1], {radius:8, color:'#fff', weight:2, fillColor:'#c1121f', fillOpacity:1}).bindPopup(U.rv.arrivo)
   ]).addTo(rvMap);
-  for (let km = 50; km < g.kmTot; km += 50){
-    rvLayer.addLayer(L.circleMarker(ll[g.idxFromKm(km)], {radius:5, color:'#fff', weight:1.5, fillColor:'#16211a', fillOpacity:1})
-      .bindTooltip('km ' + km, {direction:'top'}));
-  }
+  /* Niente pallini dei km ogni 50 sulla traccia: da quando la mappa porta i
+     punti di interesse erano solo altri pallini addosso alla linea, e i km si
+     leggono sull'altimetria qui sotto (decisione di Andrea, 13 agosto). */
   // senza animazione: inquadrare un altro percorso non e' un movimento da
   // seguire con l'occhio, e cosi' i segni si calcolano sulla vista definitiva
   // invece che su quella di passaggio
