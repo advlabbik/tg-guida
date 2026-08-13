@@ -309,7 +309,12 @@ function openTab(name){
   if (name==='percorso' && !mapsInit.mini) { mapsInit.mini = true; setTimeout(initMiniMap, 60); }
   if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; loadStay22(); }
   if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
-  if (name==='live') { refreshNotifCard(); loadComunicazioni(); }
+  // refreshNotifCard() trigger verifyPushSubscription() (service worker ready +
+  // getSubscription + eventuale POST): va bene farlo una volta per sessione come
+  // gli altri init qui sopra, non ad ogni rientro nella tab. loadComunicazioni()
+  // resta libera di rifare fetch ad ogni apertura: è leggera e mostra messaggi nuovi.
+  if (name==='live' && !mapsInit.notif) { mapsInit.notif = true; refreshNotifCard(); }
+  if (name==='live') { loadComunicazioni(); }
 }
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
 window.addEventListener('resize', ()=>{
