@@ -220,6 +220,7 @@ ui: {
     quiCiSono: "Qui ci sono | punti", eAltri: "e altri |", altriQui: "e altri | qui",
     prossimi: "Prossimi | km", tuttoIlPercorso: "Tutto il percorso",
     seiQui: "Sei al km | · quota | m",
+    lontanoKm: "Punto più vicino del percorso al km | · quota | m",
     nessunPunto: "Nessun punto di questo tipo su questo percorso.",
     quota: "quota",
     daQui: "Da qui all'arrivo | km e | m di dislivello"
@@ -479,6 +480,7 @@ ui: {
     quiCiSono: "| points here", eAltri: "and | more", altriQui: "and | more here",
     prossimi: "Next | km", tuttoIlPercorso: "Whole route",
     seiQui: "You are at km | · elevation | m",
+    lontanoKm: "Nearest point of the route at km | · elevation | m",
     nessunPunto: "No points of this kind on this route.",
     quota: "elevation",
     daQui: "From here to the finish | km and | m of climbing"

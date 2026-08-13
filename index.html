@@ -1309,7 +1309,7 @@ async function meteoGPS(){
    sella. I segni sulla mappa sono gli stessi della vista percorso. */
 const LV_FINESTRA = 25;   // km davanti mostrati
 const LV_INDIETRO = 3;    // km dietro, per capire da dove arrivi
-let lvRid = null, lvKm = null, lvVista = 'vicino', gpsMk = null, gpsMkSig = null, lvTipTimer = null;
+let lvRid = null, lvKm = null, lvLontano = false, lvVista = 'vicino', gpsMk = null, gpsMkSig = null, lvTipTimer = null;
 function lvFinestra(g, km){
   if (lvVista === 'tutto') return [0, g.kmTot];
   // vicino all'arrivo la finestra non si restringe sotto i 12 km: una striscia
@@ -1332,8 +1332,13 @@ function lvAggiorna(rid, km){
   if (!profDisegna(lvProf, g, da, a, km)) return;
   profPin(lvProf, g, poiDi(rid), 'tutti', gr => lvTip(gr));
   const i = g.idxFromKm(km);
+  /* Da lontano (test da casa, viaggio verso l'evento) il pannello resta
+     visibile e cambia solo la prima riga: "punto piu' vicino del percorso"
+     invece di "sei al km". Nasconderlo del tutto, come faceva la prima
+     versione di questa correzione, faceva sembrare l'app rotta a chiunque
+     la provasse prima di partire — cioe' a quasi tutti. */
   $('#lv-foot').innerHTML =
-    `<span>${fmt(esc(U.rv.seiQui), '<b>'+kmDec(km)+'</b>', g.ele[i])}</span>` +
+    `<span>${fmt(esc(lvLontano ? U.rv.lontanoKm : U.rv.seiQui), '<b>'+kmDec(km)+'</b>', g.ele[i])}</span>` +
     `<span>${fmt(esc(U.rv.daQui), Math.round(g.kmTot-km), g.dplusFrom[i])}</span>`;
 }
 function lvTip(gr){
@@ -1423,20 +1428,17 @@ function startGPS(){
       info.innerHTML = fmt(esc(U.gpsPosizione), `<b>${km.toFixed(0)}</b>`, kmTot, esc(p.nome), `<b>${Math.max(0,kmTot-km).toFixed(0)}</b>`);
     }
     info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">${esc(U.condividiPos)}</button></div>`;
-    /* Lontani dal percorso il km del punto piu' vicino non significa niente:
-       "davanti a te", profilo e "sei al km X" si nascondono invece di
-       dichiarare una posizione sul percorso a chi e' a casa a 50 km.
-       Traccia e segni sulla mappa restano, servono anche per avvicinarsi. */
+    /* "Davanti a te" e profilo restano visibili ANCHE da lontano, calcolati dal
+       punto piu' vicino del percorso. La prima versione di questa correzione li
+       nascondeva oltre i 3 km per non dichiarare una posizione falsa, ma da
+       casa — cioe' dove tutti provano l'app prima dell'evento — il pannello
+       vuoto sembrava un'app rotta (visto succedere ad Andrea, 13 ago). La
+       verita' la dicono i testi: il messaggio qui sopra e la riga del profilo
+       parlano di "punto piu' vicino del percorso", non di "sei al km". */
     const aheadBox = $('#gpsahead');
-    if (lontano){
-      aheadBox.style.display = 'none';
-      const wrap = $('#lv-wrap');
-      if (wrap) wrap.style.display = 'none';
-    } else {
-      const ah = aheadHtml(rid, km);
-      if (ah){ aheadBox.style.display = 'block'; aheadBox.innerHTML = ah; bindBook(aheadBox); }
-      else aheadBox.style.display = 'none';
-    }
+    const ah = aheadHtml(rid, km);
+    if (ah){ aheadBox.style.display = 'block'; aheadBox.innerHTML = ah; bindBook(aheadBox); }
+    else aheadBox.style.display = 'none';
     const mapEl = $('#gpsmap');
     mapEl.style.display = 'block';
     if (!gpsMap){
@@ -1464,8 +1466,8 @@ function startGPS(){
     if (gpsMap.getZoom() == null) gpsMap.setView(me, 13);
     else if (!gpsMap.getBounds().pad(-0.2).contains(me)) gpsMap.setView(me, gpsMap.getZoom(), {animate:false});
     // lvAggiorna salva lvRid/lvKm (anche a tab nascosta), poi i segni sulla mappa
-    if (lontano){ lvRid = rid; lvKm = null; }
-    else lvAggiorna(rid, km);
+    lvLontano = lontano;
+    lvAggiorna(rid, km);
     lvPoiMappa();
   }, err=>{
     info.textContent = U.gpsNegato;
