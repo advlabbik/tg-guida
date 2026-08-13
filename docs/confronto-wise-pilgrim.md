@@ -102,6 +102,21 @@ Chiude anche il principio dell'unica porta, che è il mandato uscito dai questio
 *Fattibilità* — piena, dati e codice già in casa.
 *Costo* — una giornata circa, compresa la sincronia con la mappa.
 
+> **Difetto già in produzione, segnalato da Andrea il 13 agosto.** Non è solo una
+> questione di coerenza. Il bottone apre con `target="_blank"` la pagina
+> `percorso-{id}.html` del repo `trentino-gravel-mappe`, e quella pagina **non ha nessun
+> link di ritorno** — l'header contiene i tre percorsi e il download GPX, niente altro.
+> Chi ha salvato la guida in home ci arriva in una finestra a schermo intero senza barra
+> del browser, quindi non ha nemmeno il tasto indietro. È un vicolo cieco, e chi ci
+> finisce esce dalla guida e non sa come rientrare.
+>
+> **Toppa da fare subito, indipendente da A1.** Aggiungere un link "← Torna alla guida"
+> nell'header delle tre pagine `percorso-*.html`. Vive nell'altro repo, sono dieci minuti,
+> e toglie il vicolo cieco anche se A1 non si fa mai. Da fare prima dell'invio ai
+> partecipanti in ogni caso.
+>
+> A1 resta comunque la soluzione giusta, perché elimina del tutto il salto fuori.
+
 **A2. Rigenerare i POI con le coordinate**
 Prerequisito tecnico di A3. Modifica a `scripts/gen_poi.py`, rilettura OSM sui tre
 percorsi, verifica che i conteggi non cambino.
@@ -194,7 +209,13 @@ fine.
 **C5. Precedente / successivo tra i punti.** Ha senso solo se esistono le schede, quindi
 cade con C1.
 
-## 6. Se dovessi scegliere
+## 6. Da fare comunque, fuori dalla lista
+
+La toppa del link di ritorno sulle pagine `percorso-*.html` (vedi il riquadro dentro A1)
+non è una funzione nuova, è un difetto aperto sulla versione già online. Va sistemata a
+prescindere da cosa si decide del resto, e va fatta nel repo `trentino-gravel-mappe`.
+
+## 7. Se dovessi scegliere
 
 Il pacchetto che consegnerei per primo è **A1 + A2 + A3 + A6**, cioè altimetria dentro
 l'app con i punti sopra, POI rigenerati con le coordinate, punti sulla mappa e legenda.
