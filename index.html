@@ -760,8 +760,11 @@ function rvBuildMap(){
     rvLayer.addLayer(L.circleMarker(ll[g.idxFromKm(km)], {radius:5, color:'#fff', weight:1.5, fillColor:'#16211a', fillOpacity:1})
       .bindTooltip('km ' + km, {direction:'top'}));
   }
-  rvMap.invalidateSize();
-  rvMap.fitBounds(L.latLngBounds(ll), {padding:[24,24]});
+  // senza animazione: inquadrare un altro percorso non e' un movimento da
+  // seguire con l'occhio, e cosi' i segni si calcolano sulla vista definitiva
+  // invece che su quella di passaggio
+  rvMap.invalidateSize({animate:false});
+  rvMap.fitBounds(L.latLngBounds(ll), {padding:[24,24], animate:false});
 }
 let rvW = 0, rvH = 0, rvEmin = 0, rvEmax = 0;
 function rvY(e){ return 12 + (rvH-12-22) * (1 - (e-rvEmin)/((rvEmax-rvEmin) || 1)); }
