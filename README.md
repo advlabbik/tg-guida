@@ -112,6 +112,26 @@ I punti che si sovrappongono non vengono scartati ma **raggruppati**, e il segno
 numero di quanti ne rappresenta — sul profilo come sulla mappa. Il conteggio sotto il
 profilo dice quanti punti sono in vista e in quanti segni sono raggruppati.
 
+## Funzioni decise, non ancora costruite
+
+### "Arriva preparato" nella checklist pre-evento (Andrea, 15 agosto 2026)
+
+Nella Home in fase "prima", tra le cose da fare, va aggiunto un punto
+**"Arriva preparato"**: apre una lista delle cose che il partecipante potrebbe
+dover comprare per l'evento, ogni voce linkata allo **shop online dello sponsor**
+con lo **sconto dedicato ai partecipanti**; per tutto quello che non è coperto
+da uno sponsor specifico si linka **Sportler** (sponsor). Mappa naturale
+voce→sponsor del circuito: gomme Vittoria, borse Miss Grape, sella Selle Italia,
+scarpe Northwave, casco e antifurto Abus, nutrizione Enervit, abbigliamento
+RH+, tutto il resto Sportler.
+
+Percorso deciso: si costruisce **prima nell'app del Tuscany Trail** (quando
+nascerà, derivata da questa guida — repo ancora da creare; il TT ha anche la
+parte turistica, che oggi vive in `advlabbik/cycling-in-tuscany`). Se funziona
+si porta qui sul Trentino e su tutti gli eventi. Prima di svilupparla servono
+da Andrea/Francesca: lista codici sconto per sponsor, link agli shop, testi
+IT/EN.
+
 ## Punto della situazione (13 agosto 2026)
 
 L'app è **pronta per l'invio ai partecipanti**. Prima di riprendere lo sviluppo, questo è
