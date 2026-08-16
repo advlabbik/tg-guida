@@ -170,3 +170,14 @@ quello che è deciso e quello che manca.
   Se serve tornare offline-first sui font, vanno scaricati quelli giusti.
 - Bumpare sempre `CACHE` in `sw.js` quando si modificano i file, altrimenti chi ha l'app
   installata resta indietro di una versione.
+
+## Decisioni ecosistema — 16 agosto 2026
+
+Analisi completa dei 4 progetti digitali e registro decisioni con le motivazioni nella pagina Notion [Ecosistema App BAS — analisi e registro decisioni](https://app.notion.com/p/3bef88ad0121819487aceb41d1a89781). Qui solo ciò che tocca questo repo.
+
+- **Fase "dopo" da popolare prima del 26/9** — attestato Pioneer, foto, questionario e card "Prima Fila BAS" in `dopo.azioni[]`/`dopo.prossimo` (testi base nello snapshot `anteprima-francesco/content.js`). Perché — il post-evento è il picco emotivo e la prevendita alumni apre il 31/10, quando i 500 pionieri avranno ancora l'app in mano.
+- **Push da riaccendere per il 31/10** — checklist go-live già in questo README + dominio (issue #14). La notifica "Prima Fila" ai 500 è il canale a costo zero sulla coorte più calda della serie.
+- **Qui nasce il motore card social** — canvas on-device + Web Share API (già usata per la posizione), primo uso l'attestato Pioneer condivisibile. Zero backend; il motore si riusa su tuscany-trail-app e northcape4000-app.
+- **Segnalazioni percorso, stadio 1** — bottone nella Live che apre WhatsApp precompilato con km e percorso allegati in automatico (arriva in Slack via 2Chat). Il form strutturato su Supabase è lo stadio 2, previsto sul Tuscany Trail 2027. Resta separato dall'assistenza personale (112, taxi, meccanici).
+- **Niente timbri in-app per l'edizione zero** — al TG debutta il passaporto fisico BAS e la survey aveva già rimandato l'idea all'area personale 2027.
+- **Analytics Umami sulle 3 app** appena c'è l'account — prerequisito per vendere qualsiasi visibilità in-app.
