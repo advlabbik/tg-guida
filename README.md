@@ -170,6 +170,16 @@ quello che è deciso e quello che manca.
   Se serve tornare offline-first sui font, vanno scaricati quelli giusti.
 - Bumpare sempre `CACHE` in `sw.js` quando si modificano i file, altrimenti chi ha l'app
   installata resta indietro di una versione.
+- **Marker delle mappe — regola condivisa con tutti i progetti BAS** (imparata a spese di
+  `cycling-in-tuscany`, due bug identici il 18/8/2026). Il posizionamento del marker lo fa
+  la libreria con una sua classe (`.leaflet-marker-icon` qui, `.maplibregl-marker` in
+  MapLibre): quindi **mai dichiarare `position`** sull'elemento passato al marker, e **mai
+  riassegnare `className`** su un marker già aggiunto alla mappa — l'attributo intero
+  cancella le classi della libreria. Solo `classList.add/remove/toggle`. Sintomo: i pin
+  lasciano il tracciato, vanno **in diagonale** e finiscono fuori mappa. Qui non capita
+  perché al cambio filtro si ricostruiscono i layer invece di ritoccare gli elementi:
+  **è il metodo giusto, tenerlo.** La trappola torna viva il giorno in cui si passa a
+  MapLibre. Spiegazione estesa nel README di `advlabbik/cycling-in-tuscany`.
 
 ## Decisioni ecosistema — 16 agosto 2026
 
