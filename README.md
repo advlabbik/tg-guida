@@ -188,6 +188,41 @@ quello che è deciso e quello che manca.
   **è il metodo giusto, tenerlo.** La trappola torna viva il giorno in cui si passa a
   MapLibre. Spiegazione estesa nel README di `advlabbik/cycling-in-tuscany`.
 
+## Pagina Percorsi e descrizioni (19 agosto 2026, branch `percorsi-descrizioni`)
+
+Impaginazione decisa da Andrea. La pagina Percorsi ora e', nell'ordine — la card
+**Scegli il tuo percorso** con la regola del cambio percorso, la **mappa dei tre
+tracciati sovrapposti**, e **tre tasti in fila** (`.rgrid` / `.rcard`) che stanno
+sulla stessa riga anche su un telefono da 375 px, con foto in testa, nome, km,
+dislivello e livello. Cosi' la scelta si vede tutta insieme e i tre percorsi si
+confrontano senza scorrere.
+
+Tutto il resto e' passato **dentro la vista percorso**, dove c'e' lo spazio per
+leggerlo — blocco `#rv-desc`, fra il profilo altimetrico e la lista servizi,
+composto da `descPercorso()` in index.html con i dati di `content.js`:
+
+- **Com'e'** — punto piu' alto in evidenza (`percorsi[].alto`) e tre paragrafi
+  (`descLunga[]`) su dove passa il percorso e dove si concentra il dislivello.
+- **Il fondo** — `percorsi[].fondo`.
+- **Che tempo aspettarsi** — `percorsi[].meteo[]`, tabella di massime e minime
+  medie per 4-6 punti del percorso, piu' `meteoNota`.
+
+**Da dove vengono i numeri.** Le medie meteo sono calcolate sulla rianalisi ERA5
+(Open-Meteo archive, gratuita) sui giorni **20-30 settembre 2022, 2023, 2024 e
+2025**, 44 giornate per punto, con la quota reale del punto passata all'API cosi'
+che la temperatura sia corretta sull'altitudine e non su quella media della cella.
+Quote e chilometri dei punti piu' alti vengono dai GPX V1.8 (`Campo Carlo Magno
+1.682 m` al km 108 sul Corto, `Baita Segantini 2.173 m` al km 199 sul Medio,
+`Col Margherita 2.337 m` al km 198 sul Lungo). **Km e dislivelli totali restano
+quelli ufficiali di `content.js`** — dal GPX si legge solo *come* e' distribuito
+il dislivello, mai il totale (la traccia semplificata e il calcolo con soglia
+danno valori piu' bassi del dato ufficiale).
+
+**In sospeso** — le percentuali esatte di fondo per Medio e Lungo (asfalto /
+sterrato / ciclabile) le passa Andrea dalle schede Komoot; oggi il testo descrive
+il fondo a parole e la sola percentuale citata e' il 70% del Corto, che era gia'
+il dato ufficiale in app.
+
 ## A cosa servono le app degli eventi (Andrea, 19 agosto 2026)
 
 Cornice valida per tutte le app evento BAS, comprese quelle non ancora nate — da rileggere prima di aggiungere o togliere qualcosa.

@@ -86,6 +86,7 @@
       <div id="rv-filters"></div>
       <div id="rv-profwrap"><canvas id="rv-prof"></canvas><div id="rv-pins"></div><div id="rv-tip"></div></div>
       <div id="rv-foot"></div>
+      <div id="rv-desc"></div>
       <div id="rv-listwrap">
         <h3 id="rv-listtit"></h3>
         <p id="rv-listintro"></p>
@@ -515,26 +516,28 @@ function bindChecklist(sel, key){
 /* ---------- PERCORSO ---------- */
 const ROUTE_PHOTOS = { corto: 'assets/percorsi/corto.jpg', medio: 'assets/percorsi/medio.jpg', lungo: 'assets/percorsi/lungo.jpg' };
 function renderPercorso(){
+  /* Ordine deciso da Andrea (19/8): prima la scelta e la regola del cambio percorso,
+     poi la mappa dei tre sovrapposti per capire dove vanno, e solo dopo i tre tasti.
+     I tasti stanno in fila anche sul telefono: la scelta si vede tutta insieme,
+     senza scorrere, e il confronto fra km, dislivello e livello e' immediato.
+     Descrizione, fondo, meteo e servizi vivono dentro la vista percorso, dove
+     c'e' lo spazio per leggerli. */
   let h = `<div class="card"><h2>${esc(U.percorsoScegli)}</h2>
     <p>${fmt(esc(U.percorsoIntro), '<b>' + esc(C.meta.hub) + '</b>')}</p></div>`;
-  h += C.percorsi.map(p=>`<div class="card route" style="--col:${p.colore}">
-    <div class="rphoto" style="background:linear-gradient(160deg, ${p.colore}26, ${p.colore}59)">
-      ${ROUTE_PHOTOS[p.id]
-        ? `<img class="rphoto-img" src="${ROUTE_PHOTOS[p.id]}" alt="${esc(p.nome)}" loading="lazy"/>`
-        : `<div class="rphoto-ph">${icon('mountain', 30)}</div>`}
-    </div>
-    <div class="rbody">
-      <h3 style="color:${p.colore}">${esc(p.nome)}</h3>
-      <div class="badges"><span class="badge">${p.km} km</span><span class="badge">${p.dplus} m D+</span>
-        <span class="badge">${esc(p.livello)}</span></div>
-      <p>${esc(p.desc)}</p>
-      ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
-      <div class="btnrow rbtns" style="--col:${p.colore}">
-        <button class="btn" data-rv="${p.id}">${icon('route',16)} ${esc(U.mappaAltimetria)}</button>
-        <a class="btn sec dl" href="${gpxUrl(p.id)}" target="_blank" rel="noopener">${esc(U.gpx)}</a>
-      </div>
-    </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>${esc(U.insieme)}</h3><div id="minimap"></div></div>`;
+  h += `<p class="rhint">${esc(U.percorsoTocca)}</p>`;
+  h += `<div class="rgrid">` + C.percorsi.map(p=>`<button class="rcard" data-rv="${p.id}" style="--col:${p.colore}">
+    <span class="rcard-photo" style="background:linear-gradient(160deg, ${p.colore}26, ${p.colore}59)">
+      ${ROUTE_PHOTOS[p.id]
+        ? `<img src="${ROUTE_PHOTOS[p.id]}" alt="${esc(p.nome)}" loading="lazy"/>`
+        : icon('mountain', 26)}
+    </span>
+    <span class="rcard-body">
+      <span class="rcard-nome">${esc(p.nome)}</span>
+      <span class="rcard-num">${p.km} km</span>
+      <span class="rcard-num">${p.dplus} m D+</span>
+      <span class="rcard-liv">${esc(p.livello)}</span>
+    </span></button>`).join('') + `</div>`;
   /* La lista servizi stava qui, staccata dal percorso e con un suo selettore:
      una seconda scelta del percorso dopo quella appena fatta sulle schede, e
      220-245 righe che ripetevano quello che ora si vede su mappa e altimetria.
@@ -750,6 +753,7 @@ function openRouteView(id){
     document.querySelectorAll('#rv-filters .pfil').forEach(x => x.classList.toggle('on', x === b));
     rvLayout();
   }));
+  $('#rv-desc').innerHTML = descPercorso(p);
   $('#rv-listtit').textContent = U.servizi;
   $('#rv-listintro').innerHTML = U.serviziIntro;
   view.classList.add('open');
@@ -758,6 +762,30 @@ function openRouteView(id){
   if (!rvPushed){ history.pushState({rv:1}, ''); rvPushed = true; }
   rvBuildMap();
   rvLayout(); // diretto, non in requestAnimationFrame: a scheda in secondo piano non partirebbe
+}
+/* Descrizione lunga, fondo e temperature del percorso aperto. Sta qui e non
+   nella pagina Percorsi perche' li' i tre tasti devono restare confrontabili a
+   colpo d'occhio: chi ha scelto vuole leggere, chi sta scegliendo vuole i numeri.
+   Le medie meteo sono in content.js, un blocco per percorso e per lingua. */
+function descPercorso(p){
+  if (!p || !p.descLunga) return '';
+  const S = U.rvSez;
+  let h = `<div class="rvblock"><h3>${esc(S.descrizione)}</h3>`;
+  if (p.alto) h += `<div class="rvalto">${icon('mountain',16)}<span><b>${esc(S.alto)}</b> — ${esc(p.alto.nome)}, ${esc(p.alto.quota)}, km ${p.alto.km}</span></div>`;
+  h += p.descLunga.map(t=>`<p>${esc(t)}</p>`).join('');
+  h += (p.note||[]).map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('');
+  h += `</div>`;
+  if (p.fondo) h += `<div class="rvblock"><h3>${esc(S.fondo)}</h3><p>${esc(p.fondo)}</p></div>`;
+  if (p.meteo && p.meteo.length){
+    h += `<div class="rvblock"><h3>${esc(S.meteo)}</h3>
+      <table class="rvmeteo"><thead><tr><th></th><th>${esc(S.maxCol)}</th><th>${esc(S.minCol)}</th></tr></thead><tbody>` +
+      p.meteo.map(m=>`<tr><td><b>${esc(m.luogo)}</b><span class="rvq">${esc(m.quota)}</span></td>
+        <td class="rvmax">${esc(m.max)}</td><td class="rvmin">${esc(m.min)}</td></tr>`).join('') +
+      `</tbody></table>`;
+    if (p.meteoNota) h += `<p class="rvnota">${esc(p.meteoNota)}</p>`;
+    h += `<p class="rvfonte">${esc(S.fonteMeteo)}</p></div>`;
+  }
+  return h;
 }
 function closeRouteView(fromHistory){
   $('#routeview').classList.remove('open');

@@ -54,15 +54,61 @@ percorsi: [
   { id: "corto", nome: "Percorso Corto", breve: "Corto", colore: "#5ea345", km: 216, dplus: "3.000",
     livello: "Accessibile",
     desc: "Il percorso per chi vuole l'avventura senza l'estremo. Si stacca dagli altri due a Sarche e chiude l'anello a Rovereto.",
-    note: ["Circa il 70% su ciclabili e sterrato"] },
+    note: ["Circa il 70% su ciclabili e sterrato"],
+    alto: { nome: "Passo Campo Carlo Magno", quota: "1.682 m", km: 108 },
+    descLunga: [
+      "Un anello che parte in fondovalle, sale una volta sola e torna a casa lungo i fiumi. Dai primi chilometri vai verso il lago — Mori, Loppio, Nago e la discesa su Torbole con il Garda davanti — poi risali la valle del Sarca fino ad Arco, attraversi le Marocche di Dro e arrivi a Sarche, dove il Corto si stacca dagli altri due.",
+      "Da lì il percorso punta nelle Giudicarie, passa da Stenico e risale la val Rendena fino a Pinzolo e Madonna di Campiglio, con le Dolomiti di Brenta sempre di fianco. Il punto più alto è il passo di Campo Carlo Magno, 1.682 metri, poco dopo il chilometro 105. Da lassù in avanti è quasi tutta discesa e pianura — val di Sole, Malé, la val di Non fra i meleti, Mezzolombardo, Trento e la ciclabile dell'Adige che ti riporta a Rovereto.",
+      "Il dislivello sta quasi tutto nella prima metà. Fino a Sarche, al chilometro 48, hai salito pochissimo; il grosso arriva nei sessanta chilometri fra Sarche e Campo Carlo Magno, circa due terzi del totale, in una salita lunga e regolare più che ripida. Negli ultimi cento chilometri resta meno di un sesto del dislivello complessivo."
+    ],
+    fondo: "Circa il 70% fra ciclabili asfaltate e sterrato, il resto su strade aperte al traffico. Lo sterrato si concentra fra le Giudicarie e la val Rendena; il rientro da Trento a Rovereto è tutto sulla ciclabile asfaltata della valle dell'Adige. Nessun tratto da fare a spinta.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cles, val di Non", quota: "650 m", max: "19°", min: "10°" },
+      { luogo: "Madonna di Campiglio", quota: "1.520 m", max: "13°", min: "4°" },
+      { luogo: "Campo Carlo Magno", quota: "1.682 m", max: "12°", min: "2°" }
+    ],
+    meteoNota: "In quattro anni, negli stessi giorni, a Campo Carlo Magno si sono misurati sia 21 gradi di giorno sia 8 sotto zero di notte. Mettiti in borsa di che coprirti anche se parti in maniche corte." },
   { id: "medio", nome: "Percorso Medio", breve: "Medio", colore: "#3d7a2e", km: 360, dplus: "7.400",
     livello: "Intermedio",
     desc: "Identico al Lungo per quasi tutto il tracciato, con una differenza sola — evita la Val di Fassa e il tratto a spinta del Col Margherita.",
-    note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita"] },
+    note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita"],
+    alto: { nome: "Baita Segantini, sopra il passo Rolle", quota: "2.173 m", km: 199 },
+    descLunga: [
+      "Il giro grande del Trentino, senza il tratto a spinta. Fino a Sarche è uguale al Corto — lago, valle del Sarca, Marocche — poi sale verso il Brenta a Molveno e Andalo, scende sulla Rotaliana a Mezzocorona e risale la Strada del Vino fra Salorno, Egna e Montagna.",
+      "Dalla val di Fiemme, superate Cavalese e Predazzo, comincia la parte alta del percorso — Bellamonte, il passo Rolle e la salita fino alla Baita Segantini, 2.173 metri, il punto più alto del Medio, con le Pale di San Martino davanti. Si scende a San Martino di Castrozza, poi Canal San Bovo e Caoria, e si attraversa il Lagorai al passo Cinque Croci, poco sopra i 2.000 metri.",
+      "L'ultima parte è la Valsugana — Telve, Borgo, Levico e i laghi — con una gobba finale verso Vattaro prima di rientrare a Rovereto per Mattarello e Calliano. Il dislivello arriva a ondate, non tutto insieme — il Brenta, la lunga salita al Rolle, il Lagorai e l'ultimo strappo prima di casa. A metà percorso, al chilometro 200, ne hai fatti circa due terzi."
+    ],
+    fondo: "Fondovalle su ciclabili asfaltate — Rotaliana, Strada del Vino, val di Fiemme e Valsugana — e sterrato nelle salite e nei traversi in quota. Nessun tratto da fare a spinta, ed è esattamente il motivo per cui il Medio esiste.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°" },
+      { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°" },
+      { luogo: "Baita Segantini", quota: "2.173 m", max: "9°", min: "0°" },
+      { luogo: "Passo Cinque Croci", quota: "2.008 m", max: "10°", min: "1°" },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+    ],
+    meteoNota: "Fra il fondovalle e i 2.000 metri ballano dodici gradi di giorno e altrettanti di notte. Alla Baita Segantini, negli ultimi quattro anni, la notte più fredda del periodo è arrivata a 6 sotto zero." },
   { id: "lungo", nome: "Percorso Lungo", breve: "Lungo", colore: "#1f4d1a", km: 374, dplus: "7.900",
     livello: "Impegnativo",
     desc: "Rispetto al Medio affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita.",
-    note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica"] }
+    note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica"],
+    alto: { nome: "Col Margherita", quota: "2.337 m", km: 198 },
+    descLunga: [
+      "Il percorso più duro dei tre, e l'unico che entra in val di Fassa. Fino a Predazzo ricalca il Medio — lago, Marocche, Brenta a Molveno e Andalo, Rotaliana, Strada del Vino e val di Fiemme — poi invece di puntare a Bellamonte prosegue su Moena e sale al passo San Pellegrino su sterrato.",
+      "Dal passo si continua a salire fino al Col Margherita, 2.337 metri, il punto più alto di tutto il Trentino Gravel, raggiunto intorno al chilometro 198. Lì stanno i 2,5 chilometri che si fanno per la maggior parte spingendo la bici, ripagati da una vista a 300 gradi sulle Dolomiti. Si scende verso Falcade e il passo Valles, si risale al passo Rolle e alla Baita Segantini e si arriva a San Martino di Castrozza.",
+      "Da San Martino in poi è identico al Medio — Canal San Bovo, Caoria, la traversata del Lagorai al passo Cinque Croci, la Valsugana con Borgo, Levico e i laghi, e il rientro su Rovereto per Vattaro e Mattarello. Nei cinquanta chilometri fra Moena e San Martino si concentra la parte più alta e più lenta del viaggio, con tre valichi sopra i 1.900 metri uno dietro l'altro."
+    ],
+    fondo: "Come il Medio nei fondovalle, con in più la salita al passo San Pellegrino su sterrato e i 2,5 chilometri del Col Margherita, che farai per il 70% a piedi spingendo la bici. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°" },
+      { luogo: "Passo San Pellegrino", quota: "1.918 m", max: "11°", min: "1°" },
+      { luogo: "Col Margherita", quota: "2.337 m", max: "8°", min: "-1°" },
+      { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°" },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+    ],
+    meteoNota: "Sul Col Margherita la media delle minime di fine settembre è sotto zero, e negli ultimi quattro anni la giornata più fredda non ha superato i 4 gradi. Ci arrivi bagnato di sudore dopo aver spinto la bici — guanti, giacca e qualcosa di asciutto non sono un extra." }
 ],
 
 mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
@@ -229,6 +275,12 @@ ui: {
   percorsoScegli: "Scegli il tuo percorso",
   percorsoIntro: "Partenza e arrivo per tutti da |. Puoi cambiare idea sul percorso in qualsiasi momento, senza bisogno di comunicarcelo — ti vedremo dall'app di live tracking.",
   mappaAltimetria: "Mappa + altimetria", gpx: "↓ GPX",
+  percorsoTocca: "Tocca un percorso e trovi la mappa, l'altimetria, la descrizione e i servizi lungo la strada.",
+  rvSez: {
+    descrizione: "Com'è", fondo: "Il fondo", meteo: "Che tempo aspettarsi",
+    alto: "Punto più alto", quota: "quota", maxCol: "max", minCol: "min",
+    fonteMeteo: "Medie delle massime e delle minime dal 20 al 30 settembre degli ultimi quattro anni, corrette sulla quota reale di ogni punto. Sono medie, non previsioni."
+  },
   rv: {
     torna: "Percorsi",
     aiuto: "Trascina il dito sull'altimetria e vedi il punto muoversi sulla mappa. Sulla mappa ingrandisci per far comparire più punti.",
@@ -334,15 +386,61 @@ percorsi: [
   { id: "corto", nome: "Short Route", breve: "Short", colore: "#5ea345", km: 216, dplus: "3,000",
     livello: "Accessible",
     desc: "The route for those who want the adventure without the extreme. It splits from the other two at Sarche and closes the loop in Rovereto.",
-    note: ["About 70% on cycleways and gravel"] },
+    note: ["About 70% on cycleways and gravel"],
+    alto: { nome: "Campo Carlo Magno pass", quota: "1,682 m", km: 108 },
+    descLunga: [
+      "A loop that starts on the valley floor, climbs once and comes home along the rivers. The first kilometres head for the lake — Mori, Loppio, Nago and the descent to Torbole with Lake Garda in front of you — then you ride up the Sarca valley to Arco, cross the Marocche di Dro landslide and reach Sarche, where the Short route leaves the other two.",
+      "From there it heads into the Giudicarie valleys, passes Stenico and climbs the val Rendena to Pinzolo and Madonna di Campiglio, with the Brenta Dolomites alongside all the way. The highest point is the Campo Carlo Magno pass, 1,682 m, just after kilometre 105. From up there it is almost all downhill and flat — val di Sole, Malé, the apple orchards of val di Non, Mezzolombardo, Trento and the Adige valley cycleway back to Rovereto.",
+      "Almost all the climbing sits in the first half. By Sarche, at kilometre 48, you have barely climbed; the bulk comes in the sixty kilometres between Sarche and Campo Carlo Magno, about two thirds of the total, on a long steady climb rather than a steep one. Less than a sixth of the total climbing is left for the last hundred kilometres."
+    ],
+    fondo: "About 70% between paved cycleways and gravel, the rest on roads open to traffic. The gravel is concentrated between the Giudicarie valleys and val Rendena; the run home from Trento to Rovereto is all on the paved Adige valley cycleway. No hike-a-bike sections.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cles, val di Non", quota: "650 m", max: "19°", min: "10°" },
+      { luogo: "Madonna di Campiglio", quota: "1,520 m", max: "13°", min: "4°" },
+      { luogo: "Campo Carlo Magno", quota: "1,682 m", max: "12°", min: "2°" }
+    ],
+    meteoNota: "Over four years, in the same days, Campo Carlo Magno has seen both 21 degrees by day and 8 below zero at night. Pack something warm even if you start in short sleeves." },
   { id: "medio", nome: "Medium Route", breve: "Medium", colore: "#3d7a2e", km: 360, dplus: "7,400",
     livello: "Intermediate",
     desc: "Identical to the Long route for almost the entire way, with one difference — it avoids Val di Fassa and the hike-a-bike section of Col Margherita.",
-    note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section"] },
+    note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section"],
+    alto: { nome: "Baita Segantini, above Passo Rolle", quota: "2,173 m", km: 199 },
+    descLunga: [
+      "The big Trentino loop, without the hike-a-bike. As far as Sarche it is the same as the Short route — lake, Sarca valley, Marocche — then it climbs towards the Brenta at Molveno and Andalo, drops to Mezzocorona and rides up the Wine Road through Salorno, Egna and Montagna.",
+      "Past Cavalese and Predazzo in val di Fiemme the high part of the route begins — Bellamonte, Passo Rolle and the climb to Baita Segantini, 2,173 m, the highest point of the Medium route, with the Pale di San Martino right in front of you. You drop to San Martino di Castrozza, then Canal San Bovo and Caoria, and cross the Lagorai range at Passo Cinque Croci, just above 2,000 m.",
+      "The last part is the Valsugana — Telve, Borgo, Levico and the lakes — with one final bump towards Vattaro before returning to Rovereto via Mattarello and Calliano. The climbing comes in waves rather than all at once — the Brenta, the long haul to Passo Rolle, the Lagorai and the last kick before home. Halfway through, at kilometre 200, you have done about two thirds of it."
+    ],
+    fondo: "Paved cycleways along the valley floors — Rotaliana, the Wine Road, val di Fiemme and the Valsugana — and gravel on the climbs and high traverses. No hike-a-bike sections, which is exactly why the Medium route exists.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°" },
+      { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°" },
+      { luogo: "Baita Segantini", quota: "2,173 m", max: "9°", min: "0°" },
+      { luogo: "Passo Cinque Croci", quota: "2,008 m", max: "10°", min: "1°" },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+    ],
+    meteoNota: "Between the valley floor and 2,000 m there are twelve degrees of difference by day and as many at night. At Baita Segantini the coldest night of the period in the last four years hit 6 below zero." },
   { id: "lungo", nome: "Long Route", breve: "Long", colore: "#1f4d1a", km: 374, dplus: "7,900",
     livello: "Demanding",
     desc: "Compared to the Medium route it takes on Val di Fassa and climbs to Passo San Pellegrino on gravel, then keeps climbing up Col Margherita.",
-    note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort"] }
+    note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort"],
+    alto: { nome: "Col Margherita", quota: "2,337 m", km: 198 },
+    descLunga: [
+      "The hardest of the three, and the only one that enters val di Fassa. As far as Predazzo it follows the Medium route — lake, Marocche, the Brenta at Molveno and Andalo, Rotaliana, the Wine Road and val di Fiemme — then, instead of heading to Bellamonte, it carries on to Moena and climbs Passo San Pellegrino on gravel.",
+      "From the pass you keep climbing to Col Margherita, 2,337 m, the highest point of the whole Trentino Gravel, reached around kilometre 198. That is where the 2.5 kilometres of hike-a-bike are, repaid by a 300-degree view over the Dolomites. Then down towards Falcade and Passo Valles, back up to Passo Rolle and Baita Segantini, and on to San Martino di Castrozza.",
+      "From San Martino onwards it is identical to the Medium route — Canal San Bovo, Caoria, the Lagorai crossing at Passo Cinque Croci, the Valsugana with Borgo, Levico and the lakes, and the way home to Rovereto via Vattaro and Mattarello. The fifty kilometres between Moena and San Martino hold the highest and slowest part of the trip, with three passes above 1,900 m one after the other."
+    ],
+    fondo: "Like the Medium route along the valley floors, plus the gravel climb to Passo San Pellegrino and the 2.5 kilometres of Col Margherita, which you will cover roughly 70% pushing the bike. It took us about 50 minutes when we tested it.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°" },
+      { luogo: "Passo San Pellegrino", quota: "1,918 m", max: "11°", min: "1°" },
+      { luogo: "Col Margherita", quota: "2,337 m", max: "8°", min: "-1°" },
+      { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°" },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+    ],
+    meteoNota: "On Col Margherita the average late-September low is below zero, and in the last four years the coldest day of the period never went above 4 degrees. You get there soaked in sweat after pushing the bike — gloves, a jacket and something dry are not an extra." }
 ],
 
 mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
@@ -508,6 +606,12 @@ ui: {
   percorsoScegli: "Choose your route",
   percorsoIntro: "Start and finish for everyone at |. You can change your mind about the route at any time, with no need to tell us — we will see you on the live tracking app.",
   mappaAltimetria: "Map + elevation", gpx: "↓ GPX",
+  percorsoTocca: "Tap a route for the map, the elevation profile, the description and the services along the way.",
+  rvSez: {
+    descrizione: "What it is like", fondo: "Surface", meteo: "What weather to expect",
+    alto: "Highest point", quota: "elevation", maxCol: "high", minCol: "low",
+    fonteMeteo: "Average daily highs and lows from 20 to 30 September over the last four years, corrected for the real elevation of each point. Averages, not a forecast."
+  },
   rv: {
     torna: "Routes",
     aiuto: "Drag your finger along the elevation profile and watch the point move on the map. Zoom in on the map to make more points appear.",
