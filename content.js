@@ -42,13 +42,39 @@ checklist: [
   { id: "prima-notte", testo: "3. Prenota almeno la prima notte a Rovereto",
     dettaglio: "Venerdì 25 settembre sarete in 500 nella stessa città, la stessa notte. Le altre notti, se preferisci, prenotale già ora dalla mappa lungo il percorso.",
     tab: "dormire" },
-  { id: "forum", testo: "4. Hai dubbi? Chiedi sul forum BAS",
-    dettaglio: "Per domande su preparazione, bici e materiali c'è la community. Lo staff e gli altri partecipanti rispondono lì.",
-    url: "https://www.bikeadventureseries.com/community/", cta: "Vai al forum" },
-  { id: "treno", testo: "5. Organizza il viaggio",
+  { id: "treno", testo: "4. Organizza il viaggio",
     dettaglio: "Il treno è tuo amico. Rovereto è sulla linea del Brennero e la stazione è a pochi minuti dalla partenza.",
     tab: "info" }
 ],
+
+/* Sotto la checklist, senza casella da spuntare: il forum non e' un compito da
+   completare ma un posto dove tornare. Poi un evento BAS pescato a caso fra i
+   quattro (uno solo per volta — il catalogo intero diluisce) e l'articolo che
+   serve davvero a chi deve preparare le tracce. Gli url degli eventi hanno gli
+   UTM, cosi' quando arriveranno le analytics si vedra' quale card tira di piu'. */
+extraHome: {
+  forum: { titolo: "Hai dubbi? Chiedi sul forum BAS",
+    testo: "Per domande su preparazione, bici e materiali c'è la community. Lo staff e gli altri partecipanti rispondono lì.",
+    url: "https://www.bikeadventureseries.com/community/", cta: "Vai al forum" },
+  altriEventi: [
+    { id: "tuscany-trail", titolo: "Cerchi un'altra avventura bikepacking per la tua gravel?",
+      testo: "Scopri il più grande evento bikepacking al mondo.",
+      url: "https://www.tuscanytrail.it/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=tuscany-trail", cta: "Vai" },
+    { id: "unpaved-roads", titolo: "Voglia di gravel?",
+      testo: "Scopri il fine settimana di gravel più amato d'Italia.",
+      url: "https://www.unpavedroads.cc/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=unpaved-roads", cta: "Vai" },
+    { id: "grand-escape", titolo: "Cerchi una fuga dalla quotidianità?",
+      testo: "Scopri il bikepacking con un percorso totalmente su asfalto e piste ciclabili.",
+      url: "https://www.thegrandescape.cc/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=grand-escape", cta: "Vai" },
+    { id: "northcape4000", titolo: "Raggiungi la fine del mondo",
+      testo: "Scopri l'evento che ti porta a Capo Nord dopo 4.000 km su traccia fissa.",
+      url: "https://northcape4000.com/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=northcape4000", cta: "Vai" }
+  ],
+  articolo: { titolo: "GPX Track Preparation Guide: What to Do Before Your Bikepacking Adventure",
+    testo: "Come preparare le tracce prima di partire, dal Journal della Bike Adventure Series.",
+    url: "https://www.bikeadventureseries.com/journal/gpx-track-preparation-guide-what-to-do-before-your-bikepacking-adventure/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=journal-gpx",
+    cta: "Leggi adesso" }
+},
 
 percorsi: [
   { id: "corto", nome: "Percorso Corto", breve: "Corto", colore: "#5ea345", km: 216, dplus: "3.000",
@@ -387,13 +413,36 @@ checklist: [
   { id: "prima-notte", testo: "3. Book at least your first night in Rovereto",
     dettaglio: "On Friday 25 September there will be 500 of you in the same town, on the same night. If you like, book the other nights now too from the map along the route.",
     tab: "dormire" },
-  { id: "forum", testo: "4. Questions? Ask on the BAS forum",
-    dettaglio: "For anything about preparation, bikes and gear there is the community. The staff and fellow riders answer there.",
-    url: "https://www.bikeadventureseries.com/community/", cta: "Go to the forum" },
-  { id: "treno", testo: "5. Plan your trip",
+  { id: "treno", testo: "4. Plan your trip",
     dettaglio: "The train is your friend. Rovereto sits on the Brenner line and the station is minutes away from the start.",
     tab: "info" }
 ],
+
+/* Same order and same ids as the Italian block — the random pick uses the
+   index, so the two lists must stay aligned. */
+extraHome: {
+  forum: { titolo: "Questions? Ask on the BAS forum",
+    testo: "For anything about preparation, bikes and gear there is the community. The staff and fellow riders answer there.",
+    url: "https://www.bikeadventureseries.com/community/", cta: "Go to the forum" },
+  altriEventi: [
+    { id: "tuscany-trail", titolo: "Looking for another bikepacking adventure for your gravel bike?",
+      testo: "Discover the biggest bikepacking event in the world.",
+      url: "https://www.tuscanytrail.it/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=tuscany-trail", cta: "Go" },
+    { id: "unpaved-roads", titolo: "In the mood for gravel?",
+      testo: "Discover Italy's best loved gravel weekend.",
+      url: "https://www.unpavedroads.cc/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=unpaved-roads", cta: "Go" },
+    { id: "grand-escape", titolo: "Looking for an escape from everyday life?",
+      testo: "Discover bikepacking on a route entirely on tarmac and cycleways.",
+      url: "https://www.thegrandescape.cc/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=grand-escape", cta: "Go" },
+    { id: "northcape4000", titolo: "Ride to the end of the world",
+      testo: "Discover the event that takes you to the North Cape after 4,000 km on a fixed route.",
+      url: "https://northcape4000.com/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=northcape4000", cta: "Go" }
+  ],
+  articolo: { titolo: "GPX Track Preparation Guide: What to Do Before Your Bikepacking Adventure",
+    testo: "How to get your tracks ready before you leave, from the Bike Adventure Series Journal.",
+    url: "https://www.bikeadventureseries.com/journal/gpx-track-preparation-guide-what-to-do-before-your-bikepacking-adventure/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=journal-gpx",
+    cta: "Read it now" }
+},
 
 percorsi: [
   { id: "corto", nome: "Short Route", breve: "Short", colore: "#5ea345", km: 216, dplus: "3,000",

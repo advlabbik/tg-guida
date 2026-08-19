@@ -400,7 +400,9 @@ function renderHome(){
           ? `<a href="${c.url}" target="_blank" rel="noopener">${esc(c.cta||'Apri')} ›</a>`
           : `<a href="#" data-tab="${c.tab}">${esc(U.vai)} ›</a>`}</div>
       </div>`;
-      }).join('') + `</div></div>`;
+      }).join('') + `</div>` + bloccoForum() + `</div>`;
+    h += cardAltroEvento();
+    h += cardArticolo();
     h += cardPercorsiBrevi();
   }
   if (ph === 'durante') {
@@ -453,6 +455,35 @@ function renderHome(){
   bindTabLinks($('#tab-home'));
   bindInstall();
   maybeShowInstall();
+}
+/* Il forum chiude la checklist ma senza casella: non e' un compito che finisce,
+   e' un posto dove tornare. Stessa scatola delle voci, niente spunta. */
+function bloccoForum(){
+  const f = C.extraHome && C.extraHome.forum;
+  if (!f) return '';
+  return `<div class="chk plain">
+    <div class="top"><span class="chk-label">${esc(f.titolo)}</span></div>
+    <div class="det">${esc(f.testo)}
+      <a href="${f.url}" target="_blank" rel="noopener">${esc(f.cta)} ›</a></div></div>`;
+}
+/* Un evento alla volta, pescato a caso fra i quattro e poi tenuto fermo per
+   tutta la sessione: se cambiasse a ogni ridisegno (cambio lingua, cambio fase)
+   sembrerebbe un errore. Quando ci saranno le analytics si vedra' quale tira
+   di piu' e si aggiustera' il tiro (Andrea, 19/8). */
+let SUGGERITO = null;
+function cardAltroEvento(){
+  const lista = (C.extraHome && C.extraHome.altriEventi) || [];
+  if (!lista.length) return '';
+  if (SUGGERITO === null || SUGGERITO >= lista.length) SUGGERITO = Math.floor(Math.random() * lista.length);
+  const e = lista[SUGGERITO];
+  return `<div class="card cross"><h2>${esc(e.titolo)}</h2><p>${esc(e.testo)}</p>
+    <div class="btnrow"><a class="btn" href="${e.url}" target="_blank" rel="noopener">${esc(e.cta)} ›</a></div></div>`;
+}
+function cardArticolo(){
+  const a = C.extraHome && C.extraHome.articolo;
+  if (!a) return '';
+  return `<div class="card"><h3>${icon('pencil-line',18)} ${esc(a.titolo)}</h3><p>${esc(a.testo)}</p>
+    <div class="btnrow"><a class="btn sec" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)} ›</a></div></div>`;
 }
 function cardPercorsiBrevi(){
   return `<div class="card"><h2>${esc(U.trePercorsi)}</h2>

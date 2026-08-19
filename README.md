@@ -242,6 +242,35 @@ vuota la card non viene proprio generata, cosi' un evento senza codice non mostr
 una pagina rotta. Testi in `live.whip` (titolo, testo, nota, apri).
 
 **Codice evento** — al 19/8 in `whipUrl` c'e' `NC4R26`, cioe' il tracker della NorthCape4000, messo per la prova su richiesta di Andrea; la nota sotto la mappa lo dichiara. Quando WHIP consegna il codice del Trentino Gravel si cambia solo quella riga (in tutte e due le lingue) e si svuota la nota.
+## Home — checklist rivista e cross-sell (19 agosto 2026, branch `home-checklist`)
+
+Lista e ordine dettati da Andrea. Nella fase "prima" la Home e' ora —
+
+1. **Quattro voci spuntabili** in `checklist[]` — certificato medico, studia la
+   traccia preliminare, prenota almeno la prima notte a Rovereto, organizza il
+   viaggio. Il forum e' uscito dalla lista numerata.
+2. **Il forum senza casella** (`bloccoForum()`, classe `.chk.plain`), in coda
+   alla stessa card — non e' un compito che si chiude, e' un posto dove tornare.
+3. **Un evento della serie, pescato a caso** (`cardAltroEvento()`), uno solo per
+   volta: Tuscany Trail, Unpaved Roads, The Grand Escape, NorthCape4000. La
+   scelta si fa una volta per apertura e resta ferma per tutta la sessione — se
+   cambiasse a ogni ridisegno sembrerebbe un errore.
+4. **L'articolo sui GPX** del Journal BAS (`cardArticolo()`), l'ultima cosa
+   prima dei percorsi perche' e' quella che aiuta davvero chi sta preparando.
+5. **I tre percorsi**, il blocco che c'era gia'.
+
+Contenuti in `content.js` sotto `extraHome` (`forum`, `altriEventi[]`,
+`articolo`), un blocco per lingua. **Le due liste `altriEventi` devono restare
+nello stesso ordine**: la scelta casuale usa l'indice, quindi un ordine diverso
+fra italiano e inglese mostrerebbe due eventi diversi cambiando lingua.
+
+**UTM.** Tutti i link in uscita da questa parte della Home sono tracciati con
+`utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=<slug>`.
+Quando ci saranno le analytics dell'app si vedra' quale card tira di piu' e si
+aggiustera' il tiro (era esattamente l'intenzione di Andrea).
+
+Questa e' la parte "vendita" della cornice qui sotto — il contenuto utile e' il
+veicolo, e resta un solo invito commerciale per volta.
 
 ## A cosa servono le app degli eventi (Andrea, 19 agosto 2026)
 
