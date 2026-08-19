@@ -273,16 +273,6 @@ ui: {
   dopoSequenza: "Le cose da fare adesso",
   dopoSotto: "In ordine, come prima della partenza. Le voci si accendono quando sono pronte.",
   dopoInArrivo: "In arrivo",
-  feedback: {
-    link: "Qualcosa non funziona? Scrivicelo",
-    titolo: "Aiutaci a migliorare la guida",
-    testo: "Un errore, una cosa che non funziona, un'idea. Scrivi qui e arriva dritto a chi costruisce l'app.",
-    placeholder: "Cosa hai trovato?",
-    emailPlaceholder: "La tua email, se vuoi una risposta (facoltativa)",
-    invia: "Invia", chiudi: "Chiudi",
-    grazie: "Ricevuto, grazie. Lo leggiamo davvero.",
-    errore: "Invio non riuscito. Riprova, oppure scrivici a ciao@trentinogravel.com."
-  },
   notifiche: {
     titolo: "Notifiche evento",
     testo: "Attiva le notifiche per ricevere le comunicazioni dello staff durante l'evento, anche ad app chiusa.",
@@ -562,16 +552,6 @@ ui: {
   dopoSequenza: "What to do now",
   dopoSotto: "In order, just like before the start. Items switch on when they are ready.",
   dopoInArrivo: "Coming soon",
-  feedback: {
-    link: "Something not working? Tell us",
-    titolo: "Help us improve this guide",
-    testo: "A mistake, something broken, an idea. Write it here and it goes straight to the people building the app.",
-    placeholder: "What did you find?",
-    emailPlaceholder: "Your email, if you want a reply (optional)",
-    invia: "Send", chiudi: "Close",
-    grazie: "Got it, thank you. We really do read these.",
-    errore: "Could not send. Try again, or write to ciao@trentinogravel.com."
-  },
   notifiche: {
     titolo: "Event notifications",
     testo: "Turn on notifications to receive staff updates during the event, even with the app closed.",

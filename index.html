@@ -64,20 +64,7 @@
     <section class="tab" id="tab-live"></section>
     <div class="sponsor" id="sponsorbar"></div>
     <div class="legend" id="legenda"></div>
-    <div class="legend"><button class="linklike" id="fblink"></button></div>
   </main>
-
-  <div id="fbmodal"><div class="box">
-    <h3><span class="e" id="fbmodal-icon"></span> <span id="fbtitolo"></span></h3>
-    <p class="muted" id="fbtesto"></p>
-    <textarea id="fbmsg" rows="4"></textarea>
-    <input id="fbmail" type="email" autocomplete="email"/>
-    <p id="fbstatus" class="muted" aria-live="polite"></p>
-    <div class="btnrow" style="margin-top:12px">
-      <button class="btn" id="fbsend"></button>
-      <button class="btn sec" id="fbclose"></button>
-    </div>
-  </div></div>
 
   <nav><div class="in">
     <button data-tab="home"><span class="e"></span><span class="tlbl" data-t="home"></span></button>
@@ -1578,58 +1565,6 @@ $('#searchinput').addEventListener('input',e=>{
   $('#homelogo').addEventListener('click', () => openTab('home'));
 })();
 
-/* ---------- feedback dei partecipanti ----------
-   Link fisso in fondo alla pagina, sempre visibile in ogni fase. Il messaggio
-   finisce nella tabella Supabase tg_feedback (insert-only per anon, stessa
-   filosofia di tg_push_subscriptions) insieme a un po' di contesto tecnico che
-   a chi lo legge serve per riprodurre il problema. Se l'insert fallisce (rete,
-   tabella non ancora migrata) il testo di errore offre l'email come uscita. */
-(function(){
-  const F = U.feedback;
-  $('#fblink').textContent = F.link;
-  $('#fbtitolo').textContent = F.titolo;
-  $('#fbtesto').textContent = F.testo;
-  $('#fbmsg').placeholder = F.placeholder;
-  $('#fbmail').placeholder = F.emailPlaceholder;
-  $('#fbsend').textContent = F.invia;
-  $('#fbclose').textContent = F.chiudi;
-  $('#fbmodal-icon').innerHTML = icon('pencil-line', 20);
-  const modal = $('#fbmodal'), status = $('#fbstatus');
-  function apri(){ modal.style.display = 'flex'; status.textContent = ''; setTimeout(()=>$('#fbmsg').focus(), 50); }
-  function chiudi(){ modal.style.display = 'none'; }
-  $('#fblink').addEventListener('click', apri);
-  $('#fbclose').addEventListener('click', chiudi);
-  modal.addEventListener('click', e => { if (e.target === modal) chiudi(); });
-  $('#fbsend').addEventListener('click', async () => {
-    const msg = $('#fbmsg').value.trim();
-    if (!msg) { $('#fbmsg').focus(); return; }
-    $('#fbsend').disabled = true;
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_feedback`, {
-        method: 'POST',
-        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                   'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({
-          message: msg.slice(0, 2000),
-          contact: $('#fbmail').value.trim().slice(0, 200) || null,
-          context: {
-            fase: phase(), lingua: LANG, standalone: isStandalone(),
-            tab: document.querySelector('nav button.on')?.dataset.tab || 'home',
-            ua: navigator.userAgent.slice(0, 300)
-          }
-        })
-      });
-      if (!res.ok) throw new Error('insert fallita');
-      $('#fbmsg').value = ''; $('#fbmail').value = '';
-      status.textContent = F.grazie;
-      setTimeout(chiudi, 1800);
-    } catch (err) {
-      status.textContent = F.errore;
-    } finally {
-      $('#fbsend').disabled = false;
-    }
-  });
-})();
 initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
 paintDemo(); openTab('home');
