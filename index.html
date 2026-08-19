@@ -64,7 +64,20 @@
     <section class="tab" id="tab-live"></section>
     <div class="sponsor" id="sponsorbar"></div>
     <div class="legend" id="legenda"></div>
+    <div class="legend"><button class="linklike" id="fblink"></button></div>
   </main>
+
+  <div id="fbmodal"><div class="box">
+    <h3><span class="e" id="fbmodal-icon"></span> <span id="fbtitolo"></span></h3>
+    <p class="muted" id="fbtesto"></p>
+    <textarea id="fbmsg" rows="4"></textarea>
+    <input id="fbmail" type="email" autocomplete="email"/>
+    <p id="fbstatus" class="muted" aria-live="polite"></p>
+    <div class="btnrow" style="margin-top:12px">
+      <button class="btn" id="fbsend"></button>
+      <button class="btn sec" id="fbclose"></button>
+    </div>
+  </div></div>
 
   <nav><div class="in">
     <button data-tab="home"><span class="e"></span><span class="tlbl" data-t="home"></span></button>
@@ -414,15 +427,41 @@ function renderHome(){
   }
   if (ph === 'dopo') {
     h += `<div class="card hero"><h2>${esc(C.dopo.titolo)}</h2><p>${esc(C.dopo.testo)}</p></div>`;
-    h += C.dopo.azioni.map(a=>`<div class="card"><h3>${a.icona} ${esc(a.titolo)}</h3>
-      <p>${esc(a.testo)}</p>
-      <div class="btnrow"><a class="btn" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)}</a></div></div>`).join('');
+    // Stessa forma della checklist del "prima": sequenza numerata di caselle.
+    // Una voce senza url non è ancora pronta — appare attenuata, senza casella
+    // né link, col testo `attesa` (regola editoriale 2: mai segnaposto visibili).
+    if (C.dopo.azioni.length) {
+      h += `<div class="card"><h2>${esc(U.dopoSequenza)}</h2>
+        <p class="muted">${esc(U.dopoSotto)}</p><div id="dopolist">` +
+        C.dopo.azioni.map(a=>{
+          const m = a.testo.match(/^(\d+)\.\s*(.*)$/);
+          const label = m ? m[2] : a.testo;
+          if (!a.url) return `<div class="chk wait" data-id="${a.id}">
+            <div class="top">
+              <span class="chk-wait">${icon(a.icona||'info',17)}</span>
+              <span class="chk-label">${esc(label)}</span>
+              <span class="chk-badge">${esc(U.dopoInArrivo)}</span>
+            </div>
+            <div class="det">${esc(a.attesa||'')}</div>
+          </div>`;
+          return `<div class="chk" data-id="${a.id}">
+            <div class="top">
+              <label class="chk-box" for="dk-${a.id}"><input type="checkbox" id="dk-${a.id}" aria-label="${esc(label)}"/><span class="mark"></span></label>
+              <span class="chk-label">${esc(label)}</span>
+            </div>
+            <div class="det">${esc(a.dettaglio||'')} <a href="${a.url}" target="_blank" rel="noopener">${esc(a.cta||'Apri')} ›</a></div>
+          </div>`;
+        }).join('') + `</div></div>`;
+    }
+    // Il prossimo evento è una card in evidenza, non una casella: un invito,
+    // non un compito. Senza url il bottone non compare.
     if (C.dopo.prossimo) h += `<div class="card" style="border:2px solid var(--gold)"><h2>${esc(C.dopo.prossimo.titolo)}</h2>
       <p>${esc(C.dopo.prossimo.testo)}</p>
-      <div class="btnrow"><a class="btn" href="${C.dopo.prossimo.url}" target="_blank" rel="noopener">${esc(C.dopo.prossimo.cta)}</a></div></div>`;
+      ${C.dopo.prossimo.url ? `<div class="btnrow"><a class="btn" href="${C.dopo.prossimo.url}" target="_blank" rel="noopener">${esc(C.dopo.prossimo.cta)}</a></div>` : ''}</div>`;
   }
   $('#tab-home').innerHTML = h;
   if (ph === 'prima') { startCountdown(); bindChecklist(); }
+  if (ph === 'dopo') { bindChecklist('#dopolist', 'tg-ck-dopo'); }
   bindTabLinks($('#tab-home'));
   bindInstall();
   maybeShowInstall();
@@ -465,15 +504,16 @@ function startCountdown(){
   }
   tick(); setInterval(tick, 30000);
 }
-function bindChecklist(){
-  const st = JSON.parse(localStorage.getItem('tg-ck') || '{}');
-  document.querySelectorAll('#cklist .chk').forEach(row=>{
+function bindChecklist(sel, key){
+  sel = sel || '#cklist'; key = key || 'tg-ck';
+  const st = JSON.parse(localStorage.getItem(key) || '{}');
+  document.querySelectorAll(sel + ' .chk:not(.wait)').forEach(row=>{
     const id = row.dataset.id, cb = row.querySelector('input');
     cb.checked = !!st[id];
     row.classList.toggle('done', cb.checked);
     cb.addEventListener('change',()=>{
       st[id] = cb.checked;
-      localStorage.setItem('tg-ck', JSON.stringify(st));
+      localStorage.setItem(key, JSON.stringify(st));
       row.classList.toggle('done', cb.checked);
     });
     row.addEventListener('click', e => {
@@ -1536,6 +1576,59 @@ $('#searchinput').addEventListener('input',e=>{
   $('#iosmodal-icon').innerHTML = icon('smartphone', 20);
   $('#gatekicker').textContent = C.meta.sottotitolo;
   $('#homelogo').addEventListener('click', () => openTab('home'));
+})();
+
+/* ---------- feedback dei partecipanti ----------
+   Link fisso in fondo alla pagina, sempre visibile in ogni fase. Il messaggio
+   finisce nella tabella Supabase tg_feedback (insert-only per anon, stessa
+   filosofia di tg_push_subscriptions) insieme a un po' di contesto tecnico che
+   a chi lo legge serve per riprodurre il problema. Se l'insert fallisce (rete,
+   tabella non ancora migrata) il testo di errore offre l'email come uscita. */
+(function(){
+  const F = U.feedback;
+  $('#fblink').textContent = F.link;
+  $('#fbtitolo').textContent = F.titolo;
+  $('#fbtesto').textContent = F.testo;
+  $('#fbmsg').placeholder = F.placeholder;
+  $('#fbmail').placeholder = F.emailPlaceholder;
+  $('#fbsend').textContent = F.invia;
+  $('#fbclose').textContent = F.chiudi;
+  $('#fbmodal-icon').innerHTML = icon('pencil-line', 20);
+  const modal = $('#fbmodal'), status = $('#fbstatus');
+  function apri(){ modal.style.display = 'flex'; status.textContent = ''; setTimeout(()=>$('#fbmsg').focus(), 50); }
+  function chiudi(){ modal.style.display = 'none'; }
+  $('#fblink').addEventListener('click', apri);
+  $('#fbclose').addEventListener('click', chiudi);
+  modal.addEventListener('click', e => { if (e.target === modal) chiudi(); });
+  $('#fbsend').addEventListener('click', async () => {
+    const msg = $('#fbmsg').value.trim();
+    if (!msg) { $('#fbmsg').focus(); return; }
+    $('#fbsend').disabled = true;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_feedback`, {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                   'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({
+          message: msg.slice(0, 2000),
+          contact: $('#fbmail').value.trim().slice(0, 200) || null,
+          context: {
+            fase: phase(), lingua: LANG, standalone: isStandalone(),
+            tab: document.querySelector('nav button.on')?.dataset.tab || 'home',
+            ua: navigator.userAgent.slice(0, 300)
+          }
+        })
+      });
+      if (!res.ok) throw new Error('insert fallita');
+      $('#fbmsg').value = ''; $('#fbmail').value = '';
+      status.textContent = F.grazie;
+      setTimeout(chiudi, 1800);
+    } catch (err) {
+      status.textContent = F.errore;
+    } finally {
+      $('#fbsend').disabled = false;
+    }
+  });
 })();
 initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
