@@ -156,9 +156,26 @@ dormire: {
 
 dopo: {
   titolo: "È stata la prima. Grazie di averla scritta con noi.",
-  testo: "La Pioneer Edition esiste una volta sola, e tu c'eri. Le informazioni su foto, questionario e prossimi eventi arrivano qui a fine evento.",
-  azioni: [],
-  prossimo: null
+  testo: "La Pioneer Edition esiste una volta sola, e tu c'eri. Qui sotto trovi le cose da fare adesso — si accendono man mano che sono pronte.",
+  // Le azioni con url vuoto compaiono in stato "in arrivo" (testo `attesa`,
+  // niente casella né bottone). Appena l'url c'è, la voce si accende da sola.
+  azioni: [
+    { id: "questionario", icona: "pencil-line",
+      testo: "1. Racconta com'è andata",
+      dettaglio: "Sono dieci minuti e ci servono davvero per costruire la seconda edizione. Alla fine trovi il tuo attestato di finisher della Pioneer Edition, da tenere e da mostrare.",
+      attesa: "Il questionario arriva qui a fine evento. Ti avvisiamo.",
+      url: "", cta: "Compila il questionario" },
+    { id: "foto", icona: "camera",
+      testo: "2. Ritrovati nelle foto",
+      dettaglio: "Le foto ufficiali della Pioneer Edition. Cerca tra le cartelle o prova la ricerca per volto, e scarica quello che trovi.",
+      attesa: "Le foto ufficiali arrivano qui nei giorni dopo l'evento.",
+      url: "", cta: "Vai alle foto" }
+  ],
+  prossimo: {
+    titolo: "Il prossimo capitolo",
+    testo: "Hai pedalato un evento della serie, quindi entri prima degli altri. Il 31 ottobre alle 18 apre la finestra riservata agli alumni per il Tuscany Trail 2027, dal 19 al 25 maggio. I posti di quella finestra finiscono prima dell'apertura al pubblico.",
+    url: "", cta: "Avvisami quando apre"
+  }
 },
 
 sponsor: { titolo: "", lista: [] },
@@ -253,6 +270,9 @@ ui: {
   tramontoOffline: "🌇 Tramonto non disponibile offline.",
   meteoOffline: "Meteo non raggiungibile, serve connessione.",
   legenda: "Trentino Gravel · Guida in versione beta — la miglioriamo ogni settimana",
+  dopoSequenza: "Le cose da fare adesso",
+  dopoSotto: "In ordine, come prima della partenza. Le voci si accendono quando sono pronte.",
+  dopoInArrivo: "In arrivo",
   notifiche: {
     titolo: "Notifiche evento",
     testo: "Attiva le notifiche per ricevere le comunicazioni dello staff durante l'evento, anche ad app chiusa.",
@@ -416,9 +436,25 @@ dormire: {
 
 dopo: {
   titolo: "It was the first one. Thank you for writing it with us.",
-  testo: "The Pioneer Edition happens only once, and you were there. Information about photos, the survey and upcoming events will arrive here after the event.",
-  azioni: [],
-  prossimo: null
+  testo: "The Pioneer Edition happens only once, and you were there. Below are the things to do now — they switch on as they become ready.",
+  // Azioni con url vuoto = stato "coming soon" (testo `attesa`, niente casella).
+  azioni: [
+    { id: "questionario", icona: "pencil-line",
+      testo: "1. Tell us how it went",
+      dettaglio: "It takes ten minutes and we truly need it to build the second edition. At the end you will find your Pioneer Edition finisher certificate, to keep and to show.",
+      attesa: "The survey arrives here at the end of the event. We will let you know.",
+      url: "", cta: "Fill in the survey" },
+    { id: "foto", icona: "camera",
+      testo: "2. Find yourself in the photos",
+      dettaglio: "The official Pioneer Edition photos. Browse the folders or try the face search, and download what you find.",
+      attesa: "The official photos arrive here in the days after the event.",
+      url: "", cta: "Go to the photos" }
+  ],
+  prossimo: {
+    titolo: "The next chapter",
+    testo: "You rode an event of the series, so you get in before everyone else. On 31 October at 18.00 the alumni window opens for the Tuscany Trail 2027, from 19 to 25 May. The spots in that window run out before the public opening.",
+    url: "", cta: "Tell me when it opens"
+  }
 },
 
 sponsor: { titolo: "", lista: [] },
@@ -513,6 +549,9 @@ ui: {
   tramontoOffline: "🌇 Sunset not available offline.",
   meteoOffline: "Weather unavailable, connection needed.",
   legenda: "Trentino Gravel · Beta guide — we improve it every week",
+  dopoSequenza: "What to do now",
+  dopoSotto: "In order, just like before the start. Items switch on when they are ready.",
+  dopoInArrivo: "Coming soon",
   notifiche: {
     titolo: "Event notifications",
     testo: "Turn on notifications to receive staff updates during the event, even with the app closed.",
