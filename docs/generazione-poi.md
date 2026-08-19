@@ -125,3 +125,34 @@ Dopo ogni generazione, prima di pubblicare:
 `{t:"c"}` centro raggruppato (con conteggi `ne`/`ns`/`nf`), `{t:"a"|"m"|"d"}`
 singolo punto (fontana / mangiare / dormire); `lat`/`lng` presenti dove serve
 il bottone Prenota (centra la mappa Stay22 su quel punto).
+
+---
+
+## Meccanici e negozi di bici (tipo `b`) — script separato
+
+I punti di tipo `b` NON li fa `gen_poi.py`: li fa `scripts/gen_meccanici.py`,
+con la stessa forma di riga (`chiave=file.gpx`) ma un metodo diverso, e molto
+piu' leggero.
+
+I negozi di bici sono poche centinaia in tutta la regione, quindi non serve il
+corridoio campionato ogni 700 m: si scarica **una volta sola** il riquadro che
+contiene i percorsi, con **una query**, e poi la distanza dalla traccia si
+calcola in locale sul GPX a piena risoluzione. Overpass regge anche nelle sue
+giornate storte, e il giro dura secondi invece di decine di minuti.
+
+Differenze di dato rispetto ad acqua, cibo e alloggi:
+
+- **buffer 1.000 m** invece di 500. Con la catena rotta un chilometro di
+  deviazione lo fai. Chi sta oltre i 500 m porta il campo `dist` e l'app scrive
+  "N m fuori percorso".
+- **niente nome inventato**: se OSM non ha il nome, `nome` non viene proprio
+  scritto e l'app mostra il sottotipo tradotto. "riparazione self service" e'
+  piu' informativo di "Colonnina di riparazione (riparazione self service)".
+- **doppioni**: due punti dello stesso sottotipo entro 150 m sono lo stesso
+  posto mappato due volte (capita spesso con le colonnine), ne resta uno — e
+  fra i due vince quello che ha un nome vero.
+- **telefono** in `tel` quando c'e', perche' col mezzo rotto si chiama prima di
+  pedalare fin li'.
+
+La cache si chiama `_osm_bici.json` e sta nella radice del repo (ignorata da
+git come le altre `_osm_*`): finche' esiste, rilanciare non riscarica.
