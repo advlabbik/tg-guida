@@ -39,7 +39,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 | `manifest.webmanifest` | Manifest PWA (nome, icone, colori del brand, `display: standalone`) |
 | `sw.js` | Service worker: **network-first** per i file dell'app (chi ha rete vede sempre l'ultima versione), cache come rete di salvataggio quando il segnale manca. Mappe/meteo/Stay22 non passano di qui. Versione cache attuale: vedi costante `CACHE` in cima al file — **va incrementata a ogni modifica di `sw.js`** o dell'elenco asset, altrimenti i client con la PWA installata restano bloccati sulla versione precedente |
 | `icons/icon-192.png`, `icons/icon-512.png` | Icone PWA |
-| `supabase/` | Migrazioni e Edge Function (`tg-send-broadcast`) per le notifiche push — unica dipendenza runtime da un backend (progetto Supabase `kqsrtuzeeiljozdnjott`), il resto dell'app gira senza backend |
+| `supabase/` | Migrazioni e Edge Function (`tg-send-broadcast`) per le notifiche push e per la tabella `tg_feedback` (segnalazioni dei partecipanti) — unica dipendenza runtime da un backend (progetto Supabase `kqsrtuzeeiljozdnjott`), il resto dell'app gira senza backend |
 | `scripts/gen_poi.py` | Script per rigenerare `poi.js` da OpenStreetMap quando cambia una traccia |
 | `anteprima-francesco/` | Snapshot statico storico di un branch di restyle (vedi sezione "Stato del repo e dei branch" sotto) — non è codice attivo, non editarlo pensando che finisca in produzione |
 
@@ -55,6 +55,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 - **Installabile**: prompt "aggiungi a schermata Home" per Android (`beforeinstallprompt`) e istruzioni guidate per iOS.
 - **Notifiche push e Comunicazioni**: opt-in Web Push (VAPID) nella tab Live, ricevute da `sw.js` anche ad app chiusa, più un feed in-app "Comunicazioni" come fallback per chi non riceve il push (es. iOS senza PWA installata). Lo staff invia i messaggi da `staff.html`.
 - **Fase "dopo" a sequenza spuntabile** (19 agosto 2026): la home post-evento ha la stessa forma della checklist del "prima" — voci numerate con casella, salvate in `localStorage` (`tg-ck-dopo`, chiave separata da `tg-ck`). Le voci con `url` vuoto in `content.js → dopo.azioni` appaiono in stato "In arrivo" (testo `attesa`, niente casella né link): appena si compila l'url la voce si accende da sola, senza toccare il codice. Il prossimo evento (`dopo.prossimo`) è una card in evidenza col bordo oro, non una casella — un invito, non un compito; anche qui il bottone compare solo se `url` è compilato.
+- **Feedback dei partecipanti**: link fisso in fondo alla pagina ("Qualcosa non funziona? Scrivicelo") che apre un modale con textarea + email facoltativa. Il messaggio va nella tabella Supabase `tg_feedback` (insert-only per anon, rate limit per IP — stesso pattern delle push) insieme al contesto tecnico (fase, tab, lingua, user agent, PWA sì/no). Nessuna policy di lettura per anon: i feedback si leggono dal dashboard Supabase e arrivano in tempo reale su Slack via Database Webhook (da configurare, vedi checklist sotto).
 
 ## Da sapere
 
@@ -70,11 +71,12 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 - Il dislivello residuo mostrato nella vista percorso è la somma grezza dei dislivelli della traccia **riportata in scala sul D+ ufficiale** del percorso, così il numero resta coerente con quello comunicato ai partecipanti. I km e i D+ ufficiali non si ricalcolano mai dal GPX.
 - **Frecce direzionali sulla mappa Stay22: provate il 13 agosto, pubblicate, scartate da Andrea. Non rifarle senza un'idea diversa.** Dentro Stay22 la traccia la disegna Stay22 nel suo iframe cross-origin, e i soli parametri disponibili (`gpx`, `gpxlinecolor`, `gpxlinethickness`, `gpxlineopacity`) non riguardano le frecce. L'unico aggancio è `poi`, un array JSON di marcatori con immagine ma **senza rotazione**, quindi la rotazione va cotta nei file, uno per angolo. Tecnicamente funziona, Stay22 accetta gli SVG e li monta, ma rende ogni freccia come un **pallino bianco tondo di 30×36 px con la coda**, immagine ritagliata a cerchio e ingrandita al 125%, `size` minimo 1 e nessun modo di rimpicciolire. Vengono spilli, non frecce sulla linea, su una mappa che serve a cercare alloggi ed è già piena di spilli coi prezzi. Codice, script generatore e 24 SVG stanno nel commit `3c0b8c3`, annullato subito dopo. Altre cose verificate sul campo, se un domani servissero: `name` compare solo al passaggio del dito (niente etichette a vista, quindi nemmeno marcatori "km 30" leggibili al volo), l'immagine la scarica Stay22 e non il telefono (serve un indirizzo pubblico in HTTPS, da `localhost` non funziona), e con 12 marcatori la query string dell'iframe arriva a circa 2.700 caratteri.
 
-### Checklist go-live fase "dopo" (19 agosto 2026)
+### Checklist go-live fase "dopo" e feedback (19 agosto 2026)
 
+- [ ] Applicare `supabase/migrations/20260819000000_tg_feedback.sql` nel SQL editor del progetto `kqsrtuzeeiljozdnjott` — finché manca, il bottone feedback mostra l'errore con l'email di riserva (`ciao@trentinogravel.com`), l'app non si rompe.
+- [ ] Configurare su Supabase un Database Webhook su INSERT di `tg_feedback` verso un incoming webhook Slack (canale dedicato, es. `#feedback-app`) — zero codice, si fa dal dashboard (Database → Webhooks).
 - [ ] Compilare i tre url in `content.js → dopo` (IT **e** EN): `azioni[questionario].url` (il questionario post-evento), `azioni[foto].url` (le foto ufficiali — chiedere a Francesco il link del sistema di riconoscimento facciale), `prossimo.url` (form email "avvisami" del sito Tuscany Trail 2027). Le voci si accendono da sole appena l'url c'è.
 - [ ] La data della finestra alumni (31 ottobre ore 18) è già nel testo di `dopo.prossimo`: i partecipanti la vedono dal 1° ottobre (inizio fase "dopo"), prima del reveal pubblico di metà ottobre. È voluto — sono gli alumni, il vantaggio è il messaggio — ma se il piano lanci cambia va aggiornata qui.
-- [ ] **Bottone feedback dei partecipanti**: costruito e collaudato sul branch `feedback-partecipanti` (link in fondo a ogni pagina → modale → tabella Supabase `tg_feedback`, migrazione inclusa nel branch). In mano a Francesco — va applicata la migrazione e configurato il Database Webhook verso Slack prima del merge.
 
 ### Checklist go-live notifiche push
 
