@@ -264,6 +264,7 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .rvpin.t-a{background:#1c7ed6;color:#fff}
 .rvpin.t-m{background:var(--mint);color:#fff}
 .rvpin.t-d{background:#7048e8;color:#fff}
+.rvpin.t-b{background:#0b7285;color:#fff}
 .rvpin.t-c{background:var(--ink);color:#fff}
 .rvpin.sel{outline:2.5px solid var(--cream-dp);outline-offset:1px}
 /* il numero sul segno — profilo o mappa, e' lo stesso badge: dice quanti punti
@@ -307,6 +308,7 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .rvmk.t-a{background:#1c7ed6;color:#fff}
 .rvmk.t-m{background:var(--mint);color:#fff}
 .rvmk.t-d{background:#7048e8;color:#fff}
+.rvmk.t-b{background:#0b7285;color:#fff}
 .rvmk.t-c{background:var(--ink);color:#fff}
 .rvpop b{font-size:14px}
 .rvpop .km{color:var(--muted);font-weight:600;font-size:12.5px}
@@ -372,12 +374,14 @@ mark{background:rgba(242,238,174,.35);color:var(--ink);border-radius:3px;padding
 .poilist{max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:16px;padding:4px 12px;background:var(--card)}
 .poirow{padding:8px 0;border-bottom:1px solid var(--line);font-size:14.5px;display:flex;gap:8px;align-items:center;color:var(--ink)}
 .poirow:last-child{border-bottom:none}
+.poitel{color:#0b7285;font-weight:700;white-space:nowrap}
 .poikm{color:var(--muted);font-size:11.5px;flex:0 0 50px;font-weight:700}
 .poiico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   flex:0 0 auto;background:var(--card-2)}
 .poiico.t-a{background:rgba(47,158,68,.16);color:var(--lime)}
 .poiico.t-m{background:rgba(242,238,174,.16);color:var(--cream-dp)}
 .poiico.t-d{background:rgba(194,88,50,.16);color:var(--mint)}
+.poiico.t-b{background:rgba(11,114,133,.14);color:#0b7285}
 .poiico.t-w{background:rgba(193,18,31,.18);color:var(--red)}
 .poibook{margin-left:auto;background:var(--mint);color:#fff;border-radius:999px;padding:3px 11px;
   font-size:11.5px;text-decoration:none;font-weight:700;flex:0 0 auto}

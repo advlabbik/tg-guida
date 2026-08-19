@@ -271,6 +271,29 @@ aggiustera' il tiro (era esattamente l'intenzione di Andrea).
 
 Questa e' la parte "vendita" della cornice qui sotto — il contenuto utile e' il
 veicolo, e resta un solo invito commerciale per volta.
+## POI meccanici (19 agosto 2026, branch `poi-meccanici`)
+
+Nuovo tipo di punto sul percorso, **`t: "b"`** — negozi di bici, meccanici e
+colonnine di riparazione self service, presi da OpenStreetMap. Corto 54 punti,
+Medio 52, Lungo 52. Si generano con `python scripts/gen_meccanici.py
+corto=... medio=... lungo=...` (una query Overpass sola, distanze calcolate in
+locale sul GPX: leggerissimo rispetto a `gen_poi.py`).
+
+Cosa cambia in app — quarto filtro **Meccanico** nella vista percorso, accanto ad
+Acqua, Mangiare e Dormire; pin color petrolio (`#0b7285`) su mappa e altimetria,
+icona `i-wrench` aggiunta allo sprite; nella lista compaiono il **telefono**
+quando OSM ce l'ha (link da toccare) e **quanto e' fuori percorso** quando supera
+i 500 metri.
+
+Due scelte di dato — buffer a **1.000 m** invece dei 500 degli altri POI (con la
+catena rotta un chilometro lo fai), e niente nome inventato: se OSM non ha il
+nome la riga mostra il sottotipo tradotto ("riparazione self service"), che dice
+di piu' di un segnaposto.
+
+**Non ancora fatto** — i meccanici non entrano nel blocco «Davanti a te» del Live,
+che continua a pescare 1 acqua, 1 cibo e 2 posti letto. Il meccanico piu' vicino
+davanti a te sarebbe utile proprio nel momento peggiore, ma cambia il disegno di
+quel blocco e va deciso a parte.
 
 ## A cosa servono le app degli eventi (Andrea, 19 agosto 2026)
 

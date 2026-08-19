@@ -588,14 +588,21 @@ function poiRow(e){
     return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><b>${esc(e.nome)}</b>
       <span class="muted">${det}</span>${e.ns ? bookBtn(e) : ''}</div>`;
   }
-  const ico = icon({a:'droplets', m:'utensils', d:'bed-double'}[e.t], 15);
+  const ico = icon({a:'droplets', m:'utensils', d:'bed-double', b:'wrench'}[e.t], 15);
   const nome = (e.t === 'a' && e.n > 1)
     ? `${e.n} ${U.fontane} → km ${Math.round(e.fino)}`
     : (e.nome || subLingua(e.sub));
   const sub = (e.nome && e.t !== 'a') ? ` <span class="muted">(${esc(subLingua(e.sub))}${e.luogo ? ' · ' + esc(e.luogo) : ''})</span>`
             : (e.luogo ? ` <span class="muted">(${esc(e.luogo)})</span>` : '');
+  /* Sul meccanico servono due cose in piu': il telefono, quando OSM ce l'ha,
+     perche' con la catena rotta si chiama prima di pedalare fin li'; e quanto
+     e' fuori percorso, quando supera i 500 metri della regola generale. */
+  const extra = (e.t === 'b')
+    ? (e.dist ? ` <span class="muted">· ${fmt(esc(U.fuoriPercorso), e.dist)}</span>` : '')
+      + (e.tel ? ` <a class="poitel" href="tel:${esc(e.tel.replace(/\s/g, ''))}">${esc(e.tel)}</a>` : '')
+    : '';
   return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><span class="poiico t-${e.t}">${ico}</span>
-    <span><b>${esc(nome)}</b>${sub}</span>${e.t === 'd' ? bookBtn(e) : ''}</div>`;
+    <span><b>${esc(nome)}</b>${sub}${extra}</span>${e.t === 'd' ? bookBtn(e) : ''}</div>`;
 }
 function bindBook(root){
   root.querySelectorAll('.poibook').forEach(a=>a.addEventListener('click',ev=>{
@@ -757,7 +764,7 @@ function routeGeom(id){
 }
 let rvId = null, rvMap = null, rvLayer = null, rvCur = null, rvFilter = 'tutti',
     rvSel = -1, rvPins = [], rvPushed = false;
-const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', c:'landmark' };
+const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', b:'wrench', c:'landmark' };
 // un decimale, con la virgola in italiano e il punto in inglese
 function kmDec(v){ const s = v.toFixed(1); return LANG === 'it' ? s.replace('.', ',') : s; }
 function openRouteView(id){
@@ -777,7 +784,7 @@ function openRouteView(id){
   $('#rv-gpx').textContent = U.gpx;
   $('#rv-filters').innerHTML =
     `<button class="btn small sec pfil on" data-rf="tutti">${esc(U.filtri.tutti)}</button>` +
-    ['a','m','d'].map(t => `<button class="btn small sec pfil" data-rf="${t}">${icon(RV_ICO[t],15)} ${esc(U.filtri[t])}</button>`).join('');
+    ['a','m','d','b'].map(t => `<button class="btn small sec pfil" data-rf="${t}">${icon(RV_ICO[t],15)} ${esc(U.filtri[t])}</button>`).join('');
   document.querySelectorAll('#rv-filters .pfil').forEach(b => b.addEventListener('click', () => {
     rvFilter = b.dataset.rf;
     rvHide(); // tooltip E cursore sulla mappa, non solo il tooltip
