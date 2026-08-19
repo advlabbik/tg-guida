@@ -1,5 +1,9 @@
 # Istruzioni per le sessioni Claude Code su questo repo
 
+## La bussola — a cosa serve quest'app
+
+Prima di aggiungere, togliere o riprogettare qualcosa, rileggere «A cosa servono le app degli eventi» nel `README.md`. In breve — l'app tiene il filo col cliente dall'iscrizione alla fine dell'evento, e trasforma quell'attenzione **bilanciando utilità e vendita**: utilità = tutto ciò che serve per arrivare preparati e vivere al meglio l'avventura; vendita = solo tre strade (scoprire un altro evento, agganciarsi alla serie BAS, i due insieme con un contenuto utile come veicolo); più la superficie B2B, dove sponsor e territori entrano **dentro** una funzione utile (lista della spesa, POI partner) e mai come cartellone. L'utilità non arretra mai per far posto a chi paga.
+
 ## Tenere README.md e issue GitHub aggiornati — non è opzionale
 
 Questa repo ha già avuto un incidente concreto per README e issue lasciate indietro: il branch `ds-restyle` è stato dichiarato "riconciliato con `main`, manca solo il sottodominio" nel README e nell'issue #11, mentre nel frattempo `main` proseguiva da solo con lavoro che rendeva quella dichiarazione falsa — è successo **due volte di fila**. Chi è arrivato dopo (umano o un'altra sessione Claude) si è fidato di quello scritto e ha perso tempo a ricostruire lo stato reale da zero con `git log`/`git diff`.

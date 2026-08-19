@@ -188,6 +188,18 @@ quello che è deciso e quello che manca.
   **è il metodo giusto, tenerlo.** La trappola torna viva il giorno in cui si passa a
   MapLibre. Spiegazione estesa nel README di `advlabbik/cycling-in-tuscany`.
 
+## A cosa servono le app degli eventi (Andrea, 19 agosto 2026)
+
+Cornice valida per tutte le app evento BAS, comprese quelle non ancora nate — da rileggere prima di aggiungere o togliere qualcosa.
+
+L'app serve a **restare attaccati al cliente dal momento dell'iscrizione fino alla fine dell'evento**. In quella finestra il partecipante ci dà la sua attenzione, che è la cosa più preziosa che ha, e non ce la dà nessun altro canale. Quell'attenzione si spende **bilanciando utilità e vendita**.
+
+- **Utilità** — dentro ci devono essere tutte le informazioni e gli strumenti per arrivare preparati e vivere al meglio la propria avventura in bicicletta. È la parte che si guadagna l'attenzione; senza, l'app non viene aperta e non c'è niente da bilanciare.
+- **Vendita** — chi è già dentro deve poter spendere altri soldi con noi, in tre modi soltanto — fargli **scoprire un altro evento**, **agganciarlo alla Bike Adventure Series** (la serie, non il singolo evento), oppure **tutti e due insieme**, per esempio la BAS presentata con il link a un articolo che gli è davvero utile. Il contenuto utile è il veicolo della vendita, non il suo contorno.
+- **B2B con intelligenza** — i partner entrano dentro un punto di forza per chi pedala, mai come cartellone. Qui la superficie di oggi è la barra sponsor (markup pronto, 4 loghi in `assets`, slot «il tuo brand qui») e la mappa alloggi; «Arriva preparato» con la lista della spesa e gli sconti sponsor si valida prima sul Tuscany Trail e poi scende anche qui.
+
+L'utilità non arretra mai per far posto a chi paga (regola D6 del registro). Ragionamento esteso e decisione **D17** nella pagina Notion linkata qui sotto.
+
 ## Decisioni ecosistema — 16 agosto 2026
 
 Analisi completa dei 4 progetti digitali e registro decisioni con le motivazioni nella pagina Notion [Ecosistema App BAS — analisi e registro decisioni](https://app.notion.com/p/3bef88ad0121819487aceb41d1a89781). Qui solo ciò che tocca questo repo.
