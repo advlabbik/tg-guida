@@ -161,6 +161,11 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
   display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 auto;font-size:12px}
 /* stato "in arrivo" della sequenza del dopo: niente casella, voce attenuata */
 .chk.wait{cursor:default;opacity:.75}
+/* voce senza spunta: stessa scatola, nessuna casella e nessun rientro */
+.chk.plain{cursor:default;margin-top:10px}
+.chk.plain .det{margin-left:0}
+/* card di richiamo a un altro evento della serie */
+.cross{border:1.5px solid var(--gold)}
 .chk-wait{width:30px;height:30px;flex:0 0 auto;border-radius:9px;border:2px dashed var(--line);
   display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .chk-badge{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
