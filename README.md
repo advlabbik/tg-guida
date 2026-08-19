@@ -197,6 +197,11 @@ sulla stessa riga anche su un telefono da 375 px, con foto in testa, nome, km,
 dislivello e livello. Cosi' la scelta si vede tutta insieme e i tre percorsi si
 confrontano senza scorrere.
 
+Da PC (>= 900 px) la pagina resta **una colonna sola larga 860 px** invece di
+stirarsi su tutta la finestra, e la mappa dei tre tracciati scende da 560 a 420 px
+(`#minimap` nel blocco desktop; `#gpsmap` del Live resta 560): serviva perche' con
+la mappa alta i tre tasti finivano sotto la piega e sembravano non esserci.
+
 Tutto il resto e' passato **dentro la vista percorso**, dove c'e' lo spazio per
 leggerlo — blocco `#rv-desc`, fra il profilo altimetrico e la lista servizi,
 composto da `descPercorso()` in index.html con i dati di `content.js`:
@@ -241,7 +246,12 @@ L'URL sta in `content.js` come `whipUrl`, **una riga per lingua**: se e' stringa
 vuota la card non viene proprio generata, cosi' un evento senza codice non mostra
 una pagina rotta. Testi in `live.whip` (titolo, testo, nota, apri).
 
-**Codice evento** — al 19/8 in `whipUrl` c'e' `NC4R26`, cioe' il tracker della NorthCape4000, messo per la prova su richiesta di Andrea; la nota sotto la mappa lo dichiara. Quando WHIP consegna il codice del Trentino Gravel si cambia solo quella riga (in tutte e due le lingue) e si svuota la nota.
+**Stato al 19/8 — `whipUrl` e' vuoto per scelta**: la prova con il tracker
+NorthCape (`NC4R26`) e' servita a verificare che l'embed funzioni, poi Andrea ha
+deciso che per ora l'app dice solo che la mappa arrivera'. Quindi la card c'e'
+sempre e mostra il testo `live.whip.attesa`; appena WHIP consegna il codice del
+Trentino Gravel si scrive l'url in `whipUrl` **in tutte e due le lingue** e la
+mappa compare da sola, senza toccare il codice.
 ## Home — checklist rivista e cross-sell (19 agosto 2026, branch `home-checklist`)
 
 Lista e ordine dettati da Andrea. Nella fase "prima" la Home e' ora —
@@ -249,8 +259,10 @@ Lista e ordine dettati da Andrea. Nella fase "prima" la Home e' ora —
 1. **Quattro voci spuntabili** in `checklist[]` — certificato medico, studia la
    traccia preliminare, prenota almeno la prima notte a Rovereto, organizza il
    viaggio. Il forum e' uscito dalla lista numerata.
-2. **Il forum senza casella** (`bloccoForum()`, classe `.chk.plain`), in coda
-   alla stessa card — non e' un compito che si chiude, e' un posto dove tornare.
+2. **Il forum in una card sua** (`cardForum()`), fuori dalla checklist — non e'
+   un compito che si chiude, e' un posto dove tornare. Prima stava in coda alla
+   stessa card senza casella e sembrava una voce a cui si era dimenticata la
+   spunta (correzione di Andrea, 19/8).
 3. **Un evento della serie, pescato a caso** (`cardAltroEvento()`), uno solo per
    volta: Tuscany Trail, Unpaved Roads, The Grand Escape, NorthCape4000. La
    scelta si fa una volta per apertura e resta ferma per tutta la sessione — se
@@ -274,10 +286,18 @@ veicolo, e resta un solo invito commerciale per volta.
 ## POI meccanici (19 agosto 2026, branch `poi-meccanici`)
 
 Nuovo tipo di punto sul percorso, **`t: "b"`** — negozi di bici, meccanici e
-colonnine di riparazione self service, presi da OpenStreetMap. Corto 54 punti,
-Medio 52, Lungo 52. Si generano con `python scripts/gen_meccanici.py
+colonnine di riparazione self service, presi da OpenStreetMap. Corto 55 punti,
+Medio 52, Lungo 52 (la maggior parte dentro i paesi, vedi sotto). Si generano con `python scripts/gen_meccanici.py
 corto=... medio=... lungo=...` (una query Overpass sola, distanze calcolate in
 locale sul GPX: leggerissimo rispetto a `gen_poi.py`).
+
+**Si comportano come gli altri POI** (correzione di Andrea, 19/8): chi cade
+dentro il raggio di un paese non fa riga per conto suo ma entra nel **conteggio
+del paese** (`nb` sulla riga `t:"c"`, accanto a mangiare/alloggi/fontane), con le
+stesse costanti di `gen_poi.py` — raggio 4.000 m per le citta', 2.500 town,
+1.200 village, 700 hamlet, e a parita' vince il centro piu' importante. Restano
+righe singole solo i punti isolati (9 sul Corto, 9 sul Medio, 9 sul Lungo, contro
+i 46/43/43 finiti dentro i paesi), che si portano dietro il nome della frazione.
 
 Cosa cambia in app — quarto filtro **Meccanico** nella vista percorso, accanto ad
 Acqua, Mangiare e Dormire; pin color petrolio (`#0b7285`) su mappa e altimetria,

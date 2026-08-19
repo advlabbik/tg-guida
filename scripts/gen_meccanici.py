@@ -29,6 +29,9 @@ CACHE = os.path.join(REPO, "_osm_bici.json")
 ENDPOINTS = ["https://overpass-api.de/api/interpreter",
              "https://overpass.kumi.systems/api/interpreter"]
 BUFFER, VICINI = 1000, 150
+# stessi valori di gen_poi.py: un punto dentro il raggio del paese e' "in paese"
+RAGGIO = {"city": 4000, "town": 2500, "village": 1200, "hamlet": 700}
+RANGO = {"city": 4, "town": 3, "village": 2, "hamlet": 1}
 
 GPX = {}
 for arg in sys.argv[1:]:
@@ -60,13 +63,14 @@ tutti = [p for pts, _ in TRACCE.values() for p in pts]
 la = [p[0] for p in tutti]; lo = [p[1] for p in tutti]
 BBOX = f"{min(la)-0.05:.3f},{min(lo)-0.05:.3f},{max(la)+0.05:.3f},{max(lo)+0.05:.3f}"
 
-QUERY = f"""[out:json][timeout:120];
+QUERY = f"""[out:json][timeout:180];
 (
   node[shop=bicycle]({BBOX});
   way[shop=bicycle]({BBOX});
   node[amenity=bicycle_repair_station]({BBOX});
   node["service:bicycle:repair"="yes"]({BBOX});
   way["service:bicycle:repair"="yes"]({BBOX});
+  node[place~"^(city|town|village|hamlet)$"]({BBOX});
 );
 out center tags;"""
 
@@ -95,12 +99,16 @@ def scarica():
 
 
 def candidati(d):
-    fuori = []
+    negozi, paesi = [], []
     for e in d["elements"]:
         t = e.get("tags", {})
         y = e.get("lat") or (e.get("center") or {}).get("lat")
         x = e.get("lon") or (e.get("center") or {}).get("lon")
         if y is None or x is None:
+            continue
+        if t.get("place") in RAGGIO:
+            if t.get("name"):
+                paesi.append({"nome": t["name"], "tipo": t["place"], "lat": y, "lng": x})
             continue
         if t.get("amenity") == "bicycle_repair_station":
             sub = "riparazione self service"
@@ -108,9 +116,26 @@ def candidati(d):
             sub = "negozio di bici"
         else:
             sub = "riparazioni"
-        fuori.append({"nome": t.get("name"), "sub": sub, "lat": round(y, 5), "lng": round(x, 5),
-                      "tel": t.get("phone") or t.get("contact:phone")})
-    return fuori
+        negozi.append({"nome": t.get("name"), "sub": sub, "lat": round(y, 5), "lng": round(x, 5),
+                       "tel": t.get("phone") or t.get("contact:phone")})
+    return negozi, paesi
+
+
+def paese_di(paesi, y, x):
+    """Il paese che si prende il punto: stessa regola di gen_poi.py — vince il
+    centro piu' importante fra quelli nel cui raggio il punto cade, a parita' il
+    piu' vicino. Fuori da ogni raggio il punto resta un puntino a se'."""
+    best = None
+    cl = math.cos(math.radians(y))
+    for pl in paesi:
+        dy = (pl["lat"] - y) * 111320.0
+        dx = (pl["lng"] - x) * 111320.0 * cl
+        dd = math.hypot(dx, dy)
+        if dd <= RAGGIO[pl["tipo"]]:
+            cand = (RANGO[pl["tipo"]], -dd)
+            if best is None or cand > best[0]:
+                best = (cand, pl)
+    return best[1] if best else None
 
 
 def aggancia(pts, cum, y, x):
@@ -144,8 +169,8 @@ def dedup(lista):
     return fuori
 
 
-elenco = candidati(scarica())
-print("candidati nel riquadro:", len(elenco))
+elenco, paesi = candidati(scarica())
+print("candidati nel riquadro:", len(elenco), "· paesi:", len(paesi))
 
 p = os.path.join(REPO, "poi.js")
 s = io.open(p, encoding="utf-8").read()
@@ -169,8 +194,29 @@ for chiave, (pts, cum) in TRACCE.items():
     puliti = dedup(trovati)
     poi.setdefault(chiave, [])
     poi[chiave] = [x for x in poi[chiave] if x.get("t") != "b"]
-    poi[chiave] = sorted(poi[chiave] + puliti, key=lambda x: (x.get("km", 0), x.get("t", "")))
-    print(f"{chiave}: {len(puliti)} punti (doppioni scartati: {len(trovati)-len(puliti)})")
+    for x in poi[chiave]:
+        x.pop("nb", None)
+
+    # Chi e' dentro un paese non fa riga per conto suo: entra nel conteggio del
+    # paese, esattamente come mangiare, dormire e le fontane. Se il paese non ha
+    # una riga "c" su questo percorso (troppo piccolo per diventare centro), il
+    # punto resta da solo ma si porta dietro il nome del paese.
+    centri = {c["nome"]: c for c in poi[chiave] if c.get("t") == "c"}
+    dentro, soli = 0, []
+    for x in puliti:
+        pl = paese_di(paesi, x["lat"], x["lng"])
+        if pl and pl["nome"] in centri:
+            c = centri[pl["nome"]]
+            c["nb"] = c.get("nb", 0) + 1
+            dentro += 1
+        else:
+            if pl:
+                x["luogo"] = pl["nome"]
+            soli.append(x)
+
+    poi[chiave] = sorted(poi[chiave] + soli, key=lambda x: (x.get("km", 0), x.get("t", "")))
+    print(f"{chiave}: {len(soli)} punti singoli + {dentro} dentro i paesi "
+          f"(doppioni scartati: {len(trovati)-len(puliti)})")
 
 io.open(p, "w", encoding="utf-8", newline="\n").write(testa + json.dumps(poi, ensure_ascii=False, separators=(",", ":")) + ";\n")
 print("poi.js aggiornato")

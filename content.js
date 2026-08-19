@@ -141,10 +141,12 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
 
 /* Live tracking WHIP. L'embed e' lo stesso usato sulla home di northcape4000.com
    (iframe verso www.whip.live/event-tracking/<CODICE>, nessun X-Frame-Options).
-   ✱ NC4R26 e' il codice dell'edizione NorthCape4000, messo qui per la prova:
-   quando WHIP consegna il codice del Trentino Gravel si cambia solo questa riga.
-   Stringa vuota = la finestra non compare per niente. */
-whipUrl: "https://www.whip.live/event-tracking/NC4R26",
+   Stringa vuota = la card resta ma al posto della mappa mostra il testo `attesa`
+   di live.whip ("qui arriverà la mappa del live tracking"). Quando WHIP consegna
+   il codice del Trentino Gravel si scrive qui l'url completo, in tutte e due le
+   lingue, e la mappa compare da sola. Verificato il 19/8 sull'evento NC4R26 che
+   whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
+whipUrl: "",
 
 infoCards: [
   { id: "certificato", tema: "Prima di partire", icona: "🩺", titolo: "Certificato medico entro il 27 agosto",
@@ -216,7 +218,8 @@ live: {
   whip: {
     titolo: "Dove sono gli altri",
     testo: "La mappa del live tracking ufficiale. Vedi in tempo reale dove sono i partecipanti lungo il percorso.",
-    nota: "Prova con l'evento NorthCape4000. Il codice del Trentino Gravel arriva da WHIP prima della partenza.",
+    nota: "",
+    attesa: "Qui arriverà la mappa del live tracking ufficiale — vedrai in tempo reale dove sono gli altri lungo il percorso. Si accende prima della partenza.",
     apri: "Apri a schermo intero"
   },
   gps: {
@@ -338,7 +341,7 @@ ui: {
   serviziIntro: "Acqua, cibo e alloggi entro 500 metri dalla traccia. La lista dice che un posto esiste, non che è aperto — per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa. Sulla mappa acqua e cibo sono segnati al loro chilometro di percorso, quindi la posizione è indicativa entro qualche centinaio di metri.",
   filtri: { tutti: "Tutto", a: "Acqua", m: "Mangiare", d: "Dormire", b: "Meccanico" },
   fuoriPercorso: "| m fuori percorso",
-  conteggi: { m: "mangiare", d: "alloggi", a: "fontane" },
+  conteggi: { m: "mangiare", d: "alloggi", a: "fontane", b: "meccanici", b1: "meccanico" },
   prenota: "Prenota",
   buco: "km senza acqua né cibo", bucoDettaglio: "dal km | al km | — fai scorta prima",
   serviziInArrivo: "La lista servizi di questo percorso è in preparazione, arriva a breve.",
@@ -510,10 +513,12 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
 
 /* Live tracking WHIP. L'embed e' lo stesso usato sulla home di northcape4000.com
    (iframe verso www.whip.live/event-tracking/<CODICE>, nessun X-Frame-Options).
-   ✱ NC4R26 e' il codice dell'edizione NorthCape4000, messo qui per la prova:
-   quando WHIP consegna il codice del Trentino Gravel si cambia solo questa riga.
-   Stringa vuota = la finestra non compare per niente. */
-whipUrl: "https://www.whip.live/event-tracking/NC4R26",
+   Stringa vuota = la card resta ma al posto della mappa mostra il testo `attesa`
+   di live.whip ("qui arriverà la mappa del live tracking"). Quando WHIP consegna
+   il codice del Trentino Gravel si scrive qui l'url completo, in tutte e due le
+   lingue, e la mappa compare da sola. Verificato il 19/8 sull'evento NC4R26 che
+   whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
+whipUrl: "",
 
 infoCards: [
   { id: "certificato", tema: "Before you leave", icona: "🩺", titolo: "Medical certificate by 27 August",
@@ -585,7 +590,8 @@ live: {
   whip: {
     titolo: "Where everyone else is",
     testo: "The official live tracking map. See in real time where the riders are along the route.",
-    nota: "Test running on the NorthCape4000 event. The Trentino Gravel code comes from WHIP before the start.",
+    nota: "",
+    attesa: "The official live tracking map will go here — you will see in real time where the others are along the route. It switches on before the start.",
     apri: "Open full screen"
   },
   gps: {
@@ -706,7 +712,7 @@ ui: {
   serviziIntro: "Water, food and places to sleep within 500 metres of the route. The list says a place exists, not that it is open — for accommodation press <b>Book</b> and see real prices and availability on the map. On the map, water and food are marked at their kilometre along the route, so the position is approximate within a few hundred metres.",
   filtri: { tutti: "All", a: "Water", m: "Food", d: "Sleep", b: "Bike shop" },
   fuoriPercorso: "| m off route",
-  conteggi: { m: "food", d: "stays", a: "fountains" },
+  conteggi: { m: "food", d: "stays", a: "fountains", b: "bike shops", b1: "bike shop" },
   prenota: "Book",
   buco: "km with no water or food", bucoDettaglio: "from km | to km | — stock up before",
   serviziInArrivo: "The services list for this route is being prepared, coming soon.",

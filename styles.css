@@ -149,6 +149,10 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 #meteogps,#gpsmeteo{background:var(--card-2);border-radius:12px;padding:10px 14px;font-size:14px;margin-top:10px;display:none}
 /* finestra del live tracking WHIP: stessa scatola della mappa alloggi */
 #whipwrap{border-radius:18px;overflow:hidden;border:1px solid var(--line);height:520px;background:var(--card-2)}
+/* la stessa scatola, quando la mappa non c'e' ancora */
+.attesa{display:flex;align-items:flex-start;gap:9px;background:var(--card-2);border:1px dashed var(--line);
+  border-radius:16px;padding:14px;font-size:14.5px;color:var(--muted);font-weight:500}
+.attesa svg{flex:0 0 auto;margin-top:2px;color:var(--mint)}
 #whipwrap iframe{width:100%;height:100%;border:0}
 .sunset{background:linear-gradient(90deg,rgba(194,88,50,.18),rgba(194,88,50,.06));border-radius:12px;
   padding:8px 14px;font-size:13.5px;font-weight:500;margin-top:10px;color:var(--mint-dp)}
@@ -434,11 +438,17 @@ nav button.fab{color:var(--lime);font-weight:700}
   #searchbox{max-width:700px}
   #tab-percorso.on{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;align-items:stretch}
   #tab-percorso.on>.card{margin-bottom:0}
-  #tab-percorso.on>.card:first-child,#mapcard,#tab-percorso.on>.rhint,#tab-percorso.on>.rgrid{grid-column:1/-1}
-  .rgrid{gap:16px}
-  .rcard-photo{height:150px}
-  .rcard-body{padding:14px 16px 16px}
-  .rcard-nome{font-size:18px;margin-bottom:6px}
+  /* Da PC la pagina Percorsi resta una colonna sola, larga come una pagina che
+     si legge (non 1.400 px stirati), e la mappa si accorcia: cosi' intro, mappa
+     e i tre tasti stanno insieme senza dover scorrere per scoprire che ci sono
+     dei tasti. */
+  #tab-percorso.on{display:block;max-width:860px}
+  #tab-percorso.on>.card{margin-bottom:16px}
+  #minimap{height:420px}
+  .rgrid{gap:14px}
+  .rcard-photo{height:126px}
+  .rcard-body{padding:13px 15px 15px}
+  .rcard-nome{font-size:17px;margin-bottom:6px}
   .rcard-num{font-size:15px}
   .rcard-liv{font-size:12px}
   #rv-desc{padding:0 12px;max-width:800px}
@@ -446,7 +456,7 @@ nav button.fab{color:var(--lime);font-weight:700}
   #infolist .icard{margin-bottom:0}
   #infolist .itheme{grid-column:1/-1}
   .bigbtns{grid-template-columns:repeat(4,1fr);max-width:900px}
-  #minimap,#gpsmap{height:560px}
+  #gpsmap{height:560px}
   #stay22wrap{height:600px}
   #whipwrap{height:700px}
   #countdown{max-width:420px}
