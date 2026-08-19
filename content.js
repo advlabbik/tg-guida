@@ -42,30 +42,111 @@ checklist: [
   { id: "prima-notte", testo: "3. Prenota almeno la prima notte a Rovereto",
     dettaglio: "Venerdì 25 settembre sarete in 500 nella stessa città, la stessa notte. Le altre notti, se preferisci, prenotale già ora dalla mappa lungo il percorso.",
     tab: "dormire" },
-  { id: "forum", testo: "4. Hai dubbi? Chiedi sul forum BAS",
-    dettaglio: "Per domande su preparazione, bici e materiali c'è la community. Lo staff e gli altri partecipanti rispondono lì.",
-    url: "https://www.bikeadventureseries.com/community/", cta: "Vai al forum" },
-  { id: "treno", testo: "5. Organizza il viaggio",
+  { id: "treno", testo: "4. Organizza il viaggio",
     dettaglio: "Il treno è tuo amico. Rovereto è sulla linea del Brennero e la stazione è a pochi minuti dalla partenza.",
     tab: "info" }
 ],
+
+/* Sotto la checklist, senza casella da spuntare: il forum non e' un compito da
+   completare ma un posto dove tornare. Poi un evento BAS pescato a caso fra i
+   quattro (uno solo per volta — il catalogo intero diluisce) e l'articolo che
+   serve davvero a chi deve preparare le tracce. Gli url degli eventi hanno gli
+   UTM, cosi' quando arriveranno le analytics si vedra' quale card tira di piu'. */
+extraHome: {
+  forum: { titolo: "Hai dubbi? Chiedi sul forum BAS",
+    testo: "Per domande su preparazione, bici e materiali c'è la community. Lo staff e gli altri partecipanti rispondono lì.",
+    url: "https://www.bikeadventureseries.com/community/", cta: "Vai al forum" },
+  altriEventi: [
+    { id: "tuscany-trail", titolo: "Cerchi un'altra avventura bikepacking per la tua gravel?",
+      testo: "Scopri il più grande evento bikepacking al mondo.",
+      url: "https://www.tuscanytrail.it/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=tuscany-trail", cta: "Vai" },
+    { id: "unpaved-roads", titolo: "Voglia di gravel?",
+      testo: "Scopri il fine settimana di gravel più amato d'Italia.",
+      url: "https://www.unpavedroads.cc/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=unpaved-roads", cta: "Vai" },
+    { id: "grand-escape", titolo: "Cerchi una fuga dalla quotidianità?",
+      testo: "Scopri il bikepacking con un percorso totalmente su asfalto e piste ciclabili.",
+      url: "https://www.thegrandescape.cc/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=grand-escape", cta: "Vai" },
+    { id: "northcape4000", titolo: "Raggiungi la fine del mondo",
+      testo: "Scopri l'evento che ti porta a Capo Nord dopo 4.000 km su traccia fissa.",
+      url: "https://northcape4000.com/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=northcape4000", cta: "Vai" }
+  ],
+  articolo: { titolo: "GPX Track Preparation Guide: What to Do Before Your Bikepacking Adventure",
+    testo: "Come preparare le tracce prima di partire, dal Journal della Bike Adventure Series.",
+    url: "https://www.bikeadventureseries.com/journal/gpx-track-preparation-guide-what-to-do-before-your-bikepacking-adventure/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=journal-gpx",
+    cta: "Leggi adesso" }
+},
 
 percorsi: [
   { id: "corto", nome: "Percorso Corto", breve: "Corto", colore: "#5ea345", km: 216, dplus: "3.000",
     livello: "Accessibile",
     desc: "Il percorso per chi vuole l'avventura senza l'estremo. Si stacca dagli altri due a Sarche e chiude l'anello a Rovereto.",
-    note: ["Circa il 70% su ciclabili e sterrato"] },
+    note: ["Circa il 70% su ciclabili e sterrato"],
+    alto: { nome: "Passo Campo Carlo Magno", quota: "1.682 m", km: 108 },
+    descLunga: [
+      "Un anello che parte in fondovalle, sale una volta sola e torna a casa lungo i fiumi. Dai primi chilometri vai verso il lago — Mori, Loppio, Nago e la discesa su Torbole con il Garda davanti — poi risali la valle del Sarca fino ad Arco, attraversi le Marocche di Dro e arrivi a Sarche, dove il Corto si stacca dagli altri due.",
+      "Da lì il percorso punta nelle Giudicarie, passa da Stenico e risale la val Rendena fino a Pinzolo e Madonna di Campiglio, con le Dolomiti di Brenta sempre di fianco. Il punto più alto è il passo di Campo Carlo Magno, 1.682 metri, poco dopo il chilometro 105. Da lassù in avanti è quasi tutta discesa e pianura — val di Sole, Malé, la val di Non fra i meleti, Mezzolombardo, Trento e la ciclabile dell'Adige che ti riporta a Rovereto.",
+      "Il dislivello sta quasi tutto nella prima metà. Fino a Sarche, al chilometro 48, hai salito pochissimo; il grosso arriva nei sessanta chilometri fra Sarche e Campo Carlo Magno, circa due terzi del totale, in una salita lunga e regolare più che ripida. Negli ultimi cento chilometri resta meno di un sesto del dislivello complessivo."
+    ],
+    fondo: "Circa il 70% fra ciclabili asfaltate e sterrato, il resto su strade aperte al traffico. Lo sterrato si concentra fra le Giudicarie e la val Rendena; il rientro da Trento a Rovereto è tutto sulla ciclabile asfaltata della valle dell'Adige. Nessun tratto da fare a spinta.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cles, val di Non", quota: "650 m", max: "19°", min: "10°" },
+      { luogo: "Madonna di Campiglio", quota: "1.520 m", max: "13°", min: "4°" },
+      { luogo: "Campo Carlo Magno", quota: "1.682 m", max: "12°", min: "2°" }
+    ],
+    meteoNota: "In quattro anni, negli stessi giorni, a Campo Carlo Magno si sono misurati sia 21 gradi di giorno sia 8 sotto zero di notte. Mettiti in borsa di che coprirti anche se parti in maniche corte." },
   { id: "medio", nome: "Percorso Medio", breve: "Medio", colore: "#3d7a2e", km: 360, dplus: "7.400",
     livello: "Intermedio",
     desc: "Identico al Lungo per quasi tutto il tracciato, con una differenza sola — evita la Val di Fassa e il tratto a spinta del Col Margherita.",
-    note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita"] },
+    note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita"],
+    alto: { nome: "Baita Segantini, sopra il passo Rolle", quota: "2.173 m", km: 199 },
+    descLunga: [
+      "Il giro grande del Trentino, senza il tratto a spinta. Fino a Sarche è uguale al Corto — lago, valle del Sarca, Marocche — poi sale verso il Brenta a Molveno e Andalo, scende sulla Rotaliana a Mezzocorona e risale la Strada del Vino fra Salorno, Egna e Montagna.",
+      "Dalla val di Fiemme, superate Cavalese e Predazzo, comincia la parte alta del percorso — Bellamonte, il passo Rolle e la salita fino alla Baita Segantini, 2.173 metri, il punto più alto del Medio, con le Pale di San Martino davanti. Si scende a San Martino di Castrozza, poi Canal San Bovo e Caoria, e si attraversa il Lagorai al passo Cinque Croci, poco sopra i 2.000 metri.",
+      "L'ultima parte è la Valsugana — Telve, Borgo, Levico e i laghi — con una gobba finale verso Vattaro prima di rientrare a Rovereto per Mattarello e Calliano. Il dislivello arriva a ondate, non tutto insieme — il Brenta, la lunga salita al Rolle, il Lagorai e l'ultimo strappo prima di casa. A metà percorso, al chilometro 200, ne hai fatti circa due terzi."
+    ],
+    fondo: "Fondovalle su ciclabili asfaltate — Rotaliana, Strada del Vino, val di Fiemme e Valsugana — e sterrato nelle salite e nei traversi in quota. Nessun tratto da fare a spinta, ed è esattamente il motivo per cui il Medio esiste.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°" },
+      { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°" },
+      { luogo: "Baita Segantini", quota: "2.173 m", max: "9°", min: "0°" },
+      { luogo: "Passo Cinque Croci", quota: "2.008 m", max: "10°", min: "1°" },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+    ],
+    meteoNota: "Fra il fondovalle e i 2.000 metri ballano dodici gradi di giorno e altrettanti di notte. Alla Baita Segantini, negli ultimi quattro anni, la notte più fredda del periodo è arrivata a 6 sotto zero." },
   { id: "lungo", nome: "Percorso Lungo", breve: "Lungo", colore: "#1f4d1a", km: 374, dplus: "7.900",
     livello: "Impegnativo",
     desc: "Rispetto al Medio affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita.",
-    note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica"] }
+    note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica"],
+    alto: { nome: "Col Margherita", quota: "2.337 m", km: 198 },
+    descLunga: [
+      "Il percorso più duro dei tre, e l'unico che entra in val di Fassa. Fino a Predazzo ricalca il Medio — lago, Marocche, Brenta a Molveno e Andalo, Rotaliana, Strada del Vino e val di Fiemme — poi invece di puntare a Bellamonte prosegue su Moena e sale al passo San Pellegrino su sterrato.",
+      "Dal passo si continua a salire fino al Col Margherita, 2.337 metri, il punto più alto di tutto il Trentino Gravel, raggiunto intorno al chilometro 198. Lì stanno i 2,5 chilometri che si fanno per la maggior parte spingendo la bici, ripagati da una vista a 300 gradi sulle Dolomiti. Si scende verso Falcade e il passo Valles, si risale al passo Rolle e alla Baita Segantini e si arriva a San Martino di Castrozza.",
+      "Da San Martino in poi è identico al Medio — Canal San Bovo, Caoria, la traversata del Lagorai al passo Cinque Croci, la Valsugana con Borgo, Levico e i laghi, e il rientro su Rovereto per Vattaro e Mattarello. Nei cinquanta chilometri fra Moena e San Martino si concentra la parte più alta e più lenta del viaggio, con tre valichi sopra i 1.900 metri uno dietro l'altro."
+    ],
+    fondo: "Come il Medio nei fondovalle, con in più la salita al passo San Pellegrino su sterrato e i 2,5 chilometri del Col Margherita, che farai per il 70% a piedi spingendo la bici. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°" },
+      { luogo: "Passo San Pellegrino", quota: "1.918 m", max: "11°", min: "1°" },
+      { luogo: "Col Margherita", quota: "2.337 m", max: "8°", min: "-1°" },
+      { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°" },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+    ],
+    meteoNota: "Sul Col Margherita la media delle minime di fine settembre è sotto zero, e negli ultimi quattro anni la giornata più fredda non ha superato i 4 gradi. Ci arrivi bagnato di sudore dopo aver spinto la bici — guanti, giacca e qualcosa di asciutto non sono un extra." }
 ],
 
 mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
+
+/* Live tracking WHIP. L'embed e' lo stesso usato sulla home di northcape4000.com
+   (iframe verso www.whip.live/event-tracking/<CODICE>, nessun X-Frame-Options).
+   Stringa vuota = la card resta ma al posto della mappa mostra il testo `attesa`
+   di live.whip ("qui arriverà la mappa del live tracking"). Quando WHIP consegna
+   il codice del Trentino Gravel si scrive qui l'url completo, in tutte e due le
+   lingue, e la mappa compare da sola. Verificato il 19/8 sull'evento NC4R26 che
+   whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
+whipUrl: "",
 
 infoCards: [
   { id: "certificato", tema: "Prima di partire", icona: "🩺", titolo: "Certificato medico entro il 27 agosto",
@@ -134,9 +215,16 @@ infoCards: [
 ],
 
 live: {
+  whip: {
+    titolo: "Dove sono gli altri",
+    testo: "La mappa del live tracking ufficiale. Vedi in tempo reale dove sono i partecipanti lungo il percorso.",
+    nota: "",
+    attesa: "Qui arriverà la mappa del live tracking ufficiale — vedrai in tempo reale dove sono gli altri lungo il percorso. Si accende prima della partenza.",
+    apri: "Apri a schermo intero"
+  },
   gps: {
     titolo: "Dove sono?",
-    testo: "Attiva il GPS del telefono e la guida ti dice a che chilometro sei, cosa hai davanti — acqua, cibo, alloggi — e ti fa condividere la posizione con un tocco."
+    testo: "Attiva il GPS del telefono e la guida ti dice a che chilometro sei, cosa hai davanti — acqua, cibo, alloggi — che tempo fa dove sei, e ti fa condividere la posizione con un tocco."
   }
 },
 
@@ -229,6 +317,12 @@ ui: {
   percorsoScegli: "Scegli il tuo percorso",
   percorsoIntro: "Partenza e arrivo per tutti da |. Puoi cambiare idea sul percorso in qualsiasi momento, senza bisogno di comunicarcelo — ti vedremo dall'app di live tracking.",
   mappaAltimetria: "Mappa + altimetria", gpx: "↓ GPX",
+  percorsoTocca: "Tocca un percorso e trovi la mappa, l'altimetria, la descrizione e i servizi lungo la strada.",
+  rvSez: {
+    descrizione: "Com'è", fondo: "Il fondo", meteo: "Che tempo aspettarsi",
+    alto: "Punto più alto", quota: "quota", maxCol: "max", minCol: "min",
+    fonteMeteo: "Medie delle massime e delle minime dal 20 al 30 settembre degli ultimi quattro anni, corrette sulla quota reale di ogni punto. Sono medie, non previsioni."
+  },
   rv: {
     torna: "Percorsi",
     aiuto: "Trascina il dito sull'altimetria e vedi il punto muoversi sulla mappa. Sulla mappa ingrandisci per far comparire più punti.",
@@ -245,8 +339,9 @@ ui: {
   insieme: "I tre percorsi insieme",
   servizi: "Servizi lungo il percorso",
   serviziIntro: "Acqua, cibo e alloggi entro 500 metri dalla traccia. La lista dice che un posto esiste, non che è aperto — per gli alloggi premi <b>Prenota</b> e vedi prezzi e disponibilità reali sulla mappa. Sulla mappa acqua e cibo sono segnati al loro chilometro di percorso, quindi la posizione è indicativa entro qualche centinaio di metri.",
-  filtri: { tutti: "Tutto", a: "Acqua", m: "Mangiare", d: "Dormire" },
-  conteggi: { m: "mangiare", d: "alloggi", a: "fontane" },
+  filtri: { tutti: "Tutto", a: "Acqua", m: "Mangiare", d: "Dormire", b: "Meccanico" },
+  fuoriPercorso: "| m fuori percorso",
+  conteggi: { m: "mangiare", d: "alloggi", a: "fontane", b: "meccanici", b1: "meccanico" },
   prenota: "Prenota",
   buco: "km senza acqua né cibo", bucoDettaglio: "dal km | al km | — fai scorta prima",
   serviziInArrivo: "La lista servizi di questo percorso è in preparazione, arriva a breve.",
@@ -322,30 +417,108 @@ checklist: [
   { id: "prima-notte", testo: "3. Book at least your first night in Rovereto",
     dettaglio: "On Friday 25 September there will be 500 of you in the same town, on the same night. If you like, book the other nights now too from the map along the route.",
     tab: "dormire" },
-  { id: "forum", testo: "4. Questions? Ask on the BAS forum",
-    dettaglio: "For anything about preparation, bikes and gear there is the community. The staff and fellow riders answer there.",
-    url: "https://www.bikeadventureseries.com/community/", cta: "Go to the forum" },
-  { id: "treno", testo: "5. Plan your trip",
+  { id: "treno", testo: "4. Plan your trip",
     dettaglio: "The train is your friend. Rovereto sits on the Brenner line and the station is minutes away from the start.",
     tab: "info" }
 ],
+
+/* Same order and same ids as the Italian block — the random pick uses the
+   index, so the two lists must stay aligned. */
+extraHome: {
+  forum: { titolo: "Questions? Ask on the BAS forum",
+    testo: "For anything about preparation, bikes and gear there is the community. The staff and fellow riders answer there.",
+    url: "https://www.bikeadventureseries.com/community/", cta: "Go to the forum" },
+  altriEventi: [
+    { id: "tuscany-trail", titolo: "Looking for another bikepacking adventure for your gravel bike?",
+      testo: "Discover the biggest bikepacking event in the world.",
+      url: "https://www.tuscanytrail.it/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=tuscany-trail", cta: "Go" },
+    { id: "unpaved-roads", titolo: "In the mood for gravel?",
+      testo: "Discover Italy's best loved gravel weekend.",
+      url: "https://www.unpavedroads.cc/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=unpaved-roads", cta: "Go" },
+    { id: "grand-escape", titolo: "Looking for an escape from everyday life?",
+      testo: "Discover bikepacking on a route entirely on tarmac and cycleways.",
+      url: "https://www.thegrandescape.cc/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=grand-escape", cta: "Go" },
+    { id: "northcape4000", titolo: "Ride to the end of the world",
+      testo: "Discover the event that takes you to the North Cape after 4,000 km on a fixed route.",
+      url: "https://northcape4000.com/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=northcape4000", cta: "Go" }
+  ],
+  articolo: { titolo: "GPX Track Preparation Guide: What to Do Before Your Bikepacking Adventure",
+    testo: "How to get your tracks ready before you leave, from the Bike Adventure Series Journal.",
+    url: "https://www.bikeadventureseries.com/journal/gpx-track-preparation-guide-what-to-do-before-your-bikepacking-adventure/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=journal-gpx",
+    cta: "Read it now" }
+},
 
 percorsi: [
   { id: "corto", nome: "Short Route", breve: "Short", colore: "#5ea345", km: 216, dplus: "3,000",
     livello: "Accessible",
     desc: "The route for those who want the adventure without the extreme. It splits from the other two at Sarche and closes the loop in Rovereto.",
-    note: ["About 70% on cycleways and gravel"] },
+    note: ["About 70% on cycleways and gravel"],
+    alto: { nome: "Campo Carlo Magno pass", quota: "1,682 m", km: 108 },
+    descLunga: [
+      "A loop that starts on the valley floor, climbs once and comes home along the rivers. The first kilometres head for the lake — Mori, Loppio, Nago and the descent to Torbole with Lake Garda in front of you — then you ride up the Sarca valley to Arco, cross the Marocche di Dro landslide and reach Sarche, where the Short route leaves the other two.",
+      "From there it heads into the Giudicarie valleys, passes Stenico and climbs the val Rendena to Pinzolo and Madonna di Campiglio, with the Brenta Dolomites alongside all the way. The highest point is the Campo Carlo Magno pass, 1,682 m, just after kilometre 105. From up there it is almost all downhill and flat — val di Sole, Malé, the apple orchards of val di Non, Mezzolombardo, Trento and the Adige valley cycleway back to Rovereto.",
+      "Almost all the climbing sits in the first half. By Sarche, at kilometre 48, you have barely climbed; the bulk comes in the sixty kilometres between Sarche and Campo Carlo Magno, about two thirds of the total, on a long steady climb rather than a steep one. Less than a sixth of the total climbing is left for the last hundred kilometres."
+    ],
+    fondo: "About 70% between paved cycleways and gravel, the rest on roads open to traffic. The gravel is concentrated between the Giudicarie valleys and val Rendena; the run home from Trento to Rovereto is all on the paved Adige valley cycleway. No hike-a-bike sections.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cles, val di Non", quota: "650 m", max: "19°", min: "10°" },
+      { luogo: "Madonna di Campiglio", quota: "1,520 m", max: "13°", min: "4°" },
+      { luogo: "Campo Carlo Magno", quota: "1,682 m", max: "12°", min: "2°" }
+    ],
+    meteoNota: "Over four years, in the same days, Campo Carlo Magno has seen both 21 degrees by day and 8 below zero at night. Pack something warm even if you start in short sleeves." },
   { id: "medio", nome: "Medium Route", breve: "Medium", colore: "#3d7a2e", km: 360, dplus: "7,400",
     livello: "Intermediate",
     desc: "Identical to the Long route for almost the entire way, with one difference — it avoids Val di Fassa and the hike-a-bike section of Col Margherita.",
-    note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section"] },
+    note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section"],
+    alto: { nome: "Baita Segantini, above Passo Rolle", quota: "2,173 m", km: 199 },
+    descLunga: [
+      "The big Trentino loop, without the hike-a-bike. As far as Sarche it is the same as the Short route — lake, Sarca valley, Marocche — then it climbs towards the Brenta at Molveno and Andalo, drops to Mezzocorona and rides up the Wine Road through Salorno, Egna and Montagna.",
+      "Past Cavalese and Predazzo in val di Fiemme the high part of the route begins — Bellamonte, Passo Rolle and the climb to Baita Segantini, 2,173 m, the highest point of the Medium route, with the Pale di San Martino right in front of you. You drop to San Martino di Castrozza, then Canal San Bovo and Caoria, and cross the Lagorai range at Passo Cinque Croci, just above 2,000 m.",
+      "The last part is the Valsugana — Telve, Borgo, Levico and the lakes — with one final bump towards Vattaro before returning to Rovereto via Mattarello and Calliano. The climbing comes in waves rather than all at once — the Brenta, the long haul to Passo Rolle, the Lagorai and the last kick before home. Halfway through, at kilometre 200, you have done about two thirds of it."
+    ],
+    fondo: "Paved cycleways along the valley floors — Rotaliana, the Wine Road, val di Fiemme and the Valsugana — and gravel on the climbs and high traverses. No hike-a-bike sections, which is exactly why the Medium route exists.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°" },
+      { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°" },
+      { luogo: "Baita Segantini", quota: "2,173 m", max: "9°", min: "0°" },
+      { luogo: "Passo Cinque Croci", quota: "2,008 m", max: "10°", min: "1°" },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+    ],
+    meteoNota: "Between the valley floor and 2,000 m there are twelve degrees of difference by day and as many at night. At Baita Segantini the coldest night of the period in the last four years hit 6 below zero." },
   { id: "lungo", nome: "Long Route", breve: "Long", colore: "#1f4d1a", km: 374, dplus: "7,900",
     livello: "Demanding",
     desc: "Compared to the Medium route it takes on Val di Fassa and climbs to Passo San Pellegrino on gravel, then keeps climbing up Col Margherita.",
-    note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort"] }
+    note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort"],
+    alto: { nome: "Col Margherita", quota: "2,337 m", km: 198 },
+    descLunga: [
+      "The hardest of the three, and the only one that enters val di Fassa. As far as Predazzo it follows the Medium route — lake, Marocche, the Brenta at Molveno and Andalo, Rotaliana, the Wine Road and val di Fiemme — then, instead of heading to Bellamonte, it carries on to Moena and climbs Passo San Pellegrino on gravel.",
+      "From the pass you keep climbing to Col Margherita, 2,337 m, the highest point of the whole Trentino Gravel, reached around kilometre 198. That is where the 2.5 kilometres of hike-a-bike are, repaid by a 300-degree view over the Dolomites. Then down towards Falcade and Passo Valles, back up to Passo Rolle and Baita Segantini, and on to San Martino di Castrozza.",
+      "From San Martino onwards it is identical to the Medium route — Canal San Bovo, Caoria, the Lagorai crossing at Passo Cinque Croci, the Valsugana with Borgo, Levico and the lakes, and the way home to Rovereto via Vattaro and Mattarello. The fifty kilometres between Moena and San Martino hold the highest and slowest part of the trip, with three passes above 1,900 m one after the other."
+    ],
+    fondo: "Like the Medium route along the valley floors, plus the gravel climb to Passo San Pellegrino and the 2.5 kilometres of Col Margherita, which you will cover roughly 70% pushing the bike. It took us about 50 minutes when we tested it.",
+    meteo: [
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
+      { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°" },
+      { luogo: "Passo San Pellegrino", quota: "1,918 m", max: "11°", min: "1°" },
+      { luogo: "Col Margherita", quota: "2,337 m", max: "8°", min: "-1°" },
+      { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°" },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+    ],
+    meteoNota: "On Col Margherita the average late-September low is below zero, and in the last four years the coldest day of the period never went above 4 degrees. You get there soaked in sweat after pushing the bike — gloves, a jacket and something dry are not an extra." }
 ],
 
 mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
+
+/* Live tracking WHIP. L'embed e' lo stesso usato sulla home di northcape4000.com
+   (iframe verso www.whip.live/event-tracking/<CODICE>, nessun X-Frame-Options).
+   Stringa vuota = la card resta ma al posto della mappa mostra il testo `attesa`
+   di live.whip ("qui arriverà la mappa del live tracking"). Quando WHIP consegna
+   il codice del Trentino Gravel si scrive qui l'url completo, in tutte e due le
+   lingue, e la mappa compare da sola. Verificato il 19/8 sull'evento NC4R26 che
+   whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
+whipUrl: "",
 
 infoCards: [
   { id: "certificato", tema: "Before you leave", icona: "🩺", titolo: "Medical certificate by 27 August",
@@ -414,9 +587,16 @@ infoCards: [
 ],
 
 live: {
+  whip: {
+    titolo: "Where everyone else is",
+    testo: "The official live tracking map. See in real time where the riders are along the route.",
+    nota: "",
+    attesa: "The official live tracking map will go here — you will see in real time where the others are along the route. It switches on before the start.",
+    apri: "Open full screen"
+  },
   gps: {
     titolo: "Where am I?",
-    testo: "Turn on your phone's GPS and the guide tells you which kilometre you are at, what lies ahead — water, food, places to sleep — and lets you share your position with one tap."
+    testo: "Turn on your phone's GPS and the guide tells you which kilometre you are at, what lies ahead — water, food, places to sleep — the weather where you are, and lets you share your position with one tap."
   }
 },
 
@@ -508,6 +688,12 @@ ui: {
   percorsoScegli: "Choose your route",
   percorsoIntro: "Start and finish for everyone at |. You can change your mind about the route at any time, with no need to tell us — we will see you on the live tracking app.",
   mappaAltimetria: "Map + elevation", gpx: "↓ GPX",
+  percorsoTocca: "Tap a route for the map, the elevation profile, the description and the services along the way.",
+  rvSez: {
+    descrizione: "What it is like", fondo: "Surface", meteo: "What weather to expect",
+    alto: "Highest point", quota: "elevation", maxCol: "high", minCol: "low",
+    fonteMeteo: "Average daily highs and lows from 20 to 30 September over the last four years, corrected for the real elevation of each point. Averages, not a forecast."
+  },
   rv: {
     torna: "Routes",
     aiuto: "Drag your finger along the elevation profile and watch the point move on the map. Zoom in on the map to make more points appear.",
@@ -524,8 +710,9 @@ ui: {
   insieme: "The three routes together",
   servizi: "Services along the route",
   serviziIntro: "Water, food and places to sleep within 500 metres of the route. The list says a place exists, not that it is open — for accommodation press <b>Book</b> and see real prices and availability on the map. On the map, water and food are marked at their kilometre along the route, so the position is approximate within a few hundred metres.",
-  filtri: { tutti: "All", a: "Water", m: "Food", d: "Sleep" },
-  conteggi: { m: "food", d: "stays", a: "fountains" },
+  filtri: { tutti: "All", a: "Water", m: "Food", d: "Sleep", b: "Bike shop" },
+  fuoriPercorso: "| m off route",
+  conteggi: { m: "food", d: "stays", a: "fountains", b: "bike shops", b1: "bike shop" },
   prenota: "Book",
   buco: "km with no water or food", bucoDettaglio: "from km | to km | — stock up before",
   serviziInArrivo: "The services list for this route is being prepared, coming soon.",
@@ -563,7 +750,9 @@ ui: {
     nessuna: "No updates at the moment.",
     erroreCarico: "Cannot load the updates. Check your connection."
   },
-  poiSub: { ristorante: "restaurant", bar: "bar", "fast food": "fast food", pub: "pub",
+  poiSub: { "negozio di bici": "bike shop", "riparazione self service": "self service repair stand",
+    riparazioni: "repairs",
+    ristorante: "restaurant", bar: "bar", "fast food": "fast food", pub: "pub",
             gelateria: "ice cream shop", supermercato: "supermarket", alimentari: "grocery",
             panificio: "bakery", fontana: "fountain", hotel: "hotel", "B&B": "B&B",
             ostello: "hostel", motel: "motel", rifugio: "mountain hut", bivacco: "bivouac hut",

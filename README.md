@@ -188,6 +188,133 @@ quello che è deciso e quello che manca.
   **è il metodo giusto, tenerlo.** La trappola torna viva il giorno in cui si passa a
   MapLibre. Spiegazione estesa nel README di `advlabbik/cycling-in-tuscany`.
 
+## Pagina Percorsi e descrizioni (19 agosto 2026, branch `percorsi-descrizioni`)
+
+Impaginazione decisa da Andrea. La pagina Percorsi ora e', nell'ordine — la card
+**Scegli il tuo percorso** con la regola del cambio percorso, la **mappa dei tre
+tracciati sovrapposti**, e **tre tasti in fila** (`.rgrid` / `.rcard`) che stanno
+sulla stessa riga anche su un telefono da 375 px, con foto in testa, nome, km,
+dislivello e livello. Cosi' la scelta si vede tutta insieme e i tre percorsi si
+confrontano senza scorrere.
+
+Da PC (>= 900 px) la pagina resta **una colonna sola larga 860 px** invece di
+stirarsi su tutta la finestra, e la mappa dei tre tracciati scende da 560 a 420 px
+(`#minimap` nel blocco desktop; `#gpsmap` del Live resta 560): serviva perche' con
+la mappa alta i tre tasti finivano sotto la piega e sembravano non esserci.
+
+Tutto il resto e' passato **dentro la vista percorso**, dove c'e' lo spazio per
+leggerlo — blocco `#rv-desc`, fra il profilo altimetrico e la lista servizi,
+composto da `descPercorso()` in index.html con i dati di `content.js`:
+
+- **Com'e'** — punto piu' alto in evidenza (`percorsi[].alto`) e tre paragrafi
+  (`descLunga[]`) su dove passa il percorso e dove si concentra il dislivello.
+- **Il fondo** — `percorsi[].fondo`.
+- **Che tempo aspettarsi** — `percorsi[].meteo[]`, tabella di massime e minime
+  medie per 4-6 punti del percorso, piu' `meteoNota`.
+
+**Da dove vengono i numeri.** Le medie meteo sono calcolate sulla rianalisi ERA5
+(Open-Meteo archive, gratuita) sui giorni **20-30 settembre 2022, 2023, 2024 e
+2025**, 44 giornate per punto, con la quota reale del punto passata all'API cosi'
+che la temperatura sia corretta sull'altitudine e non su quella media della cella.
+Quote e chilometri dei punti piu' alti vengono dai GPX V1.8 (`Campo Carlo Magno
+1.682 m` al km 108 sul Corto, `Baita Segantini 2.173 m` al km 199 sul Medio,
+`Col Margherita 2.337 m` al km 198 sul Lungo). **Km e dislivelli totali restano
+quelli ufficiali di `content.js`** — dal GPX si legge solo *come* e' distribuito
+il dislivello, mai il totale (la traccia semplificata e il calcolo con soglia
+danno valori piu' bassi del dato ufficiale).
+
+**In sospeso** — le percentuali esatte di fondo per Medio e Lungo (asfalto /
+sterrato / ciclabile) le passa Andrea dalle schede Komoot; oggi il testo descrive
+il fondo a parole e la sola percentuale citata e' il 70% del Corto, che era gia'
+il dato ufficiale in app.
+## Live — il GPS accende anche il meteo, e la finestra WHIP (19 agosto 2026)
+
+Due modifiche decise da Andrea, uguali in tutte le app della famiglia.
+
+**Un tocco solo per posizione e meteo.** Il tasto *Attiva il GPS* del pannello
+"Dove sono?" ora chiama anche `meteoGPS()`. Il permesso di posizione e' lo stesso,
+chiederlo due volte era lavoro inutile per chi e' in sella. `meteoGPS()` scrive in
+due riquadri quando ci sono — `#gpsmeteo`, dentro il pannello GPS, e `#meteogps`,
+nella card Meteo piu' in basso — passando dai setter `box.testo` / `box.html`.
+Il testo del pannello lo dice, in italiano e in inglese.
+
+**Finestra WHIP nel Live.** Card `#whipsec` con l'iframe del live tracking
+ufficiale, lo stesso embed usato sulla home di northcape4000.com
+(`https://www.whip.live/event-tracking/<CODICE>`; verificato il 19/8 che non manda
+ne' `X-Frame-Options` ne' `frame-ancestors`, quindi si incorpora ovunque).
+L'URL sta in `content.js` come `whipUrl`, **una riga per lingua**: se e' stringa
+vuota la card non viene proprio generata, cosi' un evento senza codice non mostra
+una pagina rotta. Testi in `live.whip` (titolo, testo, nota, apri).
+
+**Stato al 19/8 — `whipUrl` e' vuoto per scelta**: la prova con il tracker
+NorthCape (`NC4R26`) e' servita a verificare che l'embed funzioni, poi Andrea ha
+deciso che per ora l'app dice solo che la mappa arrivera'. Quindi la card c'e'
+sempre e mostra il testo `live.whip.attesa`; appena WHIP consegna il codice del
+Trentino Gravel si scrive l'url in `whipUrl` **in tutte e due le lingue** e la
+mappa compare da sola, senza toccare il codice.
+## Home — checklist rivista e cross-sell (19 agosto 2026, branch `home-checklist`)
+
+Lista e ordine dettati da Andrea. Nella fase "prima" la Home e' ora —
+
+1. **Quattro voci spuntabili** in `checklist[]` — certificato medico, studia la
+   traccia preliminare, prenota almeno la prima notte a Rovereto, organizza il
+   viaggio. Il forum e' uscito dalla lista numerata.
+2. **Il forum in una card sua** (`cardForum()`), fuori dalla checklist — non e'
+   un compito che si chiude, e' un posto dove tornare. Prima stava in coda alla
+   stessa card senza casella e sembrava una voce a cui si era dimenticata la
+   spunta (correzione di Andrea, 19/8).
+3. **Un evento della serie, pescato a caso** (`cardAltroEvento()`), uno solo per
+   volta: Tuscany Trail, Unpaved Roads, The Grand Escape, NorthCape4000. La
+   scelta si fa una volta per apertura e resta ferma per tutta la sessione — se
+   cambiasse a ogni ridisegno sembrerebbe un errore.
+4. **L'articolo sui GPX** del Journal BAS (`cardArticolo()`), l'ultima cosa
+   prima dei percorsi perche' e' quella che aiuta davvero chi sta preparando.
+5. **I tre percorsi**, il blocco che c'era gia'.
+
+Contenuti in `content.js` sotto `extraHome` (`forum`, `altriEventi[]`,
+`articolo`), un blocco per lingua. **Le due liste `altriEventi` devono restare
+nello stesso ordine**: la scelta casuale usa l'indice, quindi un ordine diverso
+fra italiano e inglese mostrerebbe due eventi diversi cambiando lingua.
+
+**UTM.** Tutti i link in uscita da questa parte della Home sono tracciati con
+`utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=<slug>`.
+Quando ci saranno le analytics dell'app si vedra' quale card tira di piu' e si
+aggiustera' il tiro (era esattamente l'intenzione di Andrea).
+
+Questa e' la parte "vendita" della cornice qui sotto — il contenuto utile e' il
+veicolo, e resta un solo invito commerciale per volta.
+## POI meccanici (19 agosto 2026, branch `poi-meccanici`)
+
+Nuovo tipo di punto sul percorso, **`t: "b"`** — negozi di bici, meccanici e
+colonnine di riparazione self service, presi da OpenStreetMap. Corto 55 punti,
+Medio 52, Lungo 52 (la maggior parte dentro i paesi, vedi sotto). Si generano con `python scripts/gen_meccanici.py
+corto=... medio=... lungo=...` (una query Overpass sola, distanze calcolate in
+locale sul GPX: leggerissimo rispetto a `gen_poi.py`).
+
+**Si comportano come gli altri POI** (correzione di Andrea, 19/8): chi cade
+dentro il raggio di un paese non fa riga per conto suo ma entra nel **conteggio
+del paese** (`nb` sulla riga `t:"c"`, accanto a mangiare/alloggi/fontane), con le
+stesse costanti di `gen_poi.py` — raggio 4.000 m per le citta', 2.500 town,
+1.200 village, 700 hamlet, e a parita' vince il centro piu' importante. Restano
+righe singole solo i punti isolati (9 sul Corto, 9 sul Medio, 9 sul Lungo, contro
+i 46/43/43 finiti dentro i paesi), che si portano dietro il nome della frazione.
+
+Cosa cambia in app — quarto filtro **Meccanico** nella vista percorso, accanto ad
+Acqua, Mangiare e Dormire; pin color petrolio (`#0b7285`) su mappa e altimetria,
+icona `i-wrench` aggiunta allo sprite; nella lista compaiono il **telefono**
+quando OSM ce l'ha (link da toccare) e **quanto e' fuori percorso** quando supera
+i 500 metri.
+
+Due scelte di dato — buffer a **1.000 m** invece dei 500 degli altri POI (con la
+catena rotta un chilometro lo fai), e niente nome inventato: se OSM non ha il
+nome la riga mostra il sottotipo tradotto ("riparazione self service"), che dice
+di piu' di un segnaposto.
+
+**Non ancora fatto** — i meccanici non entrano nel blocco «Davanti a te» del Live,
+che continua a pescare 1 acqua, 1 cibo e 2 posti letto. Il meccanico piu' vicino
+davanti a te sarebbe utile proprio nel momento peggiore, ma cambia il disegno di
+quel blocco e va deciso a parte.
+
 ## A cosa servono le app degli eventi (Andrea, 19 agosto 2026)
 
 Cornice valida per tutte le app evento BAS, comprese quelle non ancora nate — da rileggere prima di aggiungere o togliere qualcosa.

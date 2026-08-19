@@ -86,6 +86,7 @@
       <div id="rv-filters"></div>
       <div id="rv-profwrap"><canvas id="rv-prof"></canvas><div id="rv-pins"></div><div id="rv-tip"></div></div>
       <div id="rv-foot"></div>
+      <div id="rv-desc"></div>
       <div id="rv-listwrap">
         <h3 id="rv-listtit"></h3>
         <p id="rv-listintro"></p>
@@ -400,6 +401,9 @@ function renderHome(){
           : `<a href="#" data-tab="${c.tab}">${esc(U.vai)} ›</a>`}</div>
       </div>`;
       }).join('') + `</div></div>`;
+    h += cardForum();
+    h += cardAltroEvento();
+    h += cardArticolo();
     h += cardPercorsiBrevi();
   }
   if (ph === 'durante') {
@@ -452,6 +456,34 @@ function renderHome(){
   bindTabLinks($('#tab-home'));
   bindInstall();
   maybeShowInstall();
+}
+/* Il forum ha una card sua, fuori dalla checklist (Andrea, 19/8): non e' un
+   compito da spuntare, e dentro la lista sembrava una voce dimenticata senza
+   casella. */
+function cardForum(){
+  const f = C.extraHome && C.extraHome.forum;
+  if (!f) return '';
+  return `<div class="card"><h2>${esc(f.titolo)}</h2><p>${esc(f.testo)}</p>
+    <div class="btnrow"><a class="btn sec" href="${f.url}" target="_blank" rel="noopener">${esc(f.cta)} ›</a></div></div>`;
+}
+/* Un evento alla volta, pescato a caso fra i quattro e poi tenuto fermo per
+   tutta la sessione: se cambiasse a ogni ridisegno (cambio lingua, cambio fase)
+   sembrerebbe un errore. Quando ci saranno le analytics si vedra' quale tira
+   di piu' e si aggiustera' il tiro (Andrea, 19/8). */
+let SUGGERITO = null;
+function cardAltroEvento(){
+  const lista = (C.extraHome && C.extraHome.altriEventi) || [];
+  if (!lista.length) return '';
+  if (SUGGERITO === null || SUGGERITO >= lista.length) SUGGERITO = Math.floor(Math.random() * lista.length);
+  const e = lista[SUGGERITO];
+  return `<div class="card cross"><h2>${esc(e.titolo)}</h2><p>${esc(e.testo)}</p>
+    <div class="btnrow"><a class="btn" href="${e.url}" target="_blank" rel="noopener">${esc(e.cta)} ›</a></div></div>`;
+}
+function cardArticolo(){
+  const a = C.extraHome && C.extraHome.articolo;
+  if (!a) return '';
+  return `<div class="card"><h3>${icon('pencil-line',18)} ${esc(a.titolo)}</h3><p>${esc(a.testo)}</p>
+    <div class="btnrow"><a class="btn sec" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta)} ›</a></div></div>`;
 }
 function cardPercorsiBrevi(){
   return `<div class="card"><h2>${esc(U.trePercorsi)}</h2>
@@ -515,26 +547,28 @@ function bindChecklist(sel, key){
 /* ---------- PERCORSO ---------- */
 const ROUTE_PHOTOS = { corto: 'assets/percorsi/corto.jpg', medio: 'assets/percorsi/medio.jpg', lungo: 'assets/percorsi/lungo.jpg' };
 function renderPercorso(){
+  /* Ordine deciso da Andrea (19/8): prima la scelta e la regola del cambio percorso,
+     poi la mappa dei tre sovrapposti per capire dove vanno, e solo dopo i tre tasti.
+     I tasti stanno in fila anche sul telefono: la scelta si vede tutta insieme,
+     senza scorrere, e il confronto fra km, dislivello e livello e' immediato.
+     Descrizione, fondo, meteo e servizi vivono dentro la vista percorso, dove
+     c'e' lo spazio per leggerli. */
   let h = `<div class="card"><h2>${esc(U.percorsoScegli)}</h2>
     <p>${fmt(esc(U.percorsoIntro), '<b>' + esc(C.meta.hub) + '</b>')}</p></div>`;
-  h += C.percorsi.map(p=>`<div class="card route" style="--col:${p.colore}">
-    <div class="rphoto" style="background:linear-gradient(160deg, ${p.colore}26, ${p.colore}59)">
-      ${ROUTE_PHOTOS[p.id]
-        ? `<img class="rphoto-img" src="${ROUTE_PHOTOS[p.id]}" alt="${esc(p.nome)}" loading="lazy"/>`
-        : `<div class="rphoto-ph">${icon('mountain', 30)}</div>`}
-    </div>
-    <div class="rbody">
-      <h3 style="color:${p.colore}">${esc(p.nome)}</h3>
-      <div class="badges"><span class="badge">${p.km} km</span><span class="badge">${p.dplus} m D+</span>
-        <span class="badge">${esc(p.livello)}</span></div>
-      <p>${esc(p.desc)}</p>
-      ${p.note.map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('')}
-      <div class="btnrow rbtns" style="--col:${p.colore}">
-        <button class="btn" data-rv="${p.id}">${icon('route',16)} ${esc(U.mappaAltimetria)}</button>
-        <a class="btn sec dl" href="${gpxUrl(p.id)}" target="_blank" rel="noopener">${esc(U.gpx)}</a>
-      </div>
-    </div></div>`).join('');
   h += `<div class="card" id="mapcard"><h3>${esc(U.insieme)}</h3><div id="minimap"></div></div>`;
+  h += `<p class="rhint">${esc(U.percorsoTocca)}</p>`;
+  h += `<div class="rgrid">` + C.percorsi.map(p=>`<button class="rcard" data-rv="${p.id}" style="--col:${p.colore}">
+    <span class="rcard-photo" style="background:linear-gradient(160deg, ${p.colore}26, ${p.colore}59)">
+      ${ROUTE_PHOTOS[p.id]
+        ? `<img src="${ROUTE_PHOTOS[p.id]}" alt="${esc(p.nome)}" loading="lazy"/>`
+        : icon('mountain', 26)}
+    </span>
+    <span class="rcard-body">
+      <span class="rcard-nome">${esc(p.nome)}</span>
+      <span class="rcard-num">${p.km} km</span>
+      <span class="rcard-num">${p.dplus} m D+</span>
+      <span class="rcard-liv">${esc(p.livello)}</span>
+    </span></button>`).join('') + `</div>`;
   /* La lista servizi stava qui, staccata dal percorso e con un suo selettore:
      una seconda scelta del percorso dopo quella appena fatta sulle schede, e
      220-245 righe che ripetevano quello che ora si vede su mappa e altimetria.
@@ -549,19 +583,27 @@ function bookBtn(e){
 function subLingua(s){ return U.poiSub[s] || s; }
 function poiRow(e){
   if (e.t === 'c'){
-    const det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null]
+    const det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null,
+      e.nb?`${e.nb} ${e.nb === 1 ? U.conteggi.b1 : U.conteggi.b}`:null]
       .filter(Boolean).join(' · ');
     return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><b>${esc(e.nome)}</b>
       <span class="muted">${det}</span>${e.ns ? bookBtn(e) : ''}</div>`;
   }
-  const ico = icon({a:'droplets', m:'utensils', d:'bed-double'}[e.t], 15);
+  const ico = icon({a:'droplets', m:'utensils', d:'bed-double', b:'wrench'}[e.t], 15);
   const nome = (e.t === 'a' && e.n > 1)
     ? `${e.n} ${U.fontane} → km ${Math.round(e.fino)}`
     : (e.nome || subLingua(e.sub));
   const sub = (e.nome && e.t !== 'a') ? ` <span class="muted">(${esc(subLingua(e.sub))}${e.luogo ? ' · ' + esc(e.luogo) : ''})</span>`
             : (e.luogo ? ` <span class="muted">(${esc(e.luogo)})</span>` : '');
+  /* Sul meccanico servono due cose in piu': il telefono, quando OSM ce l'ha,
+     perche' con la catena rotta si chiama prima di pedalare fin li'; e quanto
+     e' fuori percorso, quando supera i 500 metri della regola generale. */
+  const extra = (e.t === 'b')
+    ? (e.dist ? ` <span class="muted">· ${fmt(esc(U.fuoriPercorso), e.dist)}</span>` : '')
+      + (e.tel ? ` <a class="poitel" href="tel:${esc(e.tel.replace(/\s/g, ''))}">${esc(e.tel)}</a>` : '')
+    : '';
   return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><span class="poiico t-${e.t}">${ico}</span>
-    <span><b>${esc(nome)}</b>${sub}</span>${e.t === 'd' ? bookBtn(e) : ''}</div>`;
+    <span><b>${esc(nome)}</b>${sub}${extra}</span>${e.t === 'd' ? bookBtn(e) : ''}</div>`;
 }
 function bindBook(root){
   root.querySelectorAll('.poibook').forEach(a=>a.addEventListener('click',ev=>{
@@ -571,7 +613,7 @@ function bindBook(root){
 }
 function poiMatch(e, f){
   if (f === 'tutti') return true;
-  if (e.t === 'c') return (f === 'a' && e.nf > 0) || (f === 'm' && e.ne > 0) || (f === 'd' && e.ns > 0);
+  if (e.t === 'c') return (f === 'a' && e.nf > 0) || (f === 'm' && e.ne > 0) || (f === 'd' && e.ns > 0) || (f === 'b' && e.nb > 0);
   return e.t === f;
 }
 function gapWarnings(list){
@@ -723,7 +765,7 @@ function routeGeom(id){
 }
 let rvId = null, rvMap = null, rvLayer = null, rvCur = null, rvFilter = 'tutti',
     rvSel = -1, rvPins = [], rvPushed = false;
-const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', c:'landmark' };
+const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', b:'wrench', c:'landmark' };
 // un decimale, con la virgola in italiano e il punto in inglese
 function kmDec(v){ const s = v.toFixed(1); return LANG === 'it' ? s.replace('.', ',') : s; }
 function openRouteView(id){
@@ -743,13 +785,14 @@ function openRouteView(id){
   $('#rv-gpx').textContent = U.gpx;
   $('#rv-filters').innerHTML =
     `<button class="btn small sec pfil on" data-rf="tutti">${esc(U.filtri.tutti)}</button>` +
-    ['a','m','d'].map(t => `<button class="btn small sec pfil" data-rf="${t}">${icon(RV_ICO[t],15)} ${esc(U.filtri[t])}</button>`).join('');
+    ['a','m','d','b'].map(t => `<button class="btn small sec pfil" data-rf="${t}">${icon(RV_ICO[t],15)} ${esc(U.filtri[t])}</button>`).join('');
   document.querySelectorAll('#rv-filters .pfil').forEach(b => b.addEventListener('click', () => {
     rvFilter = b.dataset.rf;
     rvHide(); // tooltip E cursore sulla mappa, non solo il tooltip
     document.querySelectorAll('#rv-filters .pfil').forEach(x => x.classList.toggle('on', x === b));
     rvLayout();
   }));
+  $('#rv-desc').innerHTML = descPercorso(p);
   $('#rv-listtit').textContent = U.servizi;
   $('#rv-listintro').innerHTML = U.serviziIntro;
   view.classList.add('open');
@@ -758,6 +801,30 @@ function openRouteView(id){
   if (!rvPushed){ history.pushState({rv:1}, ''); rvPushed = true; }
   rvBuildMap();
   rvLayout(); // diretto, non in requestAnimationFrame: a scheda in secondo piano non partirebbe
+}
+/* Descrizione lunga, fondo e temperature del percorso aperto. Sta qui e non
+   nella pagina Percorsi perche' li' i tre tasti devono restare confrontabili a
+   colpo d'occhio: chi ha scelto vuole leggere, chi sta scegliendo vuole i numeri.
+   Le medie meteo sono in content.js, un blocco per percorso e per lingua. */
+function descPercorso(p){
+  if (!p || !p.descLunga) return '';
+  const S = U.rvSez;
+  let h = `<div class="rvblock"><h3>${esc(S.descrizione)}</h3>`;
+  if (p.alto) h += `<div class="rvalto">${icon('mountain',16)}<span><b>${esc(S.alto)}</b> — ${esc(p.alto.nome)}, ${esc(p.alto.quota)}, km ${p.alto.km}</span></div>`;
+  h += p.descLunga.map(t=>`<p>${esc(t)}</p>`).join('');
+  h += (p.note||[]).map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('');
+  h += `</div>`;
+  if (p.fondo) h += `<div class="rvblock"><h3>${esc(S.fondo)}</h3><p>${esc(p.fondo)}</p></div>`;
+  if (p.meteo && p.meteo.length){
+    h += `<div class="rvblock"><h3>${esc(S.meteo)}</h3>
+      <table class="rvmeteo"><thead><tr><th></th><th>${esc(S.maxCol)}</th><th>${esc(S.minCol)}</th></tr></thead><tbody>` +
+      p.meteo.map(m=>`<tr><td><b>${esc(m.luogo)}</b><span class="rvq">${esc(m.quota)}</span></td>
+        <td class="rvmax">${esc(m.max)}</td><td class="rvmin">${esc(m.min)}</td></tr>`).join('') +
+      `</tbody></table>`;
+    if (p.meteoNota) h += `<p class="rvnota">${esc(p.meteoNota)}</p>`;
+    h += `<p class="rvfonte">${esc(S.fonteMeteo)}</p></div>`;
+  }
+  return h;
 }
 function closeRouteView(fromHistory){
   $('#routeview').classList.remove('open');
@@ -1200,6 +1267,7 @@ function renderLive(){
     </select></p>
     <div class="btnrow"><button class="btn" id="gpsbtn">${esc(U.attivaGps)}</button></div>
     <div id="gpsinfo"></div>
+    <div id="gpsmeteo"></div>
     <div id="gpsahead"></div>
     <div id="gpsmap" style="margin-top:10px;display:none"></div>
     <div id="lv-wrap" style="display:none">
@@ -1210,6 +1278,17 @@ function renderLive(){
       <div id="lv-profwrap"><canvas id="lv-prof"></canvas><div id="lv-pins"></div><div id="lv-tip"></div></div>
       <div id="lv-foot"></div>
     </div></div>`;
+  /* Live tracking WHIP. Con l'url la mappa e' dentro l'app (stesso iframe della
+     home di northcape4000.com); senza url la card resta e dice che la mappa
+     arrivera' — meglio una promessa chiara che una sezione che appare dal nulla
+     il giorno prima della partenza. */
+  h += `<div class="card" id="whipsec"><h3>${icon('radio',20)} ${esc(l.whip.titolo)}</h3>`
+    + (C.whipUrl ? `<p>${esc(l.whip.testo)}</p>` : '') + (C.whipUrl
+    ? `<div id="whipwrap"><iframe src="${C.whipUrl}" loading="lazy" title="${esc(l.whip.titolo)}"
+        referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      <div class="btnrow" style="margin-top:10px"><a class="btn sec" href="${C.whipUrl}" target="_blank" rel="noopener">${esc(l.whip.apri)}</a></div>
+      ${l.whip.nota ? `<p class="muted" style="margin-top:8px">${esc(l.whip.nota)}</p>` : ''}`
+    : `<div class="attesa">${icon('map-pin',17)}<span>${esc(l.whip.attesa)}</span></div>`) + `</div>`;
   h += `<div class="card" id="meteosec"><h3>${icon('cloud-sun-rain',20)} ${esc(U.meteoTitolo)}</h3>
     <div class="btnrow"><button class="btn small" id="meteogpsbtn">${esc(U.meteoDoveSono)}</button></div>
     <div id="meteogps"></div>
@@ -1238,7 +1317,10 @@ function renderLive(){
     $('#lv-tip').style.display = 'none';
     if (lvRid && lvKm != null) lvAggiorna(lvRid, lvKm);
   }));
-  $('#gpsbtn').addEventListener('click', startGPS);
+  /* Un tocco solo: chi accende il GPS vuole sapere dove e' E che tempo fa —
+     il permesso di posizione e' gia' quello, chiederlo due volte era lavoro
+     inutile per l'utente (decisione di Andrea, 19/8). */
+  $('#gpsbtn').addEventListener('click', () => { startGPS(); meteoGPS(); });
   $('#meteogpsbtn').addEventListener('click', meteoGPS);
   $('#notifbtn').addEventListener('click', activatePush);
   $('#gpsinfo').addEventListener('click', e => { if (e.target.id === 'shareposbtn') sharePos(); });
@@ -1308,10 +1390,17 @@ async function loadSunset(){
   } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = U.tramontoOffline; }
 }
 async function meteoGPS(){
-  const box = $('#meteogps');
-  box.style.display = 'block';
-  if (!navigator.geolocation){ box.textContent = U.gpsNo; return; }
-  box.textContent = U.gpsCerco;
+  /* Due riquadri, stesso contenuto: quello dentro il pannello GPS (per chi ha
+     appena premuto "Attiva il GPS") e quello nella card Meteo piu' in basso. */
+  const boxes = ['#gpsmeteo', '#meteogps'].map(sel => $(sel)).filter(Boolean);
+  if (!boxes.length) return;
+  const box = {
+    set testo(t){ boxes.forEach(b => { b.style.display = 'block'; b.textContent = t; }); },
+    set html(h){ boxes.forEach(b => { b.style.display = 'block'; b.innerHTML = h; }); }
+  };
+  boxes.forEach(b => b.style.display = 'block');
+  if (!navigator.geolocation){ box.testo = U.gpsNo; return; }
+  box.testo = U.gpsCerco;
   navigator.geolocation.getCurrentPosition(async pos => {
     try {
       const u = `https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}` +
@@ -1322,11 +1411,11 @@ async function meteoGPS(){
       const hNow = new Date().getHours();
       const prob = r.hourly && r.hourly.precipitation_probability ? r.hourly.precipitation_probability[hNow] : null;
       const sunset = r.daily && r.daily.sunset ? r.daily.sunset[0].slice(11,16) : null;
-      box.innerHTML = `<b>${wIcon(c.weather_code)} ${Math.round(c.temperature_2m)}°C</b> ${esc(U.meteoAdesso)} · ${esc(U.vento)} ${Math.round(c.wind_speed_10m)} km/h` +
+      box.html = `<b>${wIcon(c.weather_code)} ${Math.round(c.temperature_2m)}°C</b> ${esc(U.meteoAdesso)} · ${esc(U.vento)} ${Math.round(c.wind_speed_10m)} km/h` +
         (prob !== null ? ` · ${esc(U.pioggia)} ${prob}%` : '') +
         (sunset ? `<br/>${esc(U.tramontaQui)} <b>${sunset}</b>.` : '');
-    } catch(e){ box.textContent = U.meteoOffline; }
-  }, () => { box.textContent = U.gpsNegato; },
+    } catch(e){ box.testo = U.meteoOffline; }
+  }, () => { box.testo = U.gpsNegato; },
   {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
 }
 /* ---------- altimetria e punti nel Live ----------
