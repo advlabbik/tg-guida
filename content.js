@@ -113,6 +113,13 @@ percorsi: [
 
 mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
 
+/* Live tracking WHIP. L'embed e' lo stesso usato sulla home di northcape4000.com
+   (iframe verso www.whip.live/event-tracking/<CODICE>, nessun X-Frame-Options).
+   ✱ NC4R26 e' il codice dell'edizione NorthCape4000, messo qui per la prova:
+   quando WHIP consegna il codice del Trentino Gravel si cambia solo questa riga.
+   Stringa vuota = la finestra non compare per niente. */
+whipUrl: "https://www.whip.live/event-tracking/NC4R26",
+
 infoCards: [
   { id: "certificato", tema: "Prima di partire", icona: "🩺", titolo: "Certificato medico entro il 27 agosto",
     corpo: "Per partecipare è obbligatorio il certificato medico agonistico per il ciclismo, in corso di validità. Hai tempo fino al 27 agosto per caricarlo nella tua area personale su bikeadventureseries.com, nella sezione Certificati.",
@@ -180,9 +187,15 @@ infoCards: [
 ],
 
 live: {
+  whip: {
+    titolo: "Dove sono gli altri",
+    testo: "La mappa del live tracking ufficiale. Vedi in tempo reale dove sono i partecipanti lungo il percorso.",
+    nota: "Prova con l'evento NorthCape4000. Il codice del Trentino Gravel arriva da WHIP prima della partenza.",
+    apri: "Apri a schermo intero"
+  },
   gps: {
     titolo: "Dove sono?",
-    testo: "Attiva il GPS del telefono e la guida ti dice a che chilometro sei, cosa hai davanti — acqua, cibo, alloggi — e ti fa condividere la posizione con un tocco."
+    testo: "Attiva il GPS del telefono e la guida ti dice a che chilometro sei, cosa hai davanti — acqua, cibo, alloggi — che tempo fa dove sei, e ti fa condividere la posizione con un tocco."
   }
 },
 
@@ -445,6 +458,13 @@ percorsi: [
 
 mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
 
+/* Live tracking WHIP. L'embed e' lo stesso usato sulla home di northcape4000.com
+   (iframe verso www.whip.live/event-tracking/<CODICE>, nessun X-Frame-Options).
+   ✱ NC4R26 e' il codice dell'edizione NorthCape4000, messo qui per la prova:
+   quando WHIP consegna il codice del Trentino Gravel si cambia solo questa riga.
+   Stringa vuota = la finestra non compare per niente. */
+whipUrl: "https://www.whip.live/event-tracking/NC4R26",
+
 infoCards: [
   { id: "certificato", tema: "Before you leave", icona: "🩺", titolo: "Medical certificate by 27 August",
     corpo: "A valid competitive cycling medical certificate is mandatory to take part. You have until 27 August to upload it in your personal area on bikeadventureseries.com, in the Certificates section.",
@@ -512,9 +532,15 @@ infoCards: [
 ],
 
 live: {
+  whip: {
+    titolo: "Where everyone else is",
+    testo: "The official live tracking map. See in real time where the riders are along the route.",
+    nota: "Test running on the NorthCape4000 event. The Trentino Gravel code comes from WHIP before the start.",
+    apri: "Open full screen"
+  },
   gps: {
     titolo: "Where am I?",
-    testo: "Turn on your phone's GPS and the guide tells you which kilometre you are at, what lies ahead — water, food, places to sleep — and lets you share your position with one tap."
+    testo: "Turn on your phone's GPS and the guide tells you which kilometre you are at, what lies ahead — water, food, places to sleep — the weather where you are, and lets you share your position with one tap."
   }
 },
 

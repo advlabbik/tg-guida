@@ -1228,6 +1228,7 @@ function renderLive(){
     </select></p>
     <div class="btnrow"><button class="btn" id="gpsbtn">${esc(U.attivaGps)}</button></div>
     <div id="gpsinfo"></div>
+    <div id="gpsmeteo"></div>
     <div id="gpsahead"></div>
     <div id="gpsmap" style="margin-top:10px;display:none"></div>
     <div id="lv-wrap" style="display:none">
@@ -1238,6 +1239,16 @@ function renderLive(){
       <div id="lv-profwrap"><canvas id="lv-prof"></canvas><div id="lv-pins"></div><div id="lv-tip"></div></div>
       <div id="lv-foot"></div>
     </div></div>`;
+  /* Live tracking WHIP dentro l'app: stesso iframe della home di
+     northcape4000.com. Compare solo se C.whipUrl e' valorizzato, cosi' il
+     giorno che manca il codice evento la card sparisce da sola invece di
+     mostrare una pagina rotta. */
+  if (C.whipUrl) h += `<div class="card" id="whipsec"><h3>${icon('radio',20)} ${esc(l.whip.titolo)}</h3>
+    <p>${esc(l.whip.testo)}</p>
+    <div id="whipwrap"><iframe src="${C.whipUrl}" loading="lazy" title="${esc(l.whip.titolo)}"
+      referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+    <div class="btnrow" style="margin-top:10px"><a class="btn sec" href="${C.whipUrl}" target="_blank" rel="noopener">${esc(l.whip.apri)}</a></div>
+    ${l.whip.nota ? `<p class="muted" style="margin-top:8px">${esc(l.whip.nota)}</p>` : ''}</div>`;
   h += `<div class="card" id="meteosec"><h3>${icon('cloud-sun-rain',20)} ${esc(U.meteoTitolo)}</h3>
     <div class="btnrow"><button class="btn small" id="meteogpsbtn">${esc(U.meteoDoveSono)}</button></div>
     <div id="meteogps"></div>
@@ -1266,7 +1277,10 @@ function renderLive(){
     $('#lv-tip').style.display = 'none';
     if (lvRid && lvKm != null) lvAggiorna(lvRid, lvKm);
   }));
-  $('#gpsbtn').addEventListener('click', startGPS);
+  /* Un tocco solo: chi accende il GPS vuole sapere dove e' E che tempo fa —
+     il permesso di posizione e' gia' quello, chiederlo due volte era lavoro
+     inutile per l'utente (decisione di Andrea, 19/8). */
+  $('#gpsbtn').addEventListener('click', () => { startGPS(); meteoGPS(); });
   $('#meteogpsbtn').addEventListener('click', meteoGPS);
   $('#notifbtn').addEventListener('click', activatePush);
   $('#gpsinfo').addEventListener('click', e => { if (e.target.id === 'shareposbtn') sharePos(); });
@@ -1336,10 +1350,17 @@ async function loadSunset(){
   } catch(e){ const box = $('#sunsetbox'); if (box) box.textContent = U.tramontoOffline; }
 }
 async function meteoGPS(){
-  const box = $('#meteogps');
-  box.style.display = 'block';
-  if (!navigator.geolocation){ box.textContent = U.gpsNo; return; }
-  box.textContent = U.gpsCerco;
+  /* Due riquadri, stesso contenuto: quello dentro il pannello GPS (per chi ha
+     appena premuto "Attiva il GPS") e quello nella card Meteo piu' in basso. */
+  const boxes = ['#gpsmeteo', '#meteogps'].map(sel => $(sel)).filter(Boolean);
+  if (!boxes.length) return;
+  const box = {
+    set testo(t){ boxes.forEach(b => { b.style.display = 'block'; b.textContent = t; }); },
+    set html(h){ boxes.forEach(b => { b.style.display = 'block'; b.innerHTML = h; }); }
+  };
+  boxes.forEach(b => b.style.display = 'block');
+  if (!navigator.geolocation){ box.testo = U.gpsNo; return; }
+  box.testo = U.gpsCerco;
   navigator.geolocation.getCurrentPosition(async pos => {
     try {
       const u = `https://api.open-meteo.com/v1/forecast?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}` +
@@ -1350,11 +1371,11 @@ async function meteoGPS(){
       const hNow = new Date().getHours();
       const prob = r.hourly && r.hourly.precipitation_probability ? r.hourly.precipitation_probability[hNow] : null;
       const sunset = r.daily && r.daily.sunset ? r.daily.sunset[0].slice(11,16) : null;
-      box.innerHTML = `<b>${wIcon(c.weather_code)} ${Math.round(c.temperature_2m)}°C</b> ${esc(U.meteoAdesso)} · ${esc(U.vento)} ${Math.round(c.wind_speed_10m)} km/h` +
+      box.html = `<b>${wIcon(c.weather_code)} ${Math.round(c.temperature_2m)}°C</b> ${esc(U.meteoAdesso)} · ${esc(U.vento)} ${Math.round(c.wind_speed_10m)} km/h` +
         (prob !== null ? ` · ${esc(U.pioggia)} ${prob}%` : '') +
         (sunset ? `<br/>${esc(U.tramontaQui)} <b>${sunset}</b>.` : '');
-    } catch(e){ box.textContent = U.meteoOffline; }
-  }, () => { box.textContent = U.gpsNegato; },
+    } catch(e){ box.testo = U.meteoOffline; }
+  }, () => { box.testo = U.gpsNegato; },
   {enableHighAccuracy:false, maximumAge:60000, timeout:15000});
 }
 /* ---------- altimetria e punti nel Live ----------

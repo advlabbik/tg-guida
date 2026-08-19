@@ -222,6 +222,26 @@ danno valori piu' bassi del dato ufficiale).
 sterrato / ciclabile) le passa Andrea dalle schede Komoot; oggi il testo descrive
 il fondo a parole e la sola percentuale citata e' il 70% del Corto, che era gia'
 il dato ufficiale in app.
+## Live — il GPS accende anche il meteo, e la finestra WHIP (19 agosto 2026)
+
+Due modifiche decise da Andrea, uguali in tutte le app della famiglia.
+
+**Un tocco solo per posizione e meteo.** Il tasto *Attiva il GPS* del pannello
+"Dove sono?" ora chiama anche `meteoGPS()`. Il permesso di posizione e' lo stesso,
+chiederlo due volte era lavoro inutile per chi e' in sella. `meteoGPS()` scrive in
+due riquadri quando ci sono — `#gpsmeteo`, dentro il pannello GPS, e `#meteogps`,
+nella card Meteo piu' in basso — passando dai setter `box.testo` / `box.html`.
+Il testo del pannello lo dice, in italiano e in inglese.
+
+**Finestra WHIP nel Live.** Card `#whipsec` con l'iframe del live tracking
+ufficiale, lo stesso embed usato sulla home di northcape4000.com
+(`https://www.whip.live/event-tracking/<CODICE>`; verificato il 19/8 che non manda
+ne' `X-Frame-Options` ne' `frame-ancestors`, quindi si incorpora ovunque).
+L'URL sta in `content.js` come `whipUrl`, **una riga per lingua**: se e' stringa
+vuota la card non viene proprio generata, cosi' un evento senza codice non mostra
+una pagina rotta. Testi in `live.whip` (titolo, testo, nota, apri).
+
+**Codice evento** — al 19/8 in `whipUrl` c'e' `NC4R26`, cioe' il tracker della NorthCape4000, messo per la prova su richiesta di Andrea; la nota sotto la mappa lo dichiara. Quando WHIP consegna il codice del Trentino Gravel si cambia solo quella riga (in tutte e due le lingue) e si svuota la nota.
 
 ## A cosa servono le app degli eventi (Andrea, 19 agosto 2026)
 
