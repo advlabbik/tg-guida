@@ -581,31 +581,6 @@ function bookBtn(e){
   return (e.lat ? `<a href="#" class="poibook" data-lat="${e.lat}" data-lng="${e.lng}">${esc(U.prenota)}</a>` : '');
 }
 function subLingua(s){ return U.poiSub[s] || s; }
-function poiRow(e, dentroGruppo){
-  if (e.t === 'c'){
-    const det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null,
-      e.nb?`${e.nb} ${e.nb === 1 ? U.conteggi.b1 : U.conteggi.b}`:null]
-      .filter(Boolean).join(' · ');
-    return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><b>${esc(e.nome)}</b>
-      <span class="muted">${det}</span>${e.ns ? bookBtn(e) : ''}</div>`;
-  }
-  const ico = icon({a:'droplets', m:'utensils', d:'bed-double', b:'wrench'}[e.t], 15);
-  const nome = (e.t === 'a' && e.n > 1)
-    ? `${e.n} ${U.fontane} → km ${Math.round(e.fino)}`
-    : (e.nome || subLingua(e.sub));
-  const sub = (e.nome && e.t !== 'a') ? ` <span class="muted">(${esc(subLingua(e.sub))}${e.luogo ? ' · ' + esc(e.luogo) : ''})</span>`
-            : (e.luogo ? ` <span class="muted">(${esc(e.luogo)})</span>` : '');
-  /* Sul meccanico servono due cose in piu': il telefono, quando OSM ce l'ha,
-     perche' con la catena rotta si chiama prima di pedalare fin li'; e quanto
-     e' fuori percorso, quando supera i 500 metri della regola generale. */
-  const extra = (e.t === 'b')
-    ? (e.dist ? ` <span class="muted">· ${fmt(esc(U.fuoriPercorso), e.dist)}</span>` : '')
-      + (e.tel ? ` <a class="poitel" href="tel:${esc(e.tel.replace(/\s/g, ''))}">${esc(e.tel)}</a>` : '')
-    : '';
-  const colKm = dentroGruppo ? '' : `<span class="poikm">km ${Math.round(e.km)}</span>`;
-  return `<div class="poirow">${colKm}<span class="poiico t-${e.t}">${ico}</span>
-    <span><b>${esc(nome)}</b>${sub}${extra}</span>${e.t === 'd' ? bookBtn(e) : ''}</div>`;
-}
 function bindBook(root){
   root.querySelectorAll('.poibook').forEach(a=>a.addEventListener('click',ev=>{
     ev.preventDefault();
@@ -654,11 +629,8 @@ function poiGruppoHtml(km, voci){
   const conta = {a: 0, m: 0, d: 0, b: 0};
   voci.forEach(e => { conta[e.t] = (conta[e.t] || 0) + (e.t === 'a' && e.n > 1 ? e.n : 1); });
   return `<div class="kmgrp">
-    <div class="kmhead" role="button" tabindex="0" aria-expanded="false">
-      <span class="poikm">km ${km}</span>
-      <span class="kmbad">${poiPallini(conta)}</span>
-      <span class="kmchev"></span></div>
-    <div class="kmdet">${voci.map(e => poiRow(e, true)).join('')}</div>
+    <div class="kmhead"><span class="poikm">km ${km}</span>
+      <span class="kmbad">${poiPallini(conta)}</span></div>
   </div>`;
 }
 // la lista servizi di un percorso, ordinata per km, con dentro gli avvisi sui buchi
@@ -1049,21 +1021,6 @@ function rvRenderList(){
   if (!el || !rvId) return;
   el.innerHTML = poiListHtml(rvId, rvFilter);
   bindBook(el);
-  bindGruppi(el);
-}
-/* I gruppi per chilometro si aprono al tocco. Il bottone Prenota dentro il
-   dettaglio non deve richiudere il gruppo, quindi i click sui link li lascio
-   passare. */
-function bindGruppi(root){
-  root.querySelectorAll('.kmgrp:not(.citta) .kmhead').forEach(h => {
-    const apri = () => {
-      const g = h.parentElement;
-      const on = g.classList.toggle('open');
-      h.setAttribute('aria-expanded', on ? 'true' : 'false');
-    };
-    h.addEventListener('click', e => { if (!e.target.closest('a')) apri(); });
-    h.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); apri(); } });
-  });
 }
 /* I segni sulla mappa. Come sul profilo si mettono prima i piu' importanti, ma
    qui la distanza si misura in pixel sullo schermo.
@@ -1130,8 +1087,15 @@ function rvVoce(e){
     : [(e.nome && e.t !== 'a') ? esc(subLingua(e.sub)) : null, e.luogo ? esc(e.luogo) : null]
         .filter(Boolean).join(' · ');
   const prenota = (e.t === 'd' || (e.t === 'c' && e.ns)) ? bookBtn(e) : '';
+  /* Sul meccanico servono due cose in piu': quanto e' fuori percorso, quando
+     supera i 500 m della regola generale, e il telefono, perche' col mezzo
+     rotto si chiama prima di pedalare fin li'. */
+  const extra = (e.t === 'b')
+    ? (e.dist ? `<span class="det">${fmt(esc(U.fuoriPercorso), e.dist)}</span>` : '')
+      + (e.tel ? `<a class="poitel" href="tel:${esc(e.tel.replace(/\s/g, ''))}">${esc(e.tel)}</a>` : '')
+    : '';
   return `<b>${rvNome(e)}</b><span class="km"> · km ${Math.round(e.km)}</span>` +
-    (det ? `<span class="det">${det}</span>` : '') + prenota;
+    (det ? `<span class="det">${det}</span>` : '') + extra + prenota;
 }
 const RV_POP_MAX = 8; // oltre questa soglia il fumetto diventa un muro di testo
 function rvPopup(gr){

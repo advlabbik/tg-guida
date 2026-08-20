@@ -194,9 +194,12 @@ Due correzioni di Andrea sull'app appena pubblicata.
 
 **La lista servizi non era leggibile.** Erano 220-300 righe tutte uguali. Ora e'
 un blocco per chilometro (`poiGruppoHtml()`), con **le sole icone** e il numero
-quando ce n'e' piu' d'uno; i nomi, il bottone Prenota e i telefoni compaiono
-toccando il blocco (`.kmgrp.open`). Sul Medio si passa da 226 righe a 145
-blocchi. I paesi restano un blocco a se' (`poiCittaHtml()`) col nome sopra e
+di punti per tipo — niente altro: nessuna freccia, nessun dettaglio che si apre
+(seconda passata, Andrea 19/8 sera). Sul Corto si passa da 274 righe a 109
+blocchi. I nomi dei singoli punti, il Prenota e il telefono del meccanico si
+vedono **toccando il punto sulla mappa o sull'altimetria**, dove il fumetto
+(`rvVoce()`) e' l'unico posto in cui vivono i dettagli — per questo li' sono
+stati aggiunti i metri fuori percorso e il numero di telefono. I paesi restano un blocco a se' (`poiCittaHtml()`) col nome sopra e
 **i conteggi per tipo sotto**, invece che in fila accanto al nome dove su schermo
 stretto andavano a capo storti. Gli avvisi sui buchi di acqua e cibo restano
 righe piene, in mezzo agli altri blocchi al loro chilometro.
