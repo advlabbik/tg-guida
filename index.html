@@ -1055,7 +1055,7 @@ function poiSuMappa(map, g, lista, filtro, onTap){
     const e = gr.capo, n = gr.membri.length;
     const mk = L.marker(gr.pos, {icon: L.divIcon({className:'', iconSize:[24,24], iconAnchor:[12,12],
       html:`<span class="rvmk t-${e.t}">${icon(RV_ICO[e.t], 13)}${n > 1 ? `<i class="n">${n}</i>` : ''}</span>`})})
-      .bindPopup(() => rvPopup(gr)); // pigro: l'HTML si costruisce solo se il fumetto si apre
+      .bindPopup(() => rvPopup(gr, filtro)); // pigro: l'HTML si costruisce solo se il fumetto si apre
     if (onTap) mk.on('click', () => onTap(gr));
     strato.addLayer(mk);
   });
@@ -1077,16 +1077,30 @@ function rvMapPoi(){
 }
 // il blocco "quanti posti per mangiare / dormire / fontane" di un paese,
 // identico in lista, tooltip e fumetti: UNA copia sola
-function contiDet(e){
-  return [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null]
-    .filter(Boolean).join(' · ');
+/* I conteggi di un paese, per il fumetto di mappa e altimetria. Due regole:
+   i meccanici ci sono anche qui (mancavano, e un paese come Trento con 12
+   negozi di bici sembrava non averne nessuno), e col filtro acceso si mostra
+   solo il conteggio di quel tipo — gli altri tre sono rumore. */
+function contiDet(e, filtro){
+  filtro = filtro || (typeof rvFilter !== 'undefined' ? rvFilter : 'tutti');
+  const voci = {
+    m: e.ne ? `${e.ne} ${U.conteggi.m}` : null,
+    d: e.ns ? `${e.ns} ${U.conteggi.d}` : null,
+    a: e.nf ? `${e.nf} ${U.conteggi.a}` : null,
+    b: e.nb ? `${e.nb} ${e.nb === 1 ? U.conteggi.b1 : U.conteggi.b}` : null
+  };
+  const scelte = (filtro && filtro !== 'tutti') ? [voci[filtro]] : [voci.m, voci.d, voci.a, voci.b];
+  return scelte.filter(Boolean).join(' · ');
 }
-function rvVoce(e){
+function rvVoce(e, filtro){
   const det = (e.t === 'c')
-    ? contiDet(e)
+    ? contiDet(e, filtro)
     : [(e.nome && e.t !== 'a') ? esc(subLingua(e.sub)) : null, e.luogo ? esc(e.luogo) : null]
         .filter(Boolean).join(' · ');
-  const prenota = (e.t === 'd' || (e.t === 'c' && e.ns)) ? bookBtn(e) : '';
+  /* Il Prenota compare solo quando si guardano gli alloggi o tutto: col filtro
+     Acqua o Meccanico acceso e' fuori tema, come nella lista. */
+  const vuoleLetti = !filtro || filtro === 'tutti' || filtro === 'd';
+  const prenota = (e.t === 'd' || (e.t === 'c' && e.ns)) && vuoleLetti ? bookBtn(e) : '';
   /* Sul meccanico servono due cose in piu': quanto e' fuori percorso, quando
      supera i 500 m della regola generale, e il telefono, perche' col mezzo
      rotto si chiama prima di pedalare fin li'. */
@@ -1098,12 +1112,12 @@ function rvVoce(e){
     (det ? `<span class="det">${det}</span>` : '') + extra + prenota;
 }
 const RV_POP_MAX = 8; // oltre questa soglia il fumetto diventa un muro di testo
-function rvPopup(gr){
-  if (gr.membri.length === 1) return `<div class="rvpop">${rvVoce(gr.capo)}</div>`;
+function rvPopup(gr, filtro){
+  if (gr.membri.length === 1) return `<div class="rvpop">${rvVoce(gr.capo, filtro)}</div>`;
   const mostrati = gr.membri.slice(0, RV_POP_MAX);
   const restanti = gr.membri.length - mostrati.length;
   return `<div class="rvpop gruppo"><b class="tit">${fmt(esc(U.rv.quiCiSono), gr.membri.length)}</b>` +
-    mostrati.map(e => `<div class="voce">${rvVoce(e)}</div>`).join('') +
+    mostrati.map(e => `<div class="voce">${rvVoce(e, filtro)}</div>`).join('') +
     (restanti ? `<div class="voce muted">${fmt(esc(U.rv.eAltri), restanti)}</div>` : '') + `</div>`;
 }
 function rvDrawPins(){
@@ -1123,16 +1137,16 @@ function rvNome(e){
   if (e.t === 'a' && e.n > 1) return `${e.n} ${esc(U.fontane)}`;
   return esc(e.nome || subLingua(e.sub));
 }
-function rvPinLabel(e){
+function rvPinLabel(e, filtro){
   if (e.t === 'c'){
-    const det = contiDet(e);
+    const det = contiDet(e, filtro);
     return rvNome(e) + (det ? `<br/>${det}` : '');
   }
   return rvNome(e);
 }
 // l'etichetta di un gruppo: il primo per nome, e quanti altri stanno li' sotto
-function gruppoLabel(gr){
-  const testa = rvPinLabel(gr.capo);
+function gruppoLabel(gr, filtro){
+  const testa = rvPinLabel(gr.capo, filtro);
   return gr.membri.length > 1
     ? testa + `<br/>${fmt(esc(U.rv.altriQui), gr.membri.length - 1)}`
     : testa;
@@ -1141,7 +1155,7 @@ function rvSelectPin(i){
   const gr = rvPins[i];
   if (!gr) return;
   const g = routeGeom(rvId);
-  rvShowAt(g.idxFromKm(gr.capo.km), gruppoLabel(gr));
+  rvShowAt(g.idxFromKm(gr.capo.km), gruppoLabel(gr, rvFilter));
   $('#rv-pins').querySelectorAll('.rvpin').forEach(b => b.classList.toggle('sel', +b.dataset.pin === i));
 }
 function rvShowAt(i, label){
@@ -1490,7 +1504,7 @@ function lvTip(gr){
   tip.style.left = at.x + 'px';
   tip.style.top = at.y + 'px';
   const via = Math.round(gr.capo.km - (lvKm || 0));
-  tip.innerHTML = `<b>${gruppoLabel(gr)}</b><br/>` +
+  tip.innerHTML = `<b>${gruppoLabel(gr, 'tutti')}</b><br/>` +
     (via > 0 ? `${esc(U.tra)} <b>${via}</b> ${esc(U.km)} · ` : '') + `km ${Math.round(gr.capo.km)}`;
   clearTimeout(lvTipTimer);
   lvTipTimer = setTimeout(() => { tip.style.display = 'none'; }, 4000);

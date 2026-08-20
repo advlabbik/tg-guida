@@ -188,6 +188,21 @@ quello che è deciso e quello che manca.
   **è il metodo giusto, tenerlo.** La trappola torna viva il giorno in cui si passa a
   MapLibre. Spiegazione estesa nel README di `advlabbik/cycling-in-tuscany`.
 
+## Conteggio meccanici nei fumetti e filtro passato per parametro (20 agosto 2026)
+
+`contiDet()`, cioe' i conteggi che finiscono nel fumetto di mappa e altimetria
+per i paesi, **non conosceva `nb`**: Trento, che a DB ha 12 negozi di bici,
+mostrava solo mangiare, alloggi e fontane e sembrava non averne nessuno. Ora i
+meccanici ci sono, e col filtro acceso i fumetti mostrano **solo il conteggio di
+quel tipo** (con Meccanico selezionato quattro numeri su quattro tipi erano
+rumore), col Prenota che resta solo su Tutto e Dormire, come nella lista.
+
+Nello stesso giro il filtro ha smesso di essere indovinato dalla variabile
+globale `rvFilter`: ora si passa per parametro lungo `poiSuMappa` → `rvPopup` →
+`rvVoce` → `contiDet` e `gruppoLabel` → `rvPinLabel`. Serviva perche' la mappa
+del Live usa sempre `tutti` e prima si sarebbe presa il filtro lasciato acceso
+nella vista percorso.
+
 ## Lista servizi raggruppata e fumetto del profilo (19 agosto 2026, sera)
 
 Due correzioni di Andrea sull'app appena pubblicata.
