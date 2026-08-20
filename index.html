@@ -636,11 +636,14 @@ function poiPallini(conta){
 }
 /* Il paese: nome sopra, conteggi per tipo sotto. Prima stavano in fila accanto
    al nome e su schermo stretto andavano a capo male (Andrea, 19/8). */
-function poiCittaHtml(e){
-  const conta = {a: e.nf || 0, m: e.ne || 0, d: e.ns || 0, b: e.nb || 0};
+function poiCittaHtml(e, filtro){
+  const tutto = {a: e.nf || 0, m: e.ne || 0, d: e.ns || 0, b: e.nb || 0};
+  /* Col filtro acceso il paese mostra solo il conteggio che interessa: con
+     "Meccanico" selezionato, quattro numeri su quattro tipi erano rumore. */
+  const conta = filtro && filtro !== 'tutti' ? {[filtro]: tutto[filtro] || 0} : tutto;
   return `<div class="kmgrp citta">
     <div class="kmhead"><span class="poikm">km ${Math.round(e.km)}</span>
-      <b class="kmnome">${esc(e.nome)}</b>${e.ns ? bookBtn(e) : ''}</div>
+      <b class="kmnome">${esc(e.nome)}</b>${e.ns && (!filtro || filtro === 'tutti' || filtro === 'd') ? bookBtn(e) : ''}</div>
     <div class="kmbad sotto">${poiPallini(conta)}</div>
   </div>`;
 }
@@ -665,7 +668,7 @@ function poiListHtml(rid, filter){
   const blocchi = [];
   let gruppo = null;
   list.filter(e => poiMatch(e, filter)).sort((x, y) => x.km - y.km).forEach(e => {
-    if (e.t === 'c'){ gruppo = null; blocchi.push({km: e.km, html: poiCittaHtml(e)}); return; }
+    if (e.t === 'c'){ gruppo = null; blocchi.push({km: e.km, html: poiCittaHtml(e, filter)}); return; }
     const km = Math.round(e.km);
     if (!gruppo || gruppo.km !== km){ gruppo = {km, voci: []}; blocchi.push(gruppo); }
     gruppo.voci.push(e);
