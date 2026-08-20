@@ -2,7 +2,7 @@
 // Strategia: network-first per i file dell'app (chi ha rete vede SEMPRE l'ultima
 // versione, senza doppia apertura), cache come rete di salvataggio quando il
 // segnale manca. Le tile mappa, il meteo e Stay22 non passano di qui.
-const CACHE = 'tg-guida-v35';
+const CACHE = 'tg-guida-v36';
 const ASSETS = [
   './', './index.html', './config.js', './content.js', './tracks.js', './poi.js',
   './styles.css', './icons.js', './icons/sprite.svg',
