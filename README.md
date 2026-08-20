@@ -188,6 +188,26 @@ quello che è deciso e quello che manca.
   **è il metodo giusto, tenerlo.** La trappola torna viva il giorno in cui si passa a
   MapLibre. Spiegazione estesa nel README di `advlabbik/cycling-in-tuscany`.
 
+## Lista servizi raggruppata e fumetto del profilo (19 agosto 2026, sera)
+
+Due correzioni di Andrea sull'app appena pubblicata.
+
+**La lista servizi non era leggibile.** Erano 220-300 righe tutte uguali. Ora e'
+un blocco per chilometro (`poiGruppoHtml()`), con **le sole icone** e il numero
+quando ce n'e' piu' d'uno; i nomi, il bottone Prenota e i telefoni compaiono
+toccando il blocco (`.kmgrp.open`). Sul Medio si passa da 226 righe a 145
+blocchi. I paesi restano un blocco a se' (`poiCittaHtml()`) col nome sopra e
+**i conteggi per tipo sotto**, invece che in fila accanto al nome dove su schermo
+stretto andavano a capo storti. Gli avvisi sui buchi di acqua e cibo restano
+righe piene, in mezzo agli altri blocchi al loro chilometro.
+
+**Il fumetto del profilo finiva sotto la barra dei filtri.** La barra e' sticky
+con `z-index:3` e il fumetto non ne aveva nessuno, quindi toccando un punto alto
+del profilo meta' testo spariva dietro i filtri. Ora `#rv-tip` (e `#lv-tip` del
+Live) stanno a `z-index:5`, e se sopra il punto non c'e' spazio il fumetto si
+**ribalta sotto** (classe `.sotto`, controllo `at.y - tip.offsetHeight - 10 < 0`
+in `rvShowAt()`).
+
 ## Pagina Percorsi e descrizioni (19 agosto 2026, branch `percorsi-descrizioni`)
 
 Impaginazione decisa da Andrea. La pagina Percorsi ora e', nell'ordine — la card

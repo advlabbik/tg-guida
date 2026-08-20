@@ -581,7 +581,7 @@ function bookBtn(e){
   return (e.lat ? `<a href="#" class="poibook" data-lat="${e.lat}" data-lng="${e.lng}">${esc(U.prenota)}</a>` : '');
 }
 function subLingua(s){ return U.poiSub[s] || s; }
-function poiRow(e){
+function poiRow(e, dentroGruppo){
   if (e.t === 'c'){
     const det = [e.ne?`${e.ne} ${U.conteggi.m}`:null, e.ns?`${e.ns} ${U.conteggi.d}`:null, e.nf?`${e.nf} ${U.conteggi.a}`:null,
       e.nb?`${e.nb} ${e.nb === 1 ? U.conteggi.b1 : U.conteggi.b}`:null]
@@ -602,7 +602,8 @@ function poiRow(e){
     ? (e.dist ? ` <span class="muted">· ${fmt(esc(U.fuoriPercorso), e.dist)}</span>` : '')
       + (e.tel ? ` <a class="poitel" href="tel:${esc(e.tel.replace(/\s/g, ''))}">${esc(e.tel)}</a>` : '')
     : '';
-  return `<div class="poirow"><span class="poikm">km ${Math.round(e.km)}</span><span class="poiico t-${e.t}">${ico}</span>
+  const colKm = dentroGruppo ? '' : `<span class="poikm">km ${Math.round(e.km)}</span>`;
+  return `<div class="poirow">${colKm}<span class="poiico t-${e.t}">${ico}</span>
     <span><b>${esc(nome)}</b>${sub}${extra}</span>${e.t === 'd' ? bookBtn(e) : ''}</div>`;
 }
 function bindBook(root){
@@ -626,18 +627,56 @@ function gapWarnings(list){
   }
   return out;
 }
+/* Un pallino per tipo, col numero quando ce n'e' piu' d'uno. E' il mattone di
+   tutta la lista nuova: sia i paesi sia i gruppi per chilometro dicono "qui c'e'
+   questo" con le icone, e i nomi si vanno a prendere solo se servono. */
+function poiPallini(conta){
+  return ['a','m','d','b'].filter(t => conta[t]).map(t =>
+    `<span class="poib t-${t}">${icon(RV_ICO[t], 15)}${conta[t] > 1 ? `<i>${conta[t]}</i>` : ''}</span>`).join('');
+}
+/* Il paese: nome sopra, conteggi per tipo sotto. Prima stavano in fila accanto
+   al nome e su schermo stretto andavano a capo male (Andrea, 19/8). */
+function poiCittaHtml(e){
+  const conta = {a: e.nf || 0, m: e.ne || 0, d: e.ns || 0, b: e.nb || 0};
+  return `<div class="kmgrp citta">
+    <div class="kmhead"><span class="poikm">km ${Math.round(e.km)}</span>
+      <b class="kmnome">${esc(e.nome)}</b>${e.ns ? bookBtn(e) : ''}</div>
+    <div class="kmbad sotto">${poiPallini(conta)}</div>
+  </div>`;
+}
+/* Il gruppo di chilometro: intestazione con le sole icone, dettagli (nomi,
+   Prenota, telefoni) al tocco. Cosi' la lista si legge a colpo d'occhio invece
+   di essere duecento righe tutte uguali. */
+function poiGruppoHtml(km, voci){
+  const conta = {a: 0, m: 0, d: 0, b: 0};
+  voci.forEach(e => { conta[e.t] = (conta[e.t] || 0) + (e.t === 'a' && e.n > 1 ? e.n : 1); });
+  return `<div class="kmgrp">
+    <div class="kmhead" role="button" tabindex="0" aria-expanded="false">
+      <span class="poikm">km ${km}</span>
+      <span class="kmbad">${poiPallini(conta)}</span>
+      <span class="kmchev"></span></div>
+    <div class="kmdet">${voci.map(e => poiRow(e, true)).join('')}</div>
+  </div>`;
+}
 // la lista servizi di un percorso, ordinata per km, con dentro gli avvisi sui buchi
 function poiListHtml(rid, filter){
   const list = (window.POI && POI[rid]) || [];
   if (!list.length) return `<p class="muted" style="padding:10px 0">${esc(U.serviziInArrivo)}</p>`;
-  const rows = list.filter(e => poiMatch(e, filter)).map(e => ({km: e.km, html: poiRow(e)}));
+  const blocchi = [];
+  let gruppo = null;
+  list.filter(e => poiMatch(e, filter)).sort((x, y) => x.km - y.km).forEach(e => {
+    if (e.t === 'c'){ gruppo = null; blocchi.push({km: e.km, html: poiCittaHtml(e)}); return; }
+    const km = Math.round(e.km);
+    if (!gruppo || gruppo.km !== km){ gruppo = {km, voci: []}; blocchi.push(gruppo); }
+    gruppo.voci.push(e);
+  });
   if (filter !== 'd'){
-    gapWarnings(list).forEach(w => rows.push({km: w.km,
+    gapWarnings(list).forEach(w => blocchi.push({km: w.km,
       html: `<div class="poirow" style="background:rgba(193,18,31,.08);border-radius:12px;padding:7px 8px"><span class="poiico t-w">${icon('triangle-alert', 15)}</span>
         <span><b>${w.gap} ${esc(U.buco)}</b> <span class="muted">${fmt(esc(U.bucoDettaglio), w.a, w.b)}</span></span></div>`}));
   }
-  rows.sort((x, y) => x.km - y.km);
-  return rows.map(r => r.html).join('');
+  blocchi.sort((x, y) => x.km - y.km);
+  return blocchi.map(b => b.html || poiGruppoHtml(b.km, b.voci)).join('');
 }
 let stayCenter = null;
 function goBook(lat, lng){
@@ -1007,6 +1046,21 @@ function rvRenderList(){
   if (!el || !rvId) return;
   el.innerHTML = poiListHtml(rvId, rvFilter);
   bindBook(el);
+  bindGruppi(el);
+}
+/* I gruppi per chilometro si aprono al tocco. Il bottone Prenota dentro il
+   dettaglio non deve richiudere il gruppo, quindi i click sui link li lascio
+   passare. */
+function bindGruppi(root){
+  root.querySelectorAll('.kmgrp:not(.citta) .kmhead').forEach(h => {
+    const apri = () => {
+      const g = h.parentElement;
+      const on = g.classList.toggle('open');
+      h.setAttribute('aria-expanded', on ? 'true' : 'false');
+    };
+    h.addEventListener('click', e => { if (!e.target.closest('a')) apri(); });
+    h.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); apri(); } });
+  });
 }
 /* I segni sulla mappa. Come sul profilo si mettono prima i piu' importanti, ma
    qui la distanza si misura in pixel sullo schermo.
@@ -1136,6 +1190,11 @@ function rvShowAt(i, label){
   tip.innerHTML = (label ? `<b>${label}</b><br/>` : '') +
     `km ${kmDec(km)} · ${g.ele[i]} m ${esc(U.rv.quota)}<br/>` +
     fmt(esc(U.rv.daQui), Math.round(g.kmTot-km), g.dplusFrom[i]);
+  /* Sui punti alti del profilo il fumetto usciva sopra il grafico e finiva
+     sotto la barra dei filtri, che e' appiccicata in alto (Andrea, 19/8).
+     Se sopra non c'e' posto lo ribalto sotto il punto. */
+  tip.classList.remove('sotto');
+  if (at.y - tip.offsetHeight - 10 < 0) tip.classList.add('sotto');
   rvCur.setLatLng(g.ll[i]);
   if (!rvMap.hasLayer(rvCur)) rvCur.addTo(rvMap);
 }
