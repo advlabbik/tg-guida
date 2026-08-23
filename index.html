@@ -378,8 +378,11 @@ function renderHome(){
     <div class="btnrow"><button class="btn small" id="installbtn">${esc(U.installa.salva)}</button>
     <button class="btn small sec" id="installlater">${esc(U.installa.dopo)}</button></div></div>`;
   if (C.avvisi && C.avvisi.length){
+    // un avviso puo' portare la sua azione: se ha url, sotto il testo compare il bottone
     h += `<div class="avvisi"><h3>${esc(U.avvisiTitolo)}</h3>` +
-      C.avvisi.map(a=>`<p>${esc(a.testo)}</p>`).join('') + `</div>`;
+      C.avvisi.map(a=>`<p>${esc(a.testo)}</p>` +
+        (a.url ? `<p><a class="btn small" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta || U.vai)}</a></p>` : '')
+      ).join('') + `</div>`;
   }
   if (ph === 'prima') {
     h += `<div class="card hero"><div class="kicker">Pioneer Edition · ${dataKicker(C.meta.dataPartenza)}</div>
@@ -1221,7 +1224,7 @@ function renderInfo(){
     }
     h += `<div class="card icard" id="info-${c.id}" data-tema="${esc(c.tema)}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase())}">
       <div class="head"><span class="e">${icon(ICONS[c.id] || 'info', 20)}</span><h3>${esc(c.titolo)}</h3></div>
-      <div class="body"><p>${esc(c.corpo)}</p>
+      <div class="body">${c.corpo.split('\n\n').map(p=>`<p>${esc(p)}</p>`).join('')}
       ${c.link ? `<a class="btn small sec" href="${c.link.url}" target="_blank" rel="noopener">${esc(c.link.testo)}</a>` : ''}</div>
     </div>`;
   });

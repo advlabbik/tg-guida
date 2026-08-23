@@ -27,9 +27,14 @@ intro: {
   testo: "Sei uno dei 500. La Pioneer Edition è la prima volta del Trentino Gravel e quello che costruiamo quest'anno — insieme a te — diventa la storia dell'evento. Nessuna classifica, nessun cronometro. Bikepacking in autonomia, al tuo ritmo, dentro uno dei territori più belli delle Alpi. Questa guida è il tuo punto di riferimento unico prima, durante e dopo l'evento."
 },
 
+/* Il box in evidenza tiene solo le cose che scadono. L'avviso sulle tracce
+   preliminari e' uscito il 23/8 (vive gia' come card nelle Info) per fare posto
+   alla taglia, che chiude il 26. Il certificato resta finche' non scade il 27. */
 avvisi: [
-  { testo: "Hai tempo fino al 27 agosto per caricare il certificato medico nella tua area personale su bikeadventureseries.com." },
-  { testo: "Le tracce che vedi qui sono preliminari. Studiale con calma e prenota le tue notti, ma non caricarle sul GPS. Le tracce definitive arrivano pochi giorni prima della partenza e, se non ci saranno problematiche dell'ultimo periodo, resteranno uguali a queste." }
+  { testo: "Scegli la taglia della tua t-shirt entro mercoledì 26 agosto. Dopo mandiamo in stampa con quello che abbiamo e per chi non ha risposto scegliamo noi una Men L, senza possibilità di cambio.",
+    url: "https://docs.google.com/forms/d/e/1FAIpQLSdduPDsrAWtp9NCdzwHTGRW_8fiCmE_ZijAVwzwjPCmdtrdew/viewform",
+    cta: "Scegli la tua taglia" },
+  { testo: "Hai tempo fino al 27 agosto per caricare il certificato medico nella tua area personale su bikeadventureseries.com." }
 ],
 
 checklist: [
@@ -48,14 +53,17 @@ checklist: [
 ],
 
 /* Sotto la checklist, senza casella da spuntare: il forum non e' un compito da
-   completare ma un posto dove tornare. Poi un evento BAS pescato a caso fra i
-   quattro (uno solo per volta — il catalogo intero diluisce) e l'articolo che
-   serve davvero a chi deve preparare le tracce. Gli url degli eventi hanno gli
-   UTM, cosi' quando arriveranno le analytics si vedra' quale card tira di piu'. */
+   completare ma un posto dove tornare. Punta al post "Bici e logistica" e non
+   piu' alla home della community (Andrea, 20/8), cosi' chi arriva dall'app
+   atterra sulla risposta invece che sul flusso. Poi un evento BAS pescato a
+   caso fra i quattro (uno solo per volta — il catalogo intero diluisce). Il
+   rimando all'articolo del Journal e' stato tolto lo stesso giorno. Gli url
+   degli eventi hanno gli UTM, cosi' quando arriveranno le analytics si vedra'
+   quale card tira di piu'. */
 extraHome: {
   forum: { titolo: "Hai dubbi? Chiedi sul forum BAS",
     testo: "Per domande su preparazione, bici e materiali c'è la community. Lo staff e gli altri partecipanti rispondono lì.",
-    url: "https://www.bikeadventureseries.com/community/", cta: "Vai al forum" },
+    url: "https://www.bikeadventureseries.com/community/space/trentino-gravel-introduce-yourself/post/bici-e-logistica-bike-and-logistics", cta: "Vai al forum" },
   altriEventi: [
     { id: "tuscany-trail", titolo: "Cerchi un'altra avventura bikepacking per la tua gravel?",
       testo: "Scopri il più grande evento bikepacking al mondo.",
@@ -69,11 +77,7 @@ extraHome: {
     { id: "northcape4000", titolo: "Raggiungi la fine del mondo",
       testo: "Scopri l'evento che ti porta a Capo Nord dopo 4.000 km su traccia fissa.",
       url: "https://northcape4000.com/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=northcape4000", cta: "Vai" }
-  ],
-  articolo: { titolo: "GPX Track Preparation Guide: What to Do Before Your Bikepacking Adventure",
-    testo: "Come preparare le tracce prima di partire, dal Journal della Bike Adventure Series.",
-    url: "https://www.bikeadventureseries.com/journal/gpx-track-preparation-guide-what-to-do-before-your-bikepacking-adventure/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=journal-gpx",
-    cta: "Leggi adesso" }
+  ]
 },
 
 percorsi: [
@@ -180,7 +184,7 @@ infoCards: [
     corpo: "Il percorso Lungo affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita. Lì ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze della strada. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È un tratto duro, ma una volta in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica. Se preferisci evitarlo, il percorso Medio esiste esattamente per questo.",
     cerca: "col margherita spinta piedi tratto tecnico camminare lungo san pellegrino fassa" },
   { id: "sicurezza", tema: "Sul percorso", icona: "🛡️", titolo: "Le regole d'oro della sicurezza",
-    corpo: "Non è una gara, non prendere rischi inutili. Le strade sono aperte al traffico e vale il Codice della Strada. Evita di pedalare di notte e se devi farlo usa luci potenti. Non pedalare se sei troppo stanco, cerca di non restare mai da solo e aiuta chi è in difficoltà. Se un tratto ti sembra pericoloso scendi e cammina.",
+    corpo: "Non è una gara, non prendere rischi inutili. Le strade sono aperte al traffico e vale il Codice della Strada. Non si pedala col buio, e se la sera ti coglie comunque fuori usa luci potenti e fermati alla prima occasione. Non pedalare se sei troppo stanco, cerca di non restare mai da solo e aiuta chi è in difficoltà. Se un tratto ti sembra pericoloso scendi e cammina.",
     cerca: "sicurezza regole codice strada notte traffico prudenza stanchezza aiuto" },
   { id: "dotazione", tema: "Sul percorso", icona: "🦺", titolo: "Cosa portare con te",
     corpo: "Luci e campanello li chiede il Codice della Strada, e il casco tienilo sempre allacciato. Per i tratti al buio servono gilet o elementi catarifrangenti. Porta un power bank per GPS e telefono e un kit riparazione — e impara a usarlo prima di partire.",
@@ -188,9 +192,12 @@ infoCards: [
   { id: "acqua", tema: "Sul percorso", icona: "⛲", titolo: "Acqua e rifornimenti",
     corpo: "Fontane e punti di rifornimento sono frequenti nei paesi attraversati. L'elenco completo per chilometro è nella sezione Percorso. Nei tratti in quota riparti sempre con le borracce piene.",
     cerca: "acqua fontane ristoro rifornimento mangiare negozi borracce" },
-  { id: "meteo", tema: "Sul percorso", icona: "🌦️", titolo: "Meteo, quota e buio",
-    corpo: "Fine settembre in montagna vuol dire giornate miti in valle, freddo vero in quota e buio poco dopo le 19. Porta strati caldi e luci. Il meteo aggiornato e l'orario del tramonto li trovi nella sezione Live.",
-    cerca: "meteo freddo pioggia abbigliamento cosa porto luci quota temperatura buio tramonto" },
+  /* Riscritta il 23/8 sul testo dell'email ai partecipanti: la vecchia versione
+     diceva solo "porta strati caldi e luci", che e' un consiglio di valigia. Qui
+     serve che la decisione di fermarsi resti in capo a chi pedala. */
+  { id: "meteo", tema: "Sul percorso", icona: "🌦️", titolo: "La montagna a fine settembre",
+    corpo: "Il Trentino Gravel si pedala anche in alta quota e a fine settembre il tempo lassù cambia in fretta. Può essere estate a valle e inverno in cresta nello stesso pomeriggio, con il buio che arriva poco dopo le 19. Ci sono tratti, pochi ma ci sono, dove non incontri nessuno per parecchi chilometri e dove il telefono prende male.\n\nDue cose ti chiediamo di prendere sul serio.\n\nNon si pedala col buio. Costruisci le tue giornate in modo da essere fermo prima del tramonto, anche quando questo vuol dire arrivare un giorno dopo.\n\nIl meteo lo valuti tu, ogni giorno e mentre sei in strada. Se le condizioni non lo permettono ti fermi, aspetti e riparti quando migliora. Nessuno ti sta cronometrando e non esiste una ragione al mondo per stare su un passo esposto mentre arriva un temporale.\n\nPorta con te roba per il freddo e per la pioggia anche se parti con il sole. Guarda le previsioni ogni sera per il giorno dopo, le trovi nella sezione Live insieme all'orario del tramonto. Tieni sempre presente dove puoi fermarti e da dove puoi scendere a valle se la giornata gira male.\n\nLe decisioni sul percorso sono tue e la tua sicurezza dipende da come le prendi.",
+    cerca: "meteo freddo pioggia abbigliamento cosa porto luci quota temperatura buio tramonto temporale montagna alta quota autonomia sicurezza fermarsi previsioni notte" },
   { id: "animali", tema: "Sul percorso", icona: "🐄", titolo: "Animali al pascolo",
     corpo: "Nei tratti in quota puoi incontrare mucche e greggi al pascolo, a volte con cani da guardiania. Rallenta, se serve scendi dalla bici e tienila tra te e l'animale, passa con calma senza gesti bruschi. Se attraversi un recinto di pascolo richiudi sempre il cancello dietro di te.",
     cerca: "animali mucche cani pastore gregge pascolo cancelli recinti incontro" },
@@ -403,8 +410,10 @@ intro: {
 },
 
 avvisi: [
-  { testo: "You have until 27 August to upload your medical certificate in your personal area on bikeadventureseries.com." },
-  { testo: "The routes you see here are preliminary. Study them and book your nights, but do not load them onto your GPS. The final routes arrive a few days before the start and, unless last-minute issues come up, they will stay the same as these." }
+  { testo: "Pick your t-shirt size by Wednesday 26 August. After that we print with what we have, and for anyone who did not answer we pick a Men L, with no exchange later.",
+    url: "https://docs.google.com/forms/d/e/1FAIpQLSdduPDsrAWtp9NCdzwHTGRW_8fiCmE_ZijAVwzwjPCmdtrdew/viewform",
+    cta: "Pick your size" },
+  { testo: "You have until 27 August to upload your medical certificate in your personal area on bikeadventureseries.com." }
 ],
 
 checklist: [
@@ -427,7 +436,7 @@ checklist: [
 extraHome: {
   forum: { titolo: "Questions? Ask on the BAS forum",
     testo: "For anything about preparation, bikes and gear there is the community. The staff and fellow riders answer there.",
-    url: "https://www.bikeadventureseries.com/community/", cta: "Go to the forum" },
+    url: "https://www.bikeadventureseries.com/community/space/trentino-gravel-introduce-yourself/post/bici-e-logistica-bike-and-logistics", cta: "Go to the forum" },
   altriEventi: [
     { id: "tuscany-trail", titolo: "Looking for another bikepacking adventure for your gravel bike?",
       testo: "Discover the biggest bikepacking event in the world.",
@@ -441,11 +450,7 @@ extraHome: {
     { id: "northcape4000", titolo: "Ride to the end of the world",
       testo: "Discover the event that takes you to the North Cape after 4,000 km on a fixed route.",
       url: "https://northcape4000.com/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=northcape4000", cta: "Go" }
-  ],
-  articolo: { titolo: "GPX Track Preparation Guide: What to Do Before Your Bikepacking Adventure",
-    testo: "How to get your tracks ready before you leave, from the Bike Adventure Series Journal.",
-    url: "https://www.bikeadventureseries.com/journal/gpx-track-preparation-guide-what-to-do-before-your-bikepacking-adventure/?utm_source=tg-guida&utm_medium=app&utm_campaign=crosssell-2026&utm_content=journal-gpx",
-    cta: "Read it now" }
+  ]
 },
 
 percorsi: [
@@ -552,7 +557,7 @@ infoCards: [
     corpo: "The Long route takes on Val di Fassa and climbs to Passo San Pellegrino on gravel, then keeps climbing up Col Margherita. There you will find about 2.5 km that you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is a hard section, but once at the top the 300-degree view over the Dolomites repays the effort. If you would rather skip it, the Medium route exists exactly for that.",
     cerca: "col margherita push hike a bike technical section walking long san pellegrino fassa" },
   { id: "sicurezza", tema: "On the route", icona: "🛡️", titolo: "The golden rules of safety",
-    corpo: "This is not a race, take no unnecessary risks. Roads are open to traffic and the highway code applies. Avoid riding at night, and if you must, use powerful lights. Do not ride when you are too tired, try never to be alone, and help anyone in difficulty. If a section feels dangerous, get off and walk.",
+    corpo: "This is not a race, take no unnecessary risks. Roads are open to traffic and the highway code applies. Do not ride in the dark, and if evening catches you out anyway, use powerful lights and stop at the first opportunity. Do not ride when you are too tired, try never to be alone, and help anyone in difficulty. If a section feels dangerous, get off and walk.",
     cerca: "safety rules highway code night traffic caution fatigue help" },
   { id: "dotazione", tema: "On the route", icona: "🦺", titolo: "What to bring",
     corpo: "Lights and a bell are required by the highway code, and keep your helmet fastened at all times. For dark sections you need a hi-vis vest or reflective elements. Bring a power bank for GPS and phone and a repair kit — and learn to use it before you leave.",
@@ -560,9 +565,9 @@ infoCards: [
   { id: "acqua", tema: "On the route", icona: "⛲", titolo: "Water and resupply",
     corpo: "Fountains and resupply points are frequent in the villages along the way. The full list, kilometre by kilometre, is in the Route section. On the high sections always set off with full bottles.",
     cerca: "water fountains resupply refill food shops bottles" },
-  { id: "meteo", tema: "On the route", icona: "🌦️", titolo: "Weather, altitude and darkness",
-    corpo: "Late September in the mountains means mild days in the valley, real cold at altitude and darkness shortly after 7 pm. Bring warm layers and lights. The updated forecast and sunset time are in the Live section.",
-    cerca: "weather cold rain clothing what to bring lights altitude temperature dark sunset" },
+  { id: "meteo", tema: "On the route", icona: "🌦️", titolo: "The mountains in late September",
+    corpo: "The Trentino Gravel also runs high up, and in late September the weather up there turns fast. It can be summer in the valley and winter on a ridge in the same afternoon, with darkness falling shortly after 7 pm. There are sections, few but real, where you will not meet anyone for a long while and where phone coverage is poor.\n\nTwo things we ask you to take seriously.\n\nDo not ride in the dark. Build your days so that you stop before sunset, even when that means finishing a day later.\n\nYou are the one judging the weather, every day and while you ride. If conditions do not allow it, you stop, you wait, and you start again when it improves. Nobody is timing you and there is no reason on earth to be on an exposed pass while a storm rolls in.\n\nCarry cold and rain gear even if you start under the sun. Check the forecast every evening for the next day, you find it in the Live section together with the sunset time. Always keep in mind where you can stop and where you can drop down to the valley if the day turns bad.\n\nThe decisions on the route are yours, and your safety depends on how you make them.",
+    cerca: "weather cold rain clothing what to bring lights altitude temperature dark sunset storm mountains self supported safety stop forecast night" },
   { id: "animali", tema: "On the route", icona: "🐄", titolo: "Grazing animals",
     corpo: "On the high sections you may meet cows and flocks at pasture, sometimes with guardian dogs. Slow down, get off the bike if needed and keep it between you and the animal, pass calmly without sudden moves. If you cross a pasture fence, always close the gate behind you.",
     cerca: "animals cows dogs shepherd flock pasture gates fences encounter" },
