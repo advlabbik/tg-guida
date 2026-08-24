@@ -136,6 +136,7 @@ const $ = s => document.querySelector(s);
 const NOTIFICHE_ATTIVE = false; // spente su decisione di Andrea (13/08), si riaccendono da qui
 const SUPABASE_URL = window.TG_SUPABASE_URL;
 const SUPABASE_ANON_KEY = 'sb_publishable_uAsfI4XJD5r5HZPykdxxGg_vzhRd77U';
+const EVENTO_ID = window.TG_EVENTO_ID;
 const VAPID_PUBLIC_KEY = 'BNZIUJOC-xlaQG15MK94JUj17jrLhmxs3ZoLGihgaJaAQLxDZVisaMhaKP3Qy1sr8nk2QbvNTfRkNqzm3LH60Yk';
 const PUSH_ENDPOINT_KEY = 'tg-push-saved-endpoint';
 
@@ -150,7 +151,7 @@ function pushSupported(){
 }
 async function saveSubscription(sub){
   const subJson = sub.toJSON();
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_push_subscriptions`, {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/push_subscriptions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -158,7 +159,7 @@ async function saveSubscription(sub){
       'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
       'Prefer': 'return=minimal'
     },
-    body: JSON.stringify({ endpoint: subJson.endpoint, p256dh: subJson.keys.p256dh, auth: subJson.keys.auth })
+    body: JSON.stringify({ evento_id: EVENTO_ID, endpoint: subJson.endpoint, p256dh: subJson.keys.p256dh, auth: subJson.keys.auth })
   });
   if (!res.ok && res.status !== 409) throw new Error('salvataggio subscription fallito');
   localStorage.setItem(PUSH_ENDPOINT_KEY, subJson.endpoint);
@@ -231,7 +232,7 @@ async function loadComunicazioni(){
   }
   sec.style.display = '';
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_broadcast_messages?select=title,body,created_at&order=created_at.desc`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/broadcast_messages?select=title,body,created_at&evento_id=eq.${EVENTO_ID}&order=created_at.desc`, {
       headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
     });
     if (!res.ok) throw new Error('fetch fallita');
@@ -1712,8 +1713,8 @@ $('#searchinput').addEventListener('input',e=>{
 
 /* ---------- feedback dei partecipanti ----------
    Link fisso in fondo alla pagina, sempre visibile in ogni fase. Il messaggio
-   finisce nella tabella Supabase tg_feedback (insert-only per anon, stessa
-   filosofia di tg_push_subscriptions) insieme a un po' di contesto tecnico che
+   finisce nella tabella Supabase feedback (insert-only per anon, stessa
+   filosofia di push_subscriptions) insieme a un po' di contesto tecnico che
    a chi lo legge serve per riprodurre il problema. Se l'insert fallisce (rete,
    tabella non ancora migrata) il testo di errore offre l'email come uscita. */
 (function(){
@@ -1737,11 +1738,12 @@ $('#searchinput').addEventListener('input',e=>{
     if (!msg) { $('#fbmsg').focus(); return; }
     $('#fbsend').disabled = true;
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/tg_feedback`, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/feedback`, {
         method: 'POST',
         headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                    'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify({
+          evento_id: EVENTO_ID,
           message: msg.slice(0, 2000),
           contact: $('#fbmail').value.trim().slice(0, 200) || null,
           context: {

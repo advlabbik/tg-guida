@@ -8,6 +8,10 @@ const VAPID_PUBLIC_KEY = Deno.env.get("VAPID_PUBLIC_KEY")!;
 const VAPID_PRIVATE_KEY = Deno.env.get("VAPID_PRIVATE_KEY")!;
 const VAPID_SUBJECT = Deno.env.get("VAPID_SUBJECT")!;
 const STAFF_CODE = Deno.env.get("STAFF_CODE")!;
+// Slug della riga in public.eventi per questa app-evento (schema condiviso
+// multi-evento, migrazione 20260824085311_eventi_condivisi.sql). Ogni
+// app-evento deploya questa stessa function con il proprio EVENTO_SLUG.
+const EVENTO_SLUG = Deno.env.get("EVENTO_SLUG")!;
 
 // Numero di subscription inviate in parallelo per batch. Con centinaia/migliaia
 // di iscritti, un Promise.all su tutte le righe in un colpo solo apre troppe
@@ -58,16 +62,27 @@ Deno.serve(async (req) => {
     return json({ error: "Titolo e messaggio sono obbligatori" }, 400);
   }
 
+  const { data: evento, error: eventoError } = await supabase
+    .from("eventi")
+    .select("id")
+    .eq("slug", EVENTO_SLUG)
+    .single();
+  if (eventoError || !evento) {
+    return json({ error: "Evento non configurato" }, 500);
+  }
+  const eventoId = evento.id;
+
   const { error: insertError } = await supabase
-    .from("tg_broadcast_messages")
-    .insert({ title, body });
+    .from("broadcast_messages")
+    .insert({ evento_id: eventoId, title, body });
   if (insertError) {
     return json({ error: insertError.message }, 500);
   }
 
   const { data: subs, error: subsError } = await supabase
-    .from("tg_push_subscriptions")
-    .select("id, endpoint, p256dh, auth");
+    .from("push_subscriptions")
+    .select("id, endpoint, p256dh, auth")
+    .eq("evento_id", eventoId);
   if (subsError) {
     return json({ error: subsError.message }, 500);
   }
@@ -106,7 +121,7 @@ Deno.serve(async (req) => {
   let removed = 0;
   if (staleIds.length) {
     const { error: deleteError, count } = await supabase
-      .from("tg_push_subscriptions")
+      .from("push_subscriptions")
       .delete({ count: "exact" })
       .in("id", staleIds);
     if (deleteError) {
