@@ -1,6 +1,6 @@
 -- Schema per le notifiche push di comunicazioni staff (feature "notifiche durante").
--- NOTA: questa migrazione documenta lo schema gia' applicato in produzione sul
--- progetto kqsrtuzeeiljozdnjott (vedi Task 1 del piano
+-- NOTA: schema applicato in origine su kqsrtuzeeiljozdnjott e ri-applicato il
+-- 24/8/2026 sul progetto dedicato guide-eventi (tokqvqrebunfshjtpkog) (vedi Task 1 del piano
 -- docs/superpowers/plans/2026-08-12-notifiche-durante.md). Non va ri-applicata:
 -- serve solo a portare lo schema sotto version control nel repo.
 

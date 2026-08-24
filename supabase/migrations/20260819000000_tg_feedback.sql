@@ -3,15 +3,20 @@
 -- tg_push_subscriptions: insert-only per anon, vincoli di formato,
 -- rate limit per IP con funzione SECURITY DEFINER.
 --
--- NOTA: NON ancora applicata in produzione (progetto kqsrtuzeeiljozdnjott).
--- Va eseguita nel SQL editor di Supabase prima che il bottone funzioni;
--- fino ad allora l'app mostra il messaggio di errore con l'email di riserva.
+-- APPLICATA il 24/8/2026 sul progetto guide-eventi (tokqvqrebunfshjtpkog),
+-- il nuovo progetto dedicato alle app guida. Due differenze rispetto alla
+-- prima stesura:
+-- 1. RLS abilitata anche su tg_feedback_attempts: senza, la tabella di
+--    tracking resta esposta in lettura/scrittura all'anon key (stesso
+--    advisory critico emerso su kqsr per tg_push_subscribe_attempts).
+--    La funzione SECURITY DEFINER continua a scriverci senza policy.
+-- 2. Notifica Slack via trigger pg_net al webhook n8n "tg-feedback-slack"
+--    (workflow "TG Guida — Feedback → Slack" → canale #feedback-app),
+--    definita qui in SQL invece del Database Webhook da dashboard: stesso
+--    payload (type/table/schema/record), ma sotto version control.
 --
 -- Lettura: nessuna policy select per anon (i feedback non devono essere
--- pubblici). Si leggono dal dashboard Supabase o via service role. Per la
--- notifica in tempo reale al team: Database Webhooks su INSERT di questa
--- tabella verso un incoming webhook Slack (si configura dal dashboard,
--- zero codice — vedi README).
+-- pubblici). Si leggono dal dashboard Supabase o via service role.
 
 create table if not exists public.tg_feedback (
   id uuid primary key default gen_random_uuid(),
@@ -33,6 +38,8 @@ create table if not exists public.tg_feedback_attempts (
   client_ip text not null,
   created_at timestamptz not null default now()
 );
+
+alter table public.tg_feedback_attempts enable row level security;
 
 create index if not exists tg_feedback_attempts_ip_time_idx
   on public.tg_feedback_attempts (client_ip, created_at);
@@ -77,3 +84,31 @@ create policy "tg_feedback_insert_anon"
   for insert
   to anon
   with check (public.tg_feedback_rate_ok());
+
+-- Notifica Slack: INSERT su tg_feedback -> webhook n8n -> #feedback-app
+create extension if not exists pg_net;
+
+create or replace function public.tg_feedback_notify_slack()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  perform net.http_post(
+    url := 'https://n8n.xct.bikeadventureseries.com/webhook/tg-feedback-slack',
+    body := jsonb_build_object(
+      'type', 'INSERT',
+      'table', tg_table_name,
+      'schema', tg_table_schema,
+      'record', to_jsonb(new)
+    ),
+    headers := '{"Content-Type": "application/json"}'::jsonb
+  );
+  return new;
+end;
+$$;
+
+create trigger tg_feedback_webhook
+  after insert on public.tg_feedback
+  for each row execute function public.tg_feedback_notify_slack();
