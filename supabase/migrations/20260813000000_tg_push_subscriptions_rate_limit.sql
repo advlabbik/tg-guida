@@ -7,8 +7,10 @@
 -- verifyPushSubscription quando l'endpoint ruota), quindi un limite generoso
 -- non tocca l'uso reale ma blocca un flood automatizzato.
 --
--- NOTA: già applicata in produzione sul progetto kqsrtuzeeiljozdnjott.
--- Non va ri-applicata: serve solo a portare lo schema sotto version control.
+-- NOTA: applicata in origine su kqsrtuzeeiljozdnjott e ri-applicata il 24/8/2026
+-- sul progetto dedicato guide-eventi (tokqvqrebunfshjtpkog), con una differenza:
+-- lì tg_push_subscribe_attempts ha la RLS abilitata (senza policy per anon),
+-- fix dell'advisory critico emerso su kqsr.
 
 create table if not exists public.tg_push_subscribe_attempts (
   id bigint generated always as identity primary key,
