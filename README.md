@@ -88,7 +88,7 @@ Prima della pubblicazione reale, da fare in quest'ordine:
 
 ## Stato del repo e dei branch
 
-Deploy automatico su GitHub Pages da `main` (`https://advlabbik.github.io/tg-guida/`).
+Deploy automatico su GitHub Pages da `main`, su **<https://trentinogravel.bikeadventureseries.com>** (dal 27/8/2026, [issue #10](https://github.com/advlabbik/tg-guida/issues/10)). Il vecchio `advlabbik.github.io/tg-guida/` risponde 301 verso il nuovo indirizzo conservando il path, quindi i link già distribuiti reggono. Il file `CNAME` in radice tiene ferma la configurazione: se sparisce, al primo deploy il dominio si perde.
 
 **Backend: dal 24/8/2026 l'app punta al progetto Supabase dedicato `guide-eventi` (`tokqvqrebunfshjtpkog`)**, creato per separare le app evento dal DB marketing (`kqsrtuzeeiljozdnjott`, dove le tabelle `tg_*` sono nate). Lo switch è avvenuto a tabelle quasi vuote (0 subscription push, 0 broadcast reali), quindi senza migrazione dati; i VAPID e lo `STAFF_CODE` sono stati rigenerati nell'occasione. Le vecchie tabelle `tg_*` su kqsr vanno droppate dopo un periodo di osservazione.
 
@@ -288,16 +288,18 @@ quello che è deciso e quello che manca.
 ### In sospeso, con la dipendenza che li blocca
 | Cosa | Chi sblocca |
 |---|---|
-| Dominio `app.trentinogravel.com` | Francesco, 1 record DNS su Cloudflare → [issue #14](https://github.com/advlabbik/tg-guida/issues/14) |
 | Analytics (Umami, piano gratuito) | Andrea, crea l'account su cloud.umami.is e passa il Website ID |
 | Link della diretta WHIP, contatti taxi, orari definitivi del pacco | informazioni non ancora disponibili |
-| Riaccensione notifiche push | decisione di Andrea, dopo il dominio (le iscrizioni sono legate all'indirizzo) |
 
 ### Trappole note
 - Chi ha già salvato l'app in home **non vede la nuova icona**: i telefoni la congelano al
   salvataggio, va rimossa e risalvata.
-- Le iscrizioni alle notifiche sono legate al dominio: attivare il dominio **prima** di
-  invitare i partecipanti ad attivarle, altrimenti si perdono.
+- **Le iscrizioni alle notifiche sono legate all'origine, e nessun redirect le porta dietro.**
+  Per questo il sottodominio è arrivato prima dell'accensione, il 27/8/2026: quelle raccolte
+  su `advlabbik.github.io` sarebbero morte al trasloco, e non c'è modo di avvisare chi le
+  aveva attivate — il canale per avvisarli è proprio quello. Se un giorno l'app cambia di
+  nuovo indirizzo, vale ancora: si sposta prima, si invita dopo. Al cambio le iscrizioni
+  erano zero, quindi non si è perso niente.
 - La cartella `fonts/` contiene font di una versione precedente e **non è più usata**:
   il design system attuale carica Inter e Space Grotesk da Google Fonts (`index.html`).
   Se serve tornare offline-first sui font, vanno scaricati quelli giusti.
@@ -496,7 +498,7 @@ L'utilità non arretra mai per far posto a chi paga (regola D6 del registro). Ra
 Analisi completa dei 4 progetti digitali e registro decisioni con le motivazioni nella pagina Notion [Ecosistema App BAS — analisi e registro decisioni](https://app.notion.com/p/3bef88ad0121819487aceb41d1a89781). Qui solo ciò che tocca questo repo.
 
 - **Fase "dopo" da popolare prima del 26/9** — attestato Pioneer, foto, questionario e card "Prima Fila BAS" in `dopo.azioni[]`/`dopo.prossimo` (testi base nello snapshot `anteprima-francesco/content.js`). Perché — il post-evento è il picco emotivo e la prevendita alumni apre il 31/10, quando i 500 pionieri avranno ancora l'app in mano.
-- **Push da riaccendere per il 31/10** — checklist go-live già in questo README + dominio (issue #14). La notifica "Prima Fila" ai 500 è il canale a costo zero sulla coorte più calda della serie.
+- **Push accese dal 27/8/2026, e il 31/10 sono lo strumento** — la notifica "Prima Fila" ai 500 è il canale a costo zero sulla coorte più calda della serie, e arriva solo a chi si è iscritto: le settimane fino al 26/9, con l'app in mano ai partecipanti, sono la finestra in cui quella lista si costruisce.
 - **Qui nasce il motore card social** — canvas on-device + Web Share API (già usata per la posizione), primo uso l'attestato Pioneer condivisibile. Zero backend; il motore si riusa su tuscany-trail-app e northcape4000-app.
 - **Segnalazioni percorso, stadio 1** — bottone nella Live che apre WhatsApp precompilato con km e percorso allegati in automatico (arriva in Slack via 2Chat). Il form strutturato su Supabase è lo stadio 2, previsto sul Tuscany Trail 2027. Resta separato dall'assistenza personale (112, taxi, meccanici).
 - **Niente timbri in-app per l'edizione zero** — al TG debutta il passaporto fisico BAS e la survey aveva già rimandato l'idea all'area personale 2027.
