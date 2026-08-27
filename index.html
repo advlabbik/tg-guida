@@ -133,9 +133,13 @@ const $ = s => document.querySelector(s);
 /* ---------- notifiche push (sistema di Francesco, PR #13) ----------
    INTERRUTTORE: con false la card sparisce e non parte nessuna richiesta.
    Per lo spegnimento immediato basta cambiare questa riga e ripubblicare. */
-const NOTIFICHE_ATTIVE = false; // spente su decisione di Andrea (13/08), si riaccendono da qui
+// Spente da Andrea il 13/08, riaccese il 27/08/2026 in vista del 26 settembre:
+// i partecipanti si iscrivono ora, il permesso del browser si chiede una volta
+// sola e chiederlo il giorno della partenza vuol dire non averlo. Per lo
+// spegnimento immediato basta rimettere false qui e ripubblicare.
+const NOTIFICHE_ATTIVE = true;
 const SUPABASE_URL = window.TG_SUPABASE_URL;
-const SUPABASE_ANON_KEY = 'sb_publishable_uAsfI4XJD5r5HZPykdxxGg_vzhRd77U';
+const SUPABASE_ANON_KEY = window.TG_SUPABASE_ANON_KEY;
 const EVENTO_ID = window.TG_EVENTO_ID;
 const VAPID_PUBLIC_KEY = 'BNZIUJOC-xlaQG15MK94JUj17jrLhmxs3ZoLGihgaJaAQLxDZVisaMhaKP3Qy1sr8nk2QbvNTfRkNqzm3LH60Yk';
 const PUSH_ENDPOINT_KEY = 'tg-push-saved-endpoint';
@@ -184,13 +188,29 @@ async function verifyPushSubscription(){
 async function refreshNotifCard(){
   const card = $('#notifcard');
   if (!card) return;
-  if (!NOTIFICHE_ATTIVE || !pushSupported() || phase() === 'dopo'){
+  if (!NOTIFICHE_ATTIVE || phase() === 'dopo'){
+    card.style.display = 'none';
+    return;
+  }
+  const btn = $('#notifbtn');
+  const status = $('#notifstatus');
+  /* Su iPhone `Notification` e `PushManager` non esistono in Safari: Apple li
+     da' solo alle app aggiunte alla schermata Home. Nascondere la card, come si
+     faceva prima, lasciava chi apre la guida dall'iPhone senza niente da vedere
+     e senza sapere perche' — e a noi zero iscrizioni senza un errore da nessuna
+     parte. Meglio dirglielo: il bottone sparisce, perche' premerlo non
+     porterebbe da nessuna parte, ma la spiegazione resta. */
+  if (!pushSupported()){
+    if (isIOS() && !isStandalone()){
+      card.style.display = '';
+      btn.style.display = 'none';
+      status.textContent = U.notifiche.soloDaHome;
+      return;
+    }
     card.style.display = 'none';
     return;
   }
   card.style.display = '';
-  const btn = $('#notifbtn');
-  const status = $('#notifstatus');
   if (Notification.permission === 'granted'){
     btn.style.display = 'none';
     status.textContent = U.notifiche.attive;
@@ -237,14 +257,28 @@ async function loadComunicazioni(){
     });
     if (!res.ok) throw new Error('fetch fallita');
     const msgs = await res.json();
+    /* Serve anche il giorno, non solo l'ora. Il Trentino Gravel dura sei giorni
+       e con la sola ora un messaggio di sabato e uno di domenica sembrano lo
+       stesso — il feed e' ordinato dal piu' recente, quindi non c'e' nemmeno
+       l'ordine a suggerirlo. */
+    const loc = LANG === 'en' ? 'en-GB' : 'it-IT';
+    const quando = iso => {
+      const d = new Date(iso);
+      return d.toLocaleDateString(loc, {day:'numeric', month:'short'})
+        + ', ' + d.toLocaleTimeString(loc, {hour:'2-digit', minute:'2-digit'});
+    };
     list.innerHTML = msgs.length
-      ? msgs.map(m => `<div class="avvisi"><h3>${esc(m.title)} · ${new Date(m.created_at).toLocaleTimeString(LANG === 'en' ? 'en-GB' : 'it-IT',{hour:'2-digit',minute:'2-digit'})}</h3><p>${esc(m.body)}</p></div>`).join('')
+      ? msgs.map(m => `<div class="avvisi"><h3>${esc(m.title)} · ${quando(m.created_at)}</h3><p>${esc(m.body)}</p></div>`).join('')
       : `<p class="muted">${esc(U.notifiche.nessuna)}</p>`;
   } catch (err){
     list.innerHTML = `<p class="muted">${esc(U.notifiche.erroreCarico)}</p>`;
   }
 }
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* I testi lunghi si spezzano sui doppi a capo. Lo facevano solo le schede Info;
+   gli avvisi della home e l'intro erano un blocco unico, e su due o tre frasi
+   diventano un muro. Stessa convenzione ovunque. */
+const paragrafi = txt => String(txt || '').split('\n\n').map(t => `<p>${esc(t)}</p>`).join('');
 
 /* ---------- accesso riservato ai partecipanti ---------- */
 /* Deterrente, non sicurezza vera: il codice arriva via email agli iscritti.
@@ -394,7 +428,7 @@ function renderHome(){
   if (C.avvisi && C.avvisi.length){
     // un avviso puo' portare la sua azione: se ha url, sotto il testo compare il bottone
     h += `<div class="avvisi"><h3>${esc(U.avvisiTitolo)}</h3>` +
-      C.avvisi.map(a=>`<p>${esc(a.testo)}</p>` +
+      C.avvisi.map(a=> paragrafi(a.testo) +
         (a.url ? `<p><a class="btn small" href="${a.url}" target="_blank" rel="noopener">${esc(a.cta || U.vai)}</a></p>` : '')
       ).join('') + `</div>`;
   }
@@ -402,7 +436,7 @@ function renderHome(){
     h += `<div class="card hero"><div class="kicker">Pioneer Edition · ${dataKicker(C.meta.dataPartenza)}</div>
       <h2>${esc(C.intro.titolo)}</h2>
       <div id="countdown"></div>
-      <p>${esc(C.intro.testo)}</p></div>`;
+      ${paragrafi(C.intro.testo)}</div>`;
     h += `<div class="card"><h2>${esc(U.checklistTitolo)}</h2>
       <p class="muted">${esc(U.checklistSotto)}</p><div id="cklist">` +
       C.checklist.map(c=>{
@@ -1257,7 +1291,7 @@ function renderInfo(){
     }
     h += `<div class="card icard" id="info-${c.id}" data-tema="${esc(c.tema)}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase())}">
       <div class="head"><span class="e">${icon(ICONS[c.id] || 'info', 20)}</span><h3>${esc(c.titolo)}</h3></div>
-      <div class="body">${c.corpo.split('\n\n').map(p=>`<p>${esc(p)}</p>`).join('')}
+      <div class="body">${paragrafi(c.corpo)}
       ${c.link ? `<a class="btn small sec" href="${c.link.url}" target="_blank" rel="noopener">${esc(c.link.testo)}</a>` : ''}</div>
     </div>`;
   });

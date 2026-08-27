@@ -4,6 +4,10 @@
 // lo usa ancora, sw.js non ne ha più bisogno da quando il push handler
 // legge solo il payload del messaggio.
 window.TG_SUPABASE_URL = 'https://tokqvqrebunfshjtpkog.supabase.co';
+// Chiave publishable, cioè pubblica per progetto: sta nel sorgente di un sito
+// statico e va bene così. Da qui e non più solo dentro index.html perché ora
+// la usa anche staff.html, per rileggere le comunicazioni già inviate.
+window.TG_SUPABASE_ANON_KEY = 'sb_publishable_uAsfI4XJD5r5HZPykdxxGg_vzhRd77U';
 // Id fisso della riga 'trentino-gravel' in public.eventi (schema condiviso
 // multi-evento, migrazione 20260824085311_eventi_condivisi.sql). Non generato
 // a runtime: l'app è statica, evitare una fetch extra per risolvere lo slug.

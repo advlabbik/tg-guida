@@ -405,6 +405,7 @@ ui: {
     attive: "Notifiche attive. Riceverai le comunicazioni dello staff durante l'evento.",
     bloccate: "Notifiche bloccate dal browser. Se vuoi riceverle, abilitale dalle impostazioni del sito.",
     errore: "Errore nell'attivazione delle notifiche, riprova.",
+    soloDaHome: "Su iPhone le notifiche arrivano solo se aggiungi la guida alla schermata Home. Tocca Condividi, poi «Aggiungi a Home», e riapri la guida dall'icona.",
     comunicazioni: "Comunicazioni",
     nessuna: "Nessuna comunicazione al momento.",
     erroreCarico: "Non riesco a caricare le comunicazioni. Controlla la connessione."
@@ -797,6 +798,7 @@ ui: {
     attive: "Notifications are on. You will receive staff updates during the event.",
     bloccate: "Notifications are blocked by the browser. Enable them in the site settings if you want them.",
     errore: "Could not turn on notifications, try again.",
+    soloDaHome: "On iPhone, notifications only work if you add the guide to your Home Screen. Tap Share, then «Add to Home Screen», then open the guide from its icon.",
     comunicazioni: "Updates",
     nessuna: "No updates at the moment.",
     erroreCarico: "Cannot load the updates. Check your connection."
