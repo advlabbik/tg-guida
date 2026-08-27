@@ -28,12 +28,10 @@ intro: {
 },
 
 /* Il box in evidenza tiene solo le cose che scadono. L'avviso sulle tracce
-   preliminari e' uscito il 23/8 (vive gia' come card nelle Info) per fare posto
-   alla taglia, che chiude il 26. Il certificato resta finche' non scade il 27. */
+   preliminari e' uscito il 23/8 (vive gia' come card nelle Info). Quello sulla
+   taglia della t-shirt e' uscito il 27/8, scaduto il giorno prima (Andrea).
+   Resta il certificato, finche' non scade il 27. */
 avvisi: [
-  { testo: "Scegli la taglia della tua t-shirt entro mercoledì 26 agosto. Dopo mandiamo in stampa con quello che abbiamo e per chi non ha risposto scegliamo noi una Men L, senza possibilità di cambio.",
-    url: "https://docs.google.com/forms/d/e/1FAIpQLSdduPDsrAWtp9NCdzwHTGRW_8fiCmE_ZijAVwzwjPCmdtrdew/viewform",
-    cta: "Scegli la tua taglia" },
   { testo: "Hai tempo fino al 27 agosto per caricare il certificato medico nella tua area personale su bikeadventureseries.com." }
 ],
 
@@ -434,9 +432,6 @@ intro: {
 },
 
 avvisi: [
-  { testo: "Pick your t-shirt size by Wednesday 26 August. After that we print with what we have, and for anyone who did not answer we pick a Men L, with no exchange later.",
-    url: "https://docs.google.com/forms/d/e/1FAIpQLSdduPDsrAWtp9NCdzwHTGRW_8fiCmE_ZijAVwzwjPCmdtrdew/viewform",
-    cta: "Pick your size" },
   { testo: "You have until 27 August to upload your medical certificate in your personal area on bikeadventureseries.com." }
 ],
 
