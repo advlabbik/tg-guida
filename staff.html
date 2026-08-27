@@ -6,7 +6,11 @@
 <title>Trentino Gravel · Staff</title>
 <meta name="robots" content="noindex, nofollow"/>
 <link rel="stylesheet" href="styles.css"/>
-<style>.staffwrap{max-width:560px;margin:0 auto;padding:16px}</style>
+<style>.staffwrap{max-width:560px;margin:0 auto;padding:16px}
+  .msg{padding:10px 0;border-top:1px solid var(--line)}
+  .msg:first-child{border-top:none;padding-top:0}
+  .msg h3{font-size:14px;margin:0 0 3px;font-weight:700}
+  .msg p{margin:0;font-size:14.5px;white-space:pre-wrap}</style>
 <script src="config.js"></script>
 </head>
 <body>
@@ -29,16 +33,28 @@
     <div class="btnrow"><button class="btn" id="sendbtn">Invia a tutti</button></div>
     <p id="sendstatus" class="muted"></p>
   </div>
+  <div class="card" id="archivio">
+    <h2>Già inviate</h2>
+    <p class="muted">Cosa è già arrivato ai partecipanti. Serve a non mandare due volte la stessa cosa, e a non contraddire chi ha scritto prima.</p>
+    <p id="archiviostato" class="muted"></p>
+    <div id="archiviolista"></div>
+  </div>
 </div>
 <script>
 const $ = s => document.querySelector(s);
-const FUNCTION_URL = `${window.TG_SUPABASE_URL}/functions/v1/tg-send-broadcast`;
+/* Una function sola per tutte le app-evento: l'evento non sta in un secret di
+   progetto — i secret di Supabase sono del progetto, e il progetto e' condiviso
+   — ma viaggia nella richiesta, e il codice staff si legge da `eventi.staff_code`,
+   che e' per evento. Prima era `tg-send-broadcast`, con EVENTO_SLUG e STAFF_CODE
+   nei secret: reggeva solo finche' il Trentino era l'unico evento. */
+const FUNCTION_URL = `${window.TG_SUPABASE_URL}/functions/v1/invia-comunicazione`;
 let staffCode = localStorage.getItem('tg-staff-access') || '';
 
-// Nessuna copia locale del codice staff: l'unica fonte di verità è il secret
-// STAFF_CODE della Edge Function. Qui ci limitiamo a salvare quello che viene
-// digitato; la validazione vera avviene al primo invio reale (vedi sendbtn),
-// che su 403 pulisce il codice salvato e riapre il gate.
+// Nessuna copia locale del codice staff: l'unica fonte di verità è la colonna
+// `staff_code` della riga di questo evento in `public.eventi`, che nessun client
+// può leggere (RLS abilitata, zero policy). Qui ci limitiamo a salvare quello
+// che viene digitato; la validazione vera avviene al primo invio reale (vedi
+// sendbtn), che su 403 pulisce il codice salvato e riapre il gate.
 function showGate(){ $('#gate').style.display = 'flex'; }
 function hideGate(){ $('#gate').style.display = 'none'; }
 
@@ -68,7 +84,7 @@ $('#sendbtn').addEventListener('click', async () => {
     const res = await fetch(FUNCTION_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, body, staffCode })
+      body: JSON.stringify({ title, body, staffCode, eventoId: window.TG_EVENTO_ID })
     });
     const data = await res.json();
     if (!res.ok) {
@@ -84,12 +100,49 @@ $('#sendbtn').addEventListener('click', async () => {
     status.textContent = `Inviato a ${data.sent} di ${data.total} iscritti.`;
     $('#msgtitle').value = '';
     $('#msgbody').value = '';
+    caricaArchivio();
   } catch (err){
     status.textContent = 'Errore — ' + err.message;
   } finally {
     $('#sendbtn').disabled = false;
   }
 });
+
+/* L'archivio legge la stessa tabella che la guida mostra ai partecipanti nel
+   feed Comunicazioni, con la stessa chiave publishable — è già roba pubblica, e
+   non serve passare dalla Edge Function per rileggerla. Non è dietro al gate
+   perché non c'è niente da proteggere: chi ha la guida vede gli stessi
+   messaggi. */
+const esc = t => String(t == null ? '' : t)
+  .replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const quando = iso => {
+  const d = new Date(iso);
+  return d.toLocaleDateString('it-IT', {day:'numeric', month:'short'})
+    + ', ' + d.toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
+};
+async function caricaArchivio(){
+  const stato = $('#archiviostato'), lista = $('#archiviolista');
+  const key = window.TG_SUPABASE_ANON_KEY;
+  stato.textContent = 'Carico…';
+  try {
+    const url = `${window.TG_SUPABASE_URL}/rest/v1/broadcast_messages`
+      + `?select=title,body,created_at&evento_id=eq.${window.TG_EVENTO_ID}`
+      + `&order=created_at.desc&limit=100`;
+    const res = await fetch(url, {
+      headers: { 'apikey': key, 'Authorization': `Bearer ${key}` }
+    });
+    if (!res.ok) throw new Error('lettura fallita');
+    const msgs = await res.json();
+    stato.textContent = msgs.length ? '' : 'Nessuna comunicazione inviata finora.';
+    lista.innerHTML = msgs.map(m =>
+      `<div class="msg"><h3>${esc(m.title)} · ${quando(m.created_at)}</h3><p>${esc(m.body)}</p></div>`
+    ).join('');
+  } catch (err){
+    stato.textContent = 'Non riesco a leggere l\'archivio. Controlla la connessione.';
+    lista.innerHTML = '';
+  }
+}
+caricaArchivio();
 </script>
 </body>
 </html>
