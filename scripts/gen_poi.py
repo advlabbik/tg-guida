@@ -266,6 +266,14 @@ esistente = {}
 if os.path.exists(poi_path):
     m = re.match(r"window\.POI=(.*);\s*$", open(poi_path, encoding="utf-8").read(), re.S)
     if m: esistente = json.loads(m.group(1))
+# I punti pericolosi (t:"p") sono voci MANUALI decise da Andrea, non vengono da
+# OSM: la rigenerazione li deve conservare, non spazzare via. I km restano
+# quelli scritti a mano — se cambia la traccia nel loro tratto vanno ricontrollati.
+for key in list(risultato):
+    manuali = [e for e in esistente.get(key, []) if e.get("t") == "p"]
+    if manuali:
+        risultato[key] = sorted(risultato[key] + manuali, key=lambda e: e.get("km", 0))
+        print(f"  {key}: conservate {len(manuali)} voci pericolo manuali")
 esistente.update(risultato)
 open(poi_path, "w", encoding="utf-8", newline="\n").write(
     "window.POI=" + json.dumps(esistente, ensure_ascii=False, separators=(",", ":")) + ";\n")

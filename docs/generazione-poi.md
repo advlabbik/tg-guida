@@ -126,6 +126,21 @@ Dopo ogni generazione, prima di pubblicare:
 singolo punto (fontana / mangiare / dormire); `lat`/`lng` presenti dove serve
 il bottone Prenota (centra la mappa Stay22 su quel punto).
 
+## Punti pericolosi (tipo `p`) — voci MANUALI, non OSM
+
+Le voci `{t:"p", km, pid, lat, lng}` sono i punti del tracciato da affrontare
+con la massima prudenza (incroci con strade trafficate, svolte cieche), decisi
+da Andrea e scritti a mano in `poi.js`. Il `pid` pesca nome e testo bilingue da
+`content.js → pericoli` — la spiegazione NON sta in poi.js.
+
+Regole:
+- `gen_poi.py` le **conserva** quando rigenera un percorso (blocco "manuali"
+  prima del merge finale); `gen_meccanici.py` non le tocca per costruzione.
+- Nell'app non si filtrano mai via (qualunque filtro attivo), vincono il
+  raggruppamento dei segni e compaiono nel "davanti a te" del GPS entro 15 km.
+- **Se cambia la traccia nel loro tratto, km e coordinate vanno ricontrollati
+  a mano** — la conservazione automatica ricopia i valori vecchi.
+
 ---
 
 ## Meccanici e negozi di bici (tipo `b`) — script separato

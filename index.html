@@ -605,10 +605,12 @@ function bindBook(root){
   }));
 }
 function poiMatch(e, f){
+  if (e.t === 'p') return true; // i punti pericolosi non si filtrano mai via
   if (f === 'tutti') return true;
   if (e.t === 'c') return (f === 'a' && e.nf > 0) || (f === 'm' && e.ne > 0) || (f === 'd' && e.ns > 0) || (f === 'b' && e.nb > 0);
   return e.t === f;
 }
+function pericoloDi(e){ return (C.pericoli && C.pericoli[e.pid]) || { nome: '', testo: '' }; }
 function gapWarnings(list){
   // buchi > 20 km senza acqua ne' cibo: l'avviso che conta davvero
   const supply = list.filter(e => e.t === 'a' || e.t === 'm' || (e.t === 'c' && (e.ne > 0 || e.nf > 0)));
@@ -650,6 +652,17 @@ function poiGruppoHtml(km, voci){
       <span class="kmbad">${poiPallini(conta)}</span></div>
   </div>`;
 }
+/* Il punto pericoloso in lista: riga rossa con nome e spiegazione completa.
+   Niente dettagli a scomparsa — è l'unica voce dove il testo va letto prima. */
+function poiPericoloHtml(e){
+  const pz = pericoloDi(e);
+  return `<div class="kmgrp pericolo">
+    <div class="kmhead"><span class="poikm">km ${Math.round(e.km)}</span>
+      <span class="poiico t-p">${icon('triangle-alert', 15)}</span>
+      <b class="kmnome">${esc(pz.nome)}</b></div>
+    <div class="peritesto">${esc(pz.testo)}</div>
+  </div>`;
+}
 // la lista servizi di un percorso, ordinata per km, con dentro gli avvisi sui buchi
 function poiListHtml(rid, filter){
   const list = (window.POI && POI[rid]) || [];
@@ -657,6 +670,7 @@ function poiListHtml(rid, filter){
   const blocchi = [];
   let gruppo = null;
   list.filter(e => poiMatch(e, filter)).sort((x, y) => x.km - y.km).forEach(e => {
+    if (e.t === 'p'){ gruppo = null; blocchi.push({km: e.km, html: poiPericoloHtml(e)}); return; }
     if (e.t === 'c'){ gruppo = null; blocchi.push({km: e.km, html: poiCittaHtml(e, filter)}); return; }
     const km = Math.round(e.km);
     if (!gruppo || gruppo.km !== km){ gruppo = {km, voci: []}; blocchi.push(gruppo); }
@@ -796,7 +810,7 @@ function routeGeom(id){
 }
 let rvId = null, rvMap = null, rvLayer = null, rvCur = null, rvFilter = 'tutti',
     rvSel = -1, rvPins = [], rvPushed = false;
-const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', b:'wrench', c:'landmark' };
+const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', b:'wrench', c:'landmark', p:'triangle-alert' };
 // un decimale, con la virgola in italiano e il punto in inglese
 function kmDec(v){ const s = v.toFixed(1); return LANG === 'it' ? s.replace('.', ',') : s; }
 function openRouteView(id){
@@ -1002,7 +1016,9 @@ function raggruppa(punti, dove, distanza){
 // filtro attivo prima quelli di quella categoria, altrimenti i paesi si prendono
 // tutti i posti e le fontane in mezzo al nulla non si vedono mai
 function ordinePoi(filtro){
-  const pri = filtro === 'tutti' ? { c:0, a:1, m:2, d:3 } : { [filtro]:0, c:1 };
+  // p sempre in testa: se un pericolo condivide il segno con altri punti,
+  // l'icona che si vede deve essere la sua
+  const pri = filtro === 'tutti' ? { p:-1, c:0, a:1, m:2, d:3 } : { p:-1, [filtro]:0, c:1 };
   const rank = e => (pri[e.t] != null ? pri[e.t] : 2);
   return (a, b) => (rank(a)-rank(b)) || (a.km-b.km);
 }
@@ -1110,7 +1126,9 @@ function contiDet(e, filtro){
   return scelte.filter(Boolean).join(' · ');
 }
 function rvVoce(e, filtro){
-  const det = (e.t === 'c')
+  const det = (e.t === 'p')
+    ? esc(pericoloDi(e).testo)
+    : (e.t === 'c')
     ? contiDet(e, filtro)
     : [(e.nome && e.t !== 'a') ? esc(subLingua(e.sub)) : null, e.luogo ? esc(e.luogo) : null]
         .filter(Boolean).join(' · ');
@@ -1150,6 +1168,7 @@ function rvDrawPins(){
 }
 // solo il nome di un punto, senza dettagli
 function rvNome(e){
+  if (e.t === 'p') return esc(pericoloDi(e).nome);
   if (e.t === 'c') return esc(e.nome);
   if (e.t === 'a' && e.n > 1) return `${e.n} ${esc(U.fontane)}`;
   return esc(e.nome || subLingua(e.sub));
@@ -1561,6 +1580,10 @@ function aheadHtml(rid, km){
     `<div class="poirow"><span class="poiico ${cls}">${ico}</span><span>${label} <b>${esc(U.tra)} ${Math.max(1, Math.round(e.km - km))} ${esc(U.km)}</b>
      <span class="muted">(km ${Math.round(e.km)})</span></span>${book ? bookBtn(e) : ''}</div>`;
   let h = `<b>${esc(U.davanti)}</b>`;
+  /* Il pericolo entra nel riquadro solo quando è vicino (15 km): annunciarlo a
+     ottanta chilometri sarebbe rumore, a quindici è un promemoria che serve. */
+  const pz = ahead.find(e => e.t === 'p' && e.km - km <= 15);
+  if (pz) h += row(icon('triangle-alert',16), 't-p', pz, `<b>${esc(pericoloDi(pz).nome)}</b>`, false);
   if (w) h += row(icon('droplets',16), 't-a', w, w.t === 'c' ? esc(w.nome) + ` (${w.nf} ${esc(U.fontane)})` : (w.n > 1 ? `${w.n} ${esc(U.fontane)}` : esc(U.fontana)), false);
   if (f) h += row(icon('utensils',16), 't-m', f, f.t === 'c' ? esc(f.nome) + ` (${f.ne} ${esc(U.posti)})` : esc(f.nome || subLingua(f.sub)), false);
   ss.forEach(e => h += row(icon('bed-double',16), 't-d', e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} ${esc(U.alloggi)})` : esc(e.nome || subLingua(e.sub)), true));

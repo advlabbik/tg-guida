@@ -126,6 +126,29 @@ Nel repo `trentino-gravel-mappe` sono state rigenerate nello stesso giro tutte l
 pagine (map-*, map-tutti, index, percorso-*, embed/*) con le geometrie V2.0 e i
 numeri ufficiali nuovi.
 
+## Punti pericolosi sul tracciato (27 agosto 2026)
+
+Richiesta di Andrea — due incroci da massima prudenza, segnati come POI di tipo
+`p` e spiegati per esteso al partecipante:
+
+- **SS43 alla Rocchetta** (attraversamento a raso della statale della Val di Non
+  per prendere la Strada delle Roste) — ci passano **tutti e tre** i percorsi:
+  corto km 164, medio e lungo km 96. Coordinate 46.23142, 11.06999.
+- **SP34 fra Sclemo e Seo** (la traccia lascia la provinciale del Lisano e
+  Sesena svoltando sullo sterrato) — **solo il corto**, km 66. Coordinate
+  46.05914, 10.81599. Manovra verificata sulle geometrie OSM: si arriva sulla
+  SP34 e la si lascia imboccando lo sterrato.
+
+Come funziona: le voci `t:"p"` in `poi.js` portano un `pid` che pesca nome e
+testo bilingue da `content.js → pericoli` (IT+EN). Nell'app non si filtrano mai
+via, hanno priorità nel raggruppamento dei segni (pin rosso `triangle-alert` su
+mappa e altimetria), in lista compaiono come riga rossa col testo per esteso
+(`poiPericoloHtml`), e nel "davanti a te" del GPS spuntano entro 15 km. Ogni
+percorso ha anche la nota ⚠️ nella scheda (`percorsi[].note`, IT+EN).
+`gen_poi.py` conserva le voci `p` alla rigenerazione (sono manuali, non OSM) —
+ma **se cambia la traccia nel loro tratto, km e coordinate vanno ricontrollati**
+(procedura in `docs/generazione-poi.md`). Service worker a v38.
+
 ## Vista percorso dentro l'app (13 agosto 2026)
 
 Il bottone "Mappa + altimetria" apriva `percorso-{id}.html` del repo
