@@ -149,6 +149,38 @@ percorso ha anche la nota ⚠️ nella scheda (`percorsi[].note`, IT+EN).
 ma **se cambia la traccia nel loro tratto, km e coordinate vanno ricontrollati**
 (procedura in `docs/generazione-poi.md`). Service worker a v38.
 
+## Porting alle altre app-evento — cosa portare, da dove
+
+Le app sorelle (`tuscany-trail-app`, `northcape4000-app`) sono derivate da
+questa e i loro repo sono **autonomi per scelta**: gli script e la logica sono
+COPIE, non librerie condivise. Quindi ogni miglioria nata qui va portata a
+mano quando quelle app ricevono le loro tracce. Questa lista è la fonte di
+verità del porting — aggiornarla quando nasce una miglioria nuova.
+
+Da portare (stato al 27/8/2026):
+
+1. **`scripts/gen_poi.py` versione corrente** — collaudo endpoint Overpass,
+   controllo risposte troncate (`remark`), ripresa dal parziale, e
+   **conservazione delle voci manuali `t:"p"`** alla rigenerazione.
+2. **`scripts/gen_meccanici.py`** — POI meccanici tipo `b` (il backport era
+   già segnato il 15/8, resta da fare).
+3. **Supporto tipo `p` (punti pericolosi)** in index.html + styles.css —
+   `poiMatch` (mai filtrati), `ordinePoi` (priorità), `poiPericoloHtml`,
+   `pericoloDi`, rami `p` in `rvNome`/`rvVoce`, avviso in `aheadHtml` (15 km),
+   CSS `t-p` e `.kmgrp.pericolo` — più il dizionario `pericoli` in content.js
+   (IT+EN) e le voci manuali in poi.js.
+4. **`docs/generazione-poi.md`** aggiornata (trappole + sezione tipo `p`).
+5. Le regole di dato che valgono ovunque — km/D+ ufficiali MAI dal GPX
+   (stanno in `content.js`), ancore POI per i km sulla traccia semplificata,
+   bump della cache in `sw.js` a ogni modifica dei dati.
+
+Per le tracce delle mappe pubbliche il pezzo gemello sta nel repo
+`trentino-gravel-mappe` — `scripts/rigenera_tracce.py` + README con la
+procedura completa di aggiornamento GPX (pagine, embed Notion, ordine dei
+passi). Nota per Tuscany Trail: le tracce NON si pubblicano prima dell'evento
+(regola di Andrea), l'app le mostra "in arrivo" — il flusso GPX là passa da
+`scripts/gen_tracks.py` del suo repo.
+
 ## Vista percorso dentro l'app (13 agosto 2026)
 
 Il bottone "Mappa + altimetria" apriva `percorso-{id}.html` del repo
