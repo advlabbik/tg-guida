@@ -181,6 +181,43 @@ passi). Nota per Tuscany Trail: le tracce NON si pubblicano prima dell'evento
 (regola di Andrea), l'app le mostra "in arrivo" — il flusso GPX là passa da
 `scripts/gen_tracks.py` del suo repo.
 
+### Nuovo evento da zero (es. The Grand Escape Germania) — cosa serve in mano
+
+Questo repo è il capostipite: un'app nuova nasce clonandolo (come è già stato
+fatto per `tuscany-trail-app` e `northcape4000-app` — guardare quei due repo
+per vedere come si deriva in pratica). Prima di iniziare servono questi input,
+divisi per chi li decide:
+
+**Decisioni (Andrea)**
+- nome evento, date, luogo di partenza/arrivo con indirizzo esatto
+- percorsi: quanti, nomi, **km e D+ ufficiali** (mai calcolati dal GPX), livelli
+- tracce pubbliche subito o "in arrivo" fino all'evento (stile Tuscany Trail)
+- lingue dell'app (questa è IT+EN; una terza lingua è lavoro nuovo, non un flag)
+- eventuali punti pericolosi (coordinate + cosa succede lì, tipo `p`)
+
+**Materiali (Andrea / Alessio / Francesca)**
+- GPX a piena risoluzione con le quote, un file per percorso (GPX 1.1, trkpt)
+- palette e colori percorsi, logo, foto percorsi, icone PWA
+- testi: descrizioni (3 paragrafi + fondo + note ⚠️ per percorso), info-card
+  logistiche, checklist pre-evento, contenuti delle fasi prima/durante/dopo,
+  eventi cross-sell con UTM
+
+**Configurazione (Francesco)**
+- repo nuovo nell'org advlabbik + GitHub Pages (+ eventuale sottodominio)
+- riga evento nel progetto Supabase condiviso `guide-eventi` (push/feedback,
+  schema multi-evento con `evento_id` dal 24/8/2026) e `config.js`
+- campagna Stay22 dedicata sull'account `adventurelabsrl` + località centro mappa
+- località meteo lungo il percorso (nome, lat/lng, quota) e giorni evento —
+  le medie storiche si ricalcolano con la procedura ERA5 descritta sopra
+- codice gate partecipanti e codice staff, link live tracking WHIP se c'è
+
+Con questi input il resto è meccanico e documentato: POI da OSM con
+`gen_poi.py`/`gen_meccanici.py` (funziona ovunque Overpass copra, Germania
+inclusa — il collaudo endpoint è nello script), punti pericolosi manuali,
+mappe pubbliche col gemello `trentino-gravel-mappe` se servono embed per i
+territori. L'ordine giusto dei passi e le trappole già pagate stanno in
+`docs/generazione-poi.md` e nei README dei due repo.
+
 ## Vista percorso dentro l'app (13 agosto 2026)
 
 Il bottone "Mappa + altimetria" apriva `percorso-{id}.html` del repo
