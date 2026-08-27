@@ -84,7 +84,8 @@ percorsi: [
   { id: "corto", nome: "Percorso Corto", breve: "Corto", colore: "#5ea345", km: 216, dplus: "3.000",
     livello: "Accessibile",
     desc: "Il percorso per chi vuole l'avventura senza l'estremo. Si stacca dagli altri due a Sarche e chiude l'anello a Rovereto.",
-    note: ["Circa il 70% su ciclabili e sterrato"],
+    note: ["Circa il 70% su ciclabili e sterrato",
+      "⚠️ Due punti da massima prudenza — al km 66 la svolta sulla SP34 fra Sclemo e Seo, al km 164 l'attraversamento della SS43 alla Rocchetta. Li trovi segnati sulla mappa e sull'altimetria del percorso"],
     alto: { nome: "Passo Campo Carlo Magno", quota: "1.682 m", km: 108 },
     descLunga: [
       "Un anello che parte in fondovalle, sale una volta sola e torna a casa lungo i fiumi. Dai primi chilometri vai verso il lago — Mori, Loppio, Nago e la discesa su Torbole con il Garda davanti — poi risali la valle del Sarca fino ad Arco, attraversi le Marocche di Dro e arrivi a Sarche, dove il Corto si stacca dagli altri due.",
@@ -102,7 +103,8 @@ percorsi: [
   { id: "medio", nome: "Percorso Medio", breve: "Medio", colore: "#3d7a2e", km: 357, dplus: "7.100",
     livello: "Intermedio",
     desc: "Identico al Lungo per quasi tutto il tracciato, con una differenza sola — evita la Val di Fassa e il tratto a spinta del Col Margherita.",
-    note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita"],
+    note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita",
+      "⚠️ Al km 96 si attraversa a raso la SS43 della Val di Non, veloce e trafficata — piede a terra e massima prudenza. Il punto è segnato sulla mappa e sull'altimetria del percorso"],
     alto: { nome: "Baita Segantini, sopra il passo Rolle", quota: "2.173 m", km: 197 },
     descLunga: [
       "Il giro grande del Trentino, senza il tratto a spinta. Fino a Sarche è uguale al Corto — lago, valle del Sarca, Marocche — poi sale verso il Brenta a Molveno e Andalo, scende sulla Rotaliana a Mezzocorona e risale la Strada del Vino fra Salorno, Egna e Montagna.",
@@ -122,7 +124,8 @@ percorsi: [
   { id: "lungo", nome: "Percorso Lungo", breve: "Lungo", colore: "#1f4d1a", km: 376, dplus: "7.900",
     livello: "Impegnativo",
     desc: "Rispetto al Medio affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita.",
-    note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica"],
+    note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica",
+      "⚠️ Al km 96 si attraversa a raso la SS43 della Val di Non, veloce e trafficata — piede a terra e massima prudenza. Il punto è segnato sulla mappa e sull'altimetria del percorso"],
     alto: { nome: "Col Margherita", quota: "2.337 m", km: 199 },
     descLunga: [
       "Il percorso più duro dei tre, e l'unico che entra in val di Fassa. Fino a Predazzo ricalca il Medio — lago, Marocche, Brenta a Molveno e Andalo, Rotaliana, Strada del Vino e val di Fiemme — poi invece di puntare a Bellamonte prosegue su Moena e sale al passo San Pellegrino su sterrato.",
@@ -140,6 +143,16 @@ percorsi: [
     ],
     meteoNota: "Sul Col Margherita la media delle minime di fine settembre è sotto zero, e negli ultimi quattro anni la giornata più fredda non ha superato i 4 gradi. Ci arrivi bagnato di sudore dopo aver spinto la bici — guanti, giacca e qualcosa di asciutto non sono un extra." }
 ],
+
+/* Punti del tracciato da affrontare con la massima prudenza. Le voci t:"p" di
+   poi.js portano un pid che pesca qui nome e testo, così la spiegazione vive in
+   un posto solo ed è bilingue. */
+pericoli: {
+  ss43: { nome: "Attraversamento della SS43",
+    testo: "Alla Rocchetta la traccia attraversa a raso la statale della Val di Non, veloce e molto trafficata. Si passa dritti, per andare a prendere la Strada delle Roste che corre tranquilla lungo il Noce — è il motivo per cui questo attraversamento esiste. Rallenta per tempo, fermati col piede a terra prima dell'asfalto e guarda bene nei due sensi. Si attraversa solo a strada libera, in un colpo solo e con la massima prudenza." },
+  sp34: { nome: "Svolta sulla SP34",
+    testo: "Fra Sclemo e Seo, nel comune di Stenico, la traccia lascia la provinciale del Lisano e Sesena imboccando lo sterrato. Prendi la svolta con calma — rallenta per tempo, segnala con il braccio se hai qualcuno dietro e aspetta che la strada sia libera nei due sensi prima di uscire dall'asfalto. Massima attenzione." }
+},
 
 mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
 
@@ -467,7 +480,8 @@ percorsi: [
   { id: "corto", nome: "Short Route", breve: "Short", colore: "#5ea345", km: 216, dplus: "3,000",
     livello: "Accessible",
     desc: "The route for those who want the adventure without the extreme. It splits from the other two at Sarche and closes the loop in Rovereto.",
-    note: ["About 70% on cycleways and gravel"],
+    note: ["About 70% on cycleways and gravel",
+      "⚠️ Two spots that demand maximum caution — the SP34 turn between Sclemo and Seo at km 66, and the SS43 crossing at La Rocchetta at km 164. Both are marked on the route map and profile"],
     alto: { nome: "Campo Carlo Magno pass", quota: "1,682 m", km: 108 },
     descLunga: [
       "A loop that starts on the valley floor, climbs once and comes home along the rivers. The first kilometres head for the lake — Mori, Loppio, Nago and the descent to Torbole with Lake Garda in front of you — then you ride up the Sarca valley to Arco, cross the Marocche di Dro landslide and reach Sarche, where the Short route leaves the other two.",
@@ -485,7 +499,8 @@ percorsi: [
   { id: "medio", nome: "Medium Route", breve: "Medium", colore: "#3d7a2e", km: 357, dplus: "7,100",
     livello: "Intermediate",
     desc: "Identical to the Long route for almost the entire way, with one difference — it avoids Val di Fassa and the hike-a-bike section of Col Margherita.",
-    note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section"],
+    note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section",
+      "⚠️ At km 96 the route crosses the fast, busy SS43 Val di Non road at street level — foot down and maximum caution. The spot is marked on the route map and profile"],
     alto: { nome: "Baita Segantini, above Passo Rolle", quota: "2,173 m", km: 197 },
     descLunga: [
       "The big Trentino loop, without the hike-a-bike. As far as Sarche it is the same as the Short route — lake, Sarca valley, Marocche — then it climbs towards the Brenta at Molveno and Andalo, drops to Mezzocorona and rides up the Wine Road through Salorno, Egna and Montagna.",
@@ -505,7 +520,8 @@ percorsi: [
   { id: "lungo", nome: "Long Route", breve: "Long", colore: "#1f4d1a", km: 376, dplus: "7,900",
     livello: "Demanding",
     desc: "Compared to the Medium route it takes on Val di Fassa and climbs to Passo San Pellegrino on gravel, then keeps climbing up Col Margherita.",
-    note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort"],
+    note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort",
+      "⚠️ At km 96 the route crosses the fast, busy SS43 Val di Non road at street level — foot down and maximum caution. The spot is marked on the route map and profile"],
     alto: { nome: "Col Margherita", quota: "2,337 m", km: 199 },
     descLunga: [
       "The hardest of the three, and the only one that enters val di Fassa. As far as Predazzo it follows the Medium route — lake, Marocche, the Brenta at Molveno and Andalo, Rotaliana, the Wine Road and val di Fiemme — then, instead of heading to Bellamonte, it carries on to Moena and climbs Passo San Pellegrino on gravel.",
@@ -523,6 +539,16 @@ percorsi: [
     ],
     meteoNota: "On Col Margherita the average late-September low is below zero, and in the last four years the coldest day of the period never went above 4 degrees. You get there soaked in sweat after pushing the bike — gloves, a jacket and something dry are not an extra." }
 ],
+
+/* Sections of the route that demand maximum caution. The t:"p" entries in
+   poi.js carry a pid that looks up name and text here, so the explanation
+   lives in one place and is bilingual. */
+pericoli: {
+  ss43: { nome: "SS43 road crossing",
+    testo: "At La Rocchetta the route crosses the fast, busy Val di Non trunk road at street level. You ride straight across, to pick up the Strada delle Roste that runs quietly along the Noce river — the whole reason this crossing exists. Slow down early, stop with a foot on the ground before the tarmac and look carefully both ways. Cross only when the road is clear, in one go and with maximum care." },
+  sp34: { nome: "Turn on the SP34",
+    testo: "Between Sclemo and Seo, in the Stenico municipality, the route leaves the provincial road and turns onto gravel. Take the turn calmly — slow down early, signal with your arm if anyone is behind you and wait until the road is clear in both directions before leaving the tarmac. Maximum attention." }
+},
 
 mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
 
