@@ -1289,9 +1289,17 @@ function renderInfo(){
       temaCorrente = c.tema;
       h += `<h2 class="itheme" data-tema="${esc(c.tema)}">${esc(c.tema)}</h2>`;
     }
-    h += `<div class="card icard" id="info-${c.id}" data-tema="${esc(c.tema)}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase())}">
+    // una card puo' portare una tabella oraria (campo `orari`): righe ora + cosa, raggruppate per giorno
+    const tabella = (c.orari || []).map(g =>
+      `<div class="ogiorno"><h4>${esc(g.giorno)}</h4>` +
+      g.voci.map(v=>`<div class="orow"><span class="ora">${esc(v.ora)}</span><span>${esc(v.cosa)}</span></div>`).join('') +
+      `</div>`).join('');
+    // anche gli orari entrano nella ricerca, cosi' "briefing" o "7:30" trovano la card
+    const cercaOrari = (c.orari || []).map(g => g.giorno+' '+g.voci.map(v=>v.ora+' '+v.cosa).join(' ')).join(' ');
+    h += `<div class="card icard" id="info-${c.id}" data-tema="${esc(c.tema)}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+cercaOrari+' '+c.cerca).toLowerCase())}">
       <div class="head"><span class="e">${icon(ICONS[c.id] || 'info', 20)}</span><h3>${esc(c.titolo)}</h3></div>
       <div class="body">${paragrafi(c.corpo)}
+      ${tabella ? `<div class="orari">${tabella}</div>` : ''}
       ${c.link ? `<a class="btn small sec" href="${c.link.url}" target="_blank" rel="noopener">${esc(c.link.testo)}</a>` : ''}</div>
     </div>`;
   });

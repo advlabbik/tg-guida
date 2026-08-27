@@ -1,5 +1,5 @@
 window.ICONS = {
-  certificato:'stethoscope', gpsguide:'satellite', pacco:'backpack', delega:'handshake', cambio:'repeat',
+  orari:'clock', certificato:'stethoscope', gpsguide:'satellite', pacco:'backpack', delega:'handshake', cambio:'repeat',
   luogo:'map-pin', treno:'train-front', auto:'car', taxi:'car-taxi-front',
   sicurezza:'shield', materiale:'hard-hat', colmargherita:'mountain', acqua:'droplets', meteo:'cloud-sun-rain',
   animali:'paw-print', criticita:'triangle-alert',

@@ -17,8 +17,8 @@ meta: {
   sottotitolo: "Pioneer Edition · 26 settembre 2026",
   hub: "Manifattura Tabacchi, Rovereto",
   hubMaps: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto",
-  partenza: "Sabato 26 settembre, ore 7 circa",
-  dataPartenza: "2026-09-26T07:00:00",
+  partenza: "Sabato 26 settembre, ore 7:30",
+  dataPartenza: "2026-09-26T07:30:00",
   fasi: { prima: "2026-09-24", durante: "2026-09-25", dopo: "2026-10-01" }
 },
 
@@ -164,6 +164,26 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
 whipUrl: "",
 
 infoCards: [
+  /* Gli orari definitivi sono arrivati il 27/8 e stanno in una card sola, la
+     prima, con la tabella oraria nel campo `orari` invece che dentro la prosa.
+     Le card pacco, partenza e arrivo ripetono la loro riga a parole, cosi' chi
+     cerca "briefing" o "partenza" trova la risposta dove la cerca. Se un orario
+     cambia, va cambiato QUI e nelle tre card, in tutte e due le lingue. */
+  { id: "orari", tema: "Gli orari", icona: "⏱️", titolo: "Tutti gli orari",
+    corpo: "Questi sono gli orari definitivi. Succede tutto a Progetto Manifattura, a Rovereto — il ritiro del pacco, il briefing, la partenza e l'accoglienza all'arrivo.",
+    orari: [
+      { giorno: "Venerdì 25 settembre", voci: [
+        { ora: "16:00–18:00", cosa: "Ritiro del pacco evento" },
+        { ora: "18:00–19:00", cosa: "Briefing" } ] },
+      { giorno: "Sabato 26 settembre", voci: [
+        { ora: "7:15", cosa: "Ritrovo sul viale" },
+        { ora: "7:30", cosa: "Si parte" } ] },
+      { giorno: "Gli arrivi, da domenica a mercoledì", voci: [
+        { ora: "14:00–19:00", cosa: "Domenica 27 settembre" },
+        { ora: "10:00–19:00", cosa: "Da lunedì 28 a mercoledì 30 settembre" } ] }
+    ],
+    link: { testo: "Apri in Google Maps", url: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto" },
+    cerca: "orari orario programma tabella quando ritiro pacco briefing partenza ritrovo viale arrivo arrivi accoglienza venerdi sabato domenica lunedi martedi mercoledi 25 26 27 28 29 30 settembre" },
   { id: "certificato", tema: "Prima di partire", icona: "🩺", titolo: "Certificato medico entro il 27 agosto",
     corpo: "Per partecipare è obbligatorio il certificato medico agonistico per il ciclismo, in corso di validità. Hai tempo fino al 27 agosto per caricarlo nella tua area personale su bikeadventureseries.com, nella sezione Certificati.",
     link: { testo: "Vai all'area personale", url: "https://www.bikeadventureseries.com/my-account/" },
@@ -172,8 +192,8 @@ infoCards: [
     corpo: "Le tracce che vedi qui sono preliminari e servono per studiare il viaggio e prenotare le notti. Non caricarle sul GPS. Le tracce definitive arrivano pochi giorni prima della partenza e, se non ci saranno problematiche dell'ultimo periodo, resteranno uguali a queste.",
     cerca: "gps traccia caricare navigazione definitiva preliminare" },
   { id: "pacco", tema: "Prima di partire", icona: "🎒", titolo: "Consegna pacco evento",
-    corpo: "Il ritiro del pacco evento è venerdì pomeriggio 25 settembre a Manifattura Tabacchi di Rovereto. Considera dalle 17 in poi. Gli orari ufficiali arrivano più avanti.",
-    cerca: "pacco evento ritiro consegna venerdi 25 orario" },
+    corpo: "Il ritiro del pacco evento è venerdì 25 settembre dalle 16:00 alle 18:00, a Progetto Manifattura di Rovereto. Subito dopo, dalle 18:00 alle 19:00, c'è il briefing nello stesso posto.",
+    cerca: "pacco evento ritiro consegna briefing venerdi 25 orario" },
   { id: "cambio", tema: "Prima di partire", icona: "🔁", titolo: "Cambiare percorso",
     corpo: "Puoi cambiare idea sul percorso in qualsiasi momento, senza bisogno di comunicarcelo. Ti vedremo dall'app di live tracking.",
     cerca: "cambiare percorso cambio scelta corto medio lungo idea" },
@@ -182,8 +202,8 @@ infoCards: [
     link: { testo: "Apri in Google Maps", url: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto" },
     cerca: "sede indirizzo manifattura tabacchi rovereto dove partenza arrivo luogo mappa navigatore google" },
   { id: "partenza", tema: "Arrivare a Rovereto", icona: "🚵", titolo: "Partenza",
-    corpo: "La partenza è sabato 26 settembre alle 7 circa della mattina, da Manifattura Tabacchi.",
-    cerca: "partenza orario sabato 26 quando si parte mattina" },
+    corpo: "Sabato 26 settembre il ritrovo è alle 7:15 sul viale, davanti a Progetto Manifattura. Si parte alle 7:30.",
+    cerca: "partenza orario sabato 26 quando si parte mattina ritrovo viale" },
   { id: "treno", tema: "Arrivare a Rovereto", icona: "🚆", titolo: "Arrivare in treno (consigliato)",
     corpo: "Rovereto è sulla linea del Brennero, con treni diretti da Verona, Trento e Bolzano e collegamenti comodi da Milano, Bologna, Monaco e Innsbruck. La stazione è a pochi minuti in bici da Manifattura Tabacchi. Con la bici già montata e nessun parcheggio da cercare è la soluzione più semplice.",
     cerca: "treno stazione brennero arrivare come si arriva verona trento bolzano milano" },
@@ -219,8 +239,8 @@ infoCards: [
     corpo: "Per un'emergenza sanitaria o il soccorso alpino chiama subito il 112, il numero unico che funziona sempre. L'evento è in autonomia, non c'è un servizio scopa. Dalla sezione Live puoi condividere la tua posizione esatta con un tocco.",
     cerca: "emergenza 112 soccorso aiuto telefono incidente posizione" },
   { id: "arrivo", tema: "Durante l'evento", icona: "🏁", titolo: "Arrivo e accoglienza",
-    corpo: "Saremo all'arrivo ad accogliervi fino al 30 settembre, con orari indicativi dalle 10 della mattina alle 19 della sera, a Manifattura Tabacchi. Lì ritirerai anche il pacco arrivo.",
-    cerca: "arrivo accoglienza orari fino quando 30 settembre pacco arrivo finisher" },
+    corpo: "Ti aspettiamo all'arrivo a Progetto Manifattura, dove ritirerai anche il pacco arrivo. Domenica 27 siamo lì dalle 14:00 alle 19:00, da lunedì 28 a mercoledì 30 dalle 10:00 alle 19:00.",
+    cerca: "arrivo accoglienza orari fino quando domenica 27 lunedi 28 mercoledi 30 settembre pacco arrivo finisher" },
   { id: "social", tema: "Durante l'evento", icona: "📣", titolo: "Racconta il viaggio",
     corpo: "Usa l'hashtag #trentinogravel nelle foto e nelle storie, chi è a casa vive l'evento attraverso di te.",
     cerca: "social hashtag instagram foto condividere" },
@@ -421,8 +441,8 @@ meta: {
   sottotitolo: "Pioneer Edition · 26 September 2026",
   hub: "Manifattura Tabacchi, Rovereto",
   hubMaps: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto",
-  partenza: "Saturday 26 September, around 7 am",
-  dataPartenza: "2026-09-26T07:00:00",
+  partenza: "Saturday 26 September, 7:30",
+  dataPartenza: "2026-09-26T07:30:00",
   fasi: { prima: "2026-09-24", durante: "2026-09-25", dopo: "2026-10-01" }
 },
 
@@ -558,6 +578,21 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
 whipUrl: "",
 
 infoCards: [
+  { id: "orari", tema: "The schedule", icona: "⏱️", titolo: "All the times",
+    corpo: "These are the final times. Everything happens at Progetto Manifattura in Rovereto — pack pickup, briefing, the start and the welcome at the finish.",
+    orari: [
+      { giorno: "Friday 25 September", voci: [
+        { ora: "16:00–18:00", cosa: "Event pack pickup" },
+        { ora: "18:00–19:00", cosa: "Briefing" } ] },
+      { giorno: "Saturday 26 September", voci: [
+        { ora: "7:15", cosa: "Meet on the avenue" },
+        { ora: "7:30", cosa: "Start" } ] },
+      { giorno: "The finish, Sunday to Wednesday", voci: [
+        { ora: "14:00–19:00", cosa: "Sunday 27 September" },
+        { ora: "10:00–19:00", cosa: "Monday 28 to Wednesday 30 September" } ] }
+    ],
+    link: { testo: "Open in Google Maps", url: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto" },
+    cerca: "times schedule timetable programme when pack pickup briefing start meet avenue finish welcome friday saturday sunday monday tuesday wednesday 25 26 27 28 29 30 september" },
   { id: "certificato", tema: "Before you leave", icona: "🩺", titolo: "Medical certificate by 27 August",
     corpo: "A valid competitive cycling medical certificate is mandatory to take part. You have until 27 August to upload it in your personal area on bikeadventureseries.com, in the Certificates section.",
     link: { testo: "Go to your personal area", url: "https://www.bikeadventureseries.com/my-account/" },
@@ -566,8 +601,8 @@ infoCards: [
     corpo: "The routes you see here are preliminary and are meant for planning your ride and booking your nights. Do not load them onto your GPS. The final routes arrive a few days before the start and, unless last-minute issues come up, they will stay the same as these.",
     cerca: "gps route load navigation final preliminary track" },
   { id: "pacco", tema: "Before you leave", icona: "🎒", titolo: "Event pack pickup",
-    corpo: "Event pack pickup is on Friday afternoon, 25 September, at Manifattura Tabacchi in Rovereto. Count on 5 pm onwards. Official times will follow.",
-    cerca: "event pack pickup collection friday 25 time" },
+    corpo: "Event pack pickup is on Friday 25 September, from 16:00 to 18:00, at Progetto Manifattura in Rovereto. Right after, from 18:00 to 19:00, the briefing takes place in the same venue.",
+    cerca: "event pack pickup collection briefing friday 25 time" },
   { id: "cambio", tema: "Before you leave", icona: "🔁", titolo: "Changing route",
     corpo: "You can change your mind about the route at any time, with no need to tell us. We will see you on the live tracking app.",
     cerca: "change route switch choice short medium long mind" },
@@ -576,8 +611,8 @@ infoCards: [
     link: { testo: "Open in Google Maps", url: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto" },
     cerca: "venue address manifattura tabacchi rovereto where start finish place map navigation google" },
   { id: "partenza", tema: "Getting to Rovereto", icona: "🚵", titolo: "Start",
-    corpo: "The start is on Saturday 26 September at around 7 in the morning, from Manifattura Tabacchi.",
-    cerca: "start time saturday 26 when departure morning" },
+    corpo: "On Saturday 26 September we meet at 7:15 on the avenue, in front of Progetto Manifattura. The start is at 7:30.",
+    cerca: "start time saturday 26 when departure morning meet avenue" },
   { id: "treno", tema: "Getting to Rovereto", icona: "🚆", titolo: "Arriving by train (recommended)",
     corpo: "Rovereto sits on the Brenner line, with direct trains from Verona, Trento and Bolzano and easy connections from Milan, Bologna, Munich and Innsbruck. The station is a few minutes by bike from Manifattura Tabacchi. With your bike already assembled and no parking to hunt for, it is by far the simplest option.",
     cerca: "train station brenner arrive how to get verona trento bolzano milan munich" },
@@ -610,8 +645,8 @@ infoCards: [
     corpo: "For a medical emergency or mountain rescue call 112 right away, the single European number that always works. The event is self-supported, there is no sweep vehicle. From the Live section you can share your exact position with one tap.",
     cerca: "emergency 112 rescue help phone accident position" },
   { id: "arrivo", tema: "During the event", icona: "🏁", titolo: "Finish and welcome",
-    corpo: "We will be at the finish to welcome you until 30 September, roughly from 10 am to 7 pm, at Manifattura Tabacchi. That is also where you collect your finisher pack.",
-    cerca: "finish welcome times until when 30 september finisher pack" },
+    corpo: "We wait for you at the finish at Progetto Manifattura, where you also collect your finisher pack. On Sunday 27 we are there from 14:00 to 19:00, from Monday 28 to Wednesday 30 from 10:00 to 19:00.",
+    cerca: "finish welcome times until when sunday 27 monday 28 wednesday 30 september finisher pack" },
   { id: "social", tema: "During the event", icona: "📣", titolo: "Tell the story",
     corpo: "Use the hashtag #trentinogravel in your photos and stories, so the people back home live the event through you.",
     cerca: "social hashtag instagram photos share" },
