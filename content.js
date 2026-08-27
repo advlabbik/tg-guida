@@ -99,11 +99,11 @@ percorsi: [
       { luogo: "Campo Carlo Magno", quota: "1.682 m", max: "12°", min: "2°" }
     ],
     meteoNota: "In quattro anni, negli stessi giorni, a Campo Carlo Magno si sono misurati sia 21 gradi di giorno sia 8 sotto zero di notte. Mettiti in borsa di che coprirti anche se parti in maniche corte." },
-  { id: "medio", nome: "Percorso Medio", breve: "Medio", colore: "#3d7a2e", km: 360, dplus: "7.400",
+  { id: "medio", nome: "Percorso Medio", breve: "Medio", colore: "#3d7a2e", km: 357, dplus: "7.100",
     livello: "Intermedio",
     desc: "Identico al Lungo per quasi tutto il tracciato, con una differenza sola — evita la Val di Fassa e il tratto a spinta del Col Margherita.",
     note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita"],
-    alto: { nome: "Baita Segantini, sopra il passo Rolle", quota: "2.173 m", km: 199 },
+    alto: { nome: "Baita Segantini, sopra il passo Rolle", quota: "2.173 m", km: 197 },
     descLunga: [
       "Il giro grande del Trentino, senza il tratto a spinta. Fino a Sarche è uguale al Corto — lago, valle del Sarca, Marocche — poi sale verso il Brenta a Molveno e Andalo, scende sulla Rotaliana a Mezzocorona e risale la Strada del Vino fra Salorno, Egna e Montagna.",
       "Dalla val di Fiemme, superate Cavalese e Predazzo, comincia la parte alta del percorso — Bellamonte, il passo Rolle e la salita fino alla Baita Segantini, 2.173 metri, il punto più alto del Medio, con le Pale di San Martino davanti. Si scende a San Martino di Castrozza, poi Canal San Bovo e Caoria, e si attraversa il Lagorai al passo Cinque Croci, poco sopra i 2.000 metri.",
@@ -119,11 +119,11 @@ percorsi: [
       { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
     ],
     meteoNota: "Fra il fondovalle e i 2.000 metri ballano dodici gradi di giorno e altrettanti di notte. Alla Baita Segantini, negli ultimi quattro anni, la notte più fredda del periodo è arrivata a 6 sotto zero." },
-  { id: "lungo", nome: "Percorso Lungo", breve: "Lungo", colore: "#1f4d1a", km: 374, dplus: "7.900",
+  { id: "lungo", nome: "Percorso Lungo", breve: "Lungo", colore: "#1f4d1a", km: 376, dplus: "7.900",
     livello: "Impegnativo",
     desc: "Rispetto al Medio affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita.",
     note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica"],
-    alto: { nome: "Col Margherita", quota: "2.337 m", km: 198 },
+    alto: { nome: "Col Margherita", quota: "2.337 m", km: 199 },
     descLunga: [
       "Il percorso più duro dei tre, e l'unico che entra in val di Fassa. Fino a Predazzo ricalca il Medio — lago, Marocche, Brenta a Molveno e Andalo, Rotaliana, Strada del Vino e val di Fiemme — poi invece di puntare a Bellamonte prosegue su Moena e sale al passo San Pellegrino su sterrato.",
       "Dal passo si continua a salire fino al Col Margherita, 2.337 metri, il punto più alto di tutto il Trentino Gravel, raggiunto intorno al chilometro 198. Lì stanno i 2,5 chilometri che si fanno per la maggior parte spingendo la bici, ripagati da una vista a 300 gradi sulle Dolomiti. Si scende verso Falcade e il passo Valles, si risale al passo Rolle e alla Baita Segantini e si arriva a San Martino di Castrozza.",
@@ -482,11 +482,11 @@ percorsi: [
       { luogo: "Campo Carlo Magno", quota: "1,682 m", max: "12°", min: "2°" }
     ],
     meteoNota: "Over four years, in the same days, Campo Carlo Magno has seen both 21 degrees by day and 8 below zero at night. Pack something warm even if you start in short sleeves." },
-  { id: "medio", nome: "Medium Route", breve: "Medium", colore: "#3d7a2e", km: 360, dplus: "7,400",
+  { id: "medio", nome: "Medium Route", breve: "Medium", colore: "#3d7a2e", km: 357, dplus: "7,100",
     livello: "Intermediate",
     desc: "Identical to the Long route for almost the entire way, with one difference — it avoids Val di Fassa and the hike-a-bike section of Col Margherita.",
     note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section"],
-    alto: { nome: "Baita Segantini, above Passo Rolle", quota: "2,173 m", km: 199 },
+    alto: { nome: "Baita Segantini, above Passo Rolle", quota: "2,173 m", km: 197 },
     descLunga: [
       "The big Trentino loop, without the hike-a-bike. As far as Sarche it is the same as the Short route — lake, Sarca valley, Marocche — then it climbs towards the Brenta at Molveno and Andalo, drops to Mezzocorona and rides up the Wine Road through Salorno, Egna and Montagna.",
       "Past Cavalese and Predazzo in val di Fiemme the high part of the route begins — Bellamonte, Passo Rolle and the climb to Baita Segantini, 2,173 m, the highest point of the Medium route, with the Pale di San Martino right in front of you. You drop to San Martino di Castrozza, then Canal San Bovo and Caoria, and cross the Lagorai range at Passo Cinque Croci, just above 2,000 m.",
@@ -502,11 +502,11 @@ percorsi: [
       { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
     ],
     meteoNota: "Between the valley floor and 2,000 m there are twelve degrees of difference by day and as many at night. At Baita Segantini the coldest night of the period in the last four years hit 6 below zero." },
-  { id: "lungo", nome: "Long Route", breve: "Long", colore: "#1f4d1a", km: 374, dplus: "7,900",
+  { id: "lungo", nome: "Long Route", breve: "Long", colore: "#1f4d1a", km: 376, dplus: "7,900",
     livello: "Demanding",
     desc: "Compared to the Medium route it takes on Val di Fassa and climbs to Passo San Pellegrino on gravel, then keeps climbing up Col Margherita.",
     note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort"],
-    alto: { nome: "Col Margherita", quota: "2,337 m", km: 198 },
+    alto: { nome: "Col Margherita", quota: "2,337 m", km: 199 },
     descLunga: [
       "The hardest of the three, and the only one that enters val di Fassa. As far as Predazzo it follows the Medium route — lake, Marocche, the Brenta at Molveno and Andalo, Rotaliana, the Wine Road and val di Fiemme — then, instead of heading to Bellamonte, it carries on to Moena and climbs Passo San Pellegrino on gravel.",
       "From the pass you keep climbing to Col Margherita, 2,337 m, the highest point of the whole Trentino Gravel, reached around kilometre 198. That is where the 2.5 kilometres of hike-a-bike are, repaid by a 300-degree view over the Dolomites. Then down towards Falcade and Passo Valles, back up to Passo Rolle and Baita Segantini, and on to San Martino di Castrozza.",

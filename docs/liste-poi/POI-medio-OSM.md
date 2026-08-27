@@ -11,7 +11,7 @@ Centri con molti servizi raggruppati in una riga. Fuori dai centri, tutto puntua
 - 🍝 km 3 — ALDI · supermercato
 - 🍝 km 3 — SúYoshì · ristorante
 **km 7 — Marco** · 4 mangiare · 2 fontane
-**km 11 — Mori** · 31 mangiare · 1 alloggi · 8 fontane
+**km 11 — Mori** · 31 mangiare · 1 alloggi · 9 fontane
 **km 15 — Loppio** · 4 mangiare · 1 alloggi · 2 fontane
 **km 20 — Nago** · 15 mangiare · 16 alloggi · 7 fontane
 **km 23 — Torbole** · 54 mangiare · 69 alloggi · 9 fontane
@@ -24,17 +24,17 @@ Centri con molti servizi raggruppati in una riga. Fuori dai centri, tutto puntua
 - 🛏️ km 28 — Residence La Vigna · appartamenti (San Giorgio)
 **km 31 — Arco** · 55 mangiare · 38 alloggi · 20 fontane
 **km 35 — Ceniga** · 4 mangiare · 4 alloggi · 5 fontane
-**km 37 — Dro** · 5 mangiare · 9 alloggi · 1 fontane
+**km 37 — Dro** · 4 mangiare · 10 alloggi · 1 fontane
 - 🍝 km 40 — Oasi Lago Bagattoli 2.0 · ristorante (Lago)
 - 🍝 km 40 — Road Runner Bar · bar (Lago)
 - 🍝 km 41 — Bar Parete Zebrata · bar (Gaggiolo)
 - 🛏️ km 42 — Agricampeggio Paolino · campeggio (Marocche)
-**km 45 — Pietramurata** · 4 mangiare · 3 alloggi · 3 fontane
+**km 45 — Pietramurata** · 5 mangiare · 3 alloggi · 3 fontane
 - 🍝 km 46 — Movida · bar (Pergolese)
-**km 49 — Sarche** · 8 mangiare · 4 fontane
+**km 49 — Sarche** · 10 mangiare · 1 alloggi · 4 fontane
 - 🍝 km 52 — Trattoria La Toresela · ristorante (Calavino)
 - ⛲ km 52 — fontana (Calavino)
-**km 53 — Padergnone** · 4 mangiare
+**km 53 — Padergnone** · 5 mangiare · 2 alloggi
 - 🍝 km 54 — Castel Toblino · ristorante
 - 🍝 km 54 — Castel Toblino · bar
 - ⛲ km 58 — fontana (Ranzo)
@@ -57,7 +57,7 @@ Centri con molti servizi raggruppati in una riga. Fuori dai centri, tutto puntua
 - 🍝 km 75 — Panificio Pasticceria Doper · panificio
 - 🛏️ km 76 — Residence Genzianella Molveno · appartamenti
 - 🛏️ km 76 — Residence Genzianella Molveno · appartamenti
-**km 78 — Andalo** · 20 mangiare · 52 alloggi · 5 fontane
+**km 78 — Andalo** · 21 mangiare · 53 alloggi · 5 fontane
 - 🍝 km 81 — La tana dell'ermellino · ristorante (Maso Daldoss)
 - 🛏️ km 88 — Albergo Ristorante Belfort · hotel (Belfort)
 **km 90 — Spormaggiore** · 7 mangiare · 3 alloggi · 4 fontane
@@ -94,7 +94,7 @@ Centri con molti servizi raggruppati in una riga. Fuori dai centri, tutto puntua
 - ⛲ km 127 — fontana (Pinzon - Pinzano)
 - 🍝 km 130 — Planitzer Buschenschank · ristorante (Glen - Gleno di Sotto)
 - ⛲ km 130 — fontana (Glen - Gleno di Sotto)
-**km 132 — Montan an der Weinstraße - Montagna sulla Strada del Vino** · 7 mangiare · 5 alloggi · 3 fontane
+**km 132 — Montan an der Weinstraße - Montagna sulla Strada del Vino** · 8 mangiare · 5 alloggi · 3 fontane
 - ⛲ km 138 — fontana
 - 🛏️ km 139 — Al Ponte - Brückenwirt · hotel
 - 🍝 km 142 — Pausa · ristorante
@@ -115,107 +115,113 @@ Centri con molti servizi raggruppati in una riga. Fuori dai centri, tutto puntua
 **km 153 — Castello di Fiemme** · 6 mangiare · 2 alloggi · 8 fontane
 **km 154 — Carano** · 5 mangiare · 3 alloggi
 **km 156 — Cavalese** · 41 mangiare · 24 alloggi · 14 fontane
-- 🍝 km 158 — Des Alpes · ristorante (Cavazzal)
 - 🛏️ km 158 — Seppi B&B · B&B (Cavazzal)
-- 🛏️ km 158 — Aparthotel Des Alpes · hotel (Cavazzal)
 - ⛲ km 158 — fontana (Cavazzal)
+- 🍝 km 158 — Des Alpes · ristorante (Cavazzal)
+- 🛏️ km 158 — Aparthotel Des Alpes · hotel (Cavazzal)
 - 🛏️ km 158 — Aparthotel Des Alpes · hotel (Cavazzal)
 - 🛏️ km 159 — Agricampeggio Le Perlaie · campeggio (Piera di Tesero)
 - 🍝 km 159 — agritur maso Chemela · ristorante (Piera di Tesero)
-- 🍝 km 159 — Chris & Chris · fast food (Piera di Tesero)
-- 🍝 km 159 — Eurospar · supermercato (Piera di Tesero)
-**km 161 — Tesero** · 11 mangiare · 5 alloggi · 3 fontane
+- 🍝 km 160 — Chris & Chris · fast food (Piera di Tesero)
+- 🍝 km 160 — Eurospar · supermercato (Piera di Tesero)
+**km 162 — Tesero** · 11 mangiare · 5 alloggi · 2 fontane
 - 🍝 km 162 — La Trattoria · ristorante (Lago di Tesero)
-- 🍝 km 162 — Le Migole · ristorante (Roncosogno)
-**km 164 — Panchià** · 4 mangiare · 3 alloggi · 5 fontane
-**km 166 — Ziano di Fiemme** · 6 mangiare · 7 alloggi · 8 fontane
-- 🍝 km 169 — Bistrot & Shop - Caseificio Sociale Predazzo e Moena · bar
-- ⛲ km 169 — fontana
-- 🍝 km 169 — Supermercato Poli · supermercato
-**km 170 — Predazzo** · 22 mangiare · 10 alloggi · 9 fontane
-- 🍝 km 173 — ristorante (Sotto Sassa)
-- 🍝 km 173 — alimentari (Sotto Sassa)
-- 🛏️ km 173 — Camping Valle Verde · campeggio (Sotto Sassa)
-**km 178 — Bellamonte** · 2 mangiare · 10 alloggi · 3 fontane
-- ⛲ km 181 — fontana
-- 🛏️ km 187 — Albergo la Bicocca · hotel (Paneveggio)
-- ⛲ km 188 — fontana (Paneveggio)
-- 🍝 km 193 — Agritur Malga Venegia · ristorante
-- ⛲ km 193 — fontana
-- 🍝 km 195 — Agritur Malga Venegiota · ristorante
-- ⛲ km 195 — fontana
-- ⛲ km 197 — Sorgenti del Travignolo
-- 🍝 km 199 — Baita Segantini · ristorante
-- 🛏️ km 201 — Capanna Cervino · rifugio
-- 🍝 km 202 — Cimon Stube - Passo Rolle · bar
-- 🛏️ km 202 — Hotel Alpenrose · hotel
-- ⛲ km 202 — fontana
-- 🛏️ km 202 — Albergo Vezzana - Bar/Ristorante · hotel
-**km 210 — San Martino di Castrozza** · 16 mangiare · 24 alloggi · 5 fontane
-- 🍝 km 214 — Malga Crel · ristorante
-- 🍝 km 218 — Dismoni · ristorante
-- 🍝 km 224 — Albergo Ristorante Miralago · ristorante
-- 🍝 km 226 — Malga Lozen · ristorante
-- 🍝 km 227 — Bar Lozen · bar
-- 🍝 km 229 — Maso Santa Romina · ristorante
-- 🍝 km 231 — bar (Zortea)
-- 🛏️ km 231 — Albergo Serenella · hotel (Zortea)
-- 🍝 km 232 — Famiglia Cooperativa di Zortea · supermercato (Zortea)
-**km 234 — Canal San Bovo** · 10 mangiare · 3 alloggi · 3 fontane
-**km 241 — Caoria** · 4 mangiare · 3 alloggi · 8 fontane
-- 🛏️ km 246 — Rifugio Refavaie · B&B
-- 🛏️ km 246 — Rifugio Refavaie · rifugio
-- 🛏️ km 253 — Rifugio Forestale Socede · bivacco
-- 🛏️ km 262 — Rifugio Malga Consèria · rifugio
-- 🍝 km 267 — ristorante
-- 🛏️ km 267 — Malga Caserina di Dentro · B&B
-- ⛲ km 267 — fontana
-- 🍝 km 268 — bar
-- 🍝 km 268 — ristorante
-- 🛏️ km 268 — Rifugio Carlettini · hotel
-- 🛏️ km 268 — Hotel SAT Lagorai · rifugio
-- ⛲ km 268 — fontana
-- 🍝 km 273 — bar
-- 🍝 km 273 — Rifugio Crucolo · ristorante
-- ⛲ km 274 — fontana (Era)
-- ⛲ km 277 — fontana
-- ⛲ km 278 — fontana (Masi di Carzano)
-- ⛲ km 278 — fontana (Carzano)
-**km 281 — Telve** · 8 mangiare · 2 alloggi · 6 fontane
-**km 285 — Borgo Valsugana** · 43 mangiare · 14 alloggi · 12 fontane
-**km 291 — Marter** · 4 mangiare · 2 fontane
-- ⛲ km 292 — fontana
-- 🍝 km 293 — Bici Grill Novaledo · bar (Novaledo)
-- 🍝 km 293 — Morelli Giuseppe srl - Food Service ingrosso alimentari · supermercato (Novaledo)
-- ⛲ km 294 — fontana (Novaledo)
-- 🍝 km 298 — Famiglia Cooperativa · supermercato (Barco)
-- 🍝 km 298 — Bar Al Caselo · bar (Barco)
-- 🛏️ km 298 — B&B Renè · B&B (Barco)
-**km 304 — Levico Terme** · 17 mangiare · 12 alloggi · 3 fontane
-**km 309 — Ischia** · 4 mangiare · 1 alloggi
-**km 314 — Pergine Valsugana** · 8 mangiare · 4 alloggi · 1 fontane
-**km 316 — Valcanover** · 5 mangiare · 3 alloggi · 1 fontane
-- 🍝 km 318 — Ristorante Pizzeria Happy Days · ristorante (Santa Caterina)
-- 🛏️ km 318 — Happy Days · B&B (Santa Caterina)
-**km 320 — Calceranica al Lago** · 10 mangiare · 6 alloggi · 4 fontane
-**km 322 — Caldonazzo** · 13 mangiare · 2 alloggi · 4 fontane
-**km 327 — Pian dei Pradi** · 4 mangiare · 2 fontane
-**km 329 — Vattaro** · 4 mangiare · 4 alloggi · 4 fontane
-- 🍝 km 330 — Bar Manta · bar (Vigolo Vattaro)
-- 🛏️ km 331 — Garni' Casa Vigolana · motel (Vigolo Vattaro)
-- 🍝 km 331 — Famiglia Cooperativa · supermercato (Vigolo Vattaro)
-- 🛏️ km 332 — Agriturismo La Val · B&B (Vigolo Vattaro)
-- 🛏️ km 333 — Agritur Berry House · B&B
-- ⛲ km 335 — fontana (Valsorda)
-- ⛲ km 335 — fontana (Valsorda)
-- ⛲ km 335 — fontana (Valsorda)
-**km 338 — Mattarello** · 15 mangiare · 2 alloggi · 10 fontane
-- 🍝 km 347 — Ristorante Posta Vecchia · ristorante (Besenello)
-- 🍝 km 347 — Il Viandante · ristorante (Besenello)
-**km 349 — Calliano** · 7 mangiare · 1 alloggi · 2 fontane
-**km 352 — Nomi** · 7 mangiare · 1 fontane
-- 🍝 km 354 — Ristorante Pizzeria Alle Palme · ristorante (Volano)
-**km 355 — Villa Lagarina** · 6 mangiare · 1 alloggi
-**km 357 — Rovereto** · 34 mangiare · 3 alloggi · 7 fontane
-- 🍝 km 358 — To New York · ristorante (Marano)
-- 🍝 km 358 — ristorante (Marano)
+- 🍝 km 163 — Le Migole · ristorante (Roncosogno)
+**km 164 — Panchià** · 4 mangiare · 3 alloggi · 7 fontane
+**km 167 — Ziano di Fiemme** · 6 mangiare · 7 alloggi · 7 fontane
+- ⛲ km 170 — fontana (Drio la Costa)
+- 🛏️ km 170 — Agritur Col Verde · B&B (Drio la Costa)
+- 🍝 km 170 — Agritur Maso Lena · ristorante (Drio la Costa)
+- ⛲ km 170 — fontana (Drio la Costa)
+- 🍝 km 170 — Bar Loze · bar (Drio la Costa)
+- 🍝 km 170 — ristorante (Drio la Costa)
+- ⛲ km 171 — fontana
+- 🍝 km 171 — Supermercato Poli · supermercato
+**km 172 — Predazzo** · 23 mangiare · 11 alloggi · 8 fontane
+- 🍝 km 174 — ristorante (Sotto Sassa)
+- 🍝 km 174 — alimentari (Sotto Sassa)
+- 🛏️ km 174 — Camping Valle Verde · campeggio (Sotto Sassa)
+- 🛏️ km 176 — Club del Sole Val di Fiemme Easy Camping Village · campeggio (Bellamonte)
+- ⛲ km 178 — fontana
+- 🛏️ km 184 — Albergo la Bicocca · hotel (Paneveggio)
+- ⛲ km 186 — fontana (Paneveggio)
+- 🍝 km 191 — Agritur Malga Venegia · ristorante
+- ⛲ km 191 — fontana
+- 🍝 km 192 — Agritur Malga Venegiota · ristorante
+- ⛲ km 192 — fontana
+- ⛲ km 194 — Sorgenti del Travignolo
+- 🍝 km 196 — Baita Segantini · ristorante
+- 🛏️ km 198 — Capanna Cervino · rifugio
+- 🍝 km 199 — Cimon Stube - Passo Rolle · bar
+- 🛏️ km 199 — Hotel Alpenrose · hotel
+- ⛲ km 199 — fontana
+- 🛏️ km 200 — Albergo Vezzana - Bar/Ristorante · hotel
+**km 208 — San Martino di Castrozza** · 16 mangiare · 23 alloggi · 5 fontane
+- 🍝 km 212 — Malga Crel · ristorante
+- 🍝 km 215 — Dismoni · ristorante
+- 🍝 km 221 — Albergo Ristorante Miralago · ristorante
+- 🍝 km 223 — Malga Lozen · ristorante
+- 🍝 km 225 — Bar Lozen · bar
+- 🍝 km 226 — Maso Santa Romina · ristorante
+- 🍝 km 229 — bar (Zortea)
+- 🍝 km 229 — Famiglia Cooperativa di Zortea · supermercato (Zortea)
+- 🛏️ km 229 — Albergo Serenella · hotel (Zortea)
+**km 232 — Canal San Bovo** · 10 mangiare · 3 alloggi · 3 fontane
+**km 238 — Caoria** · 4 mangiare · 3 alloggi · 8 fontane
+- 🛏️ km 244 — Rifugio Refavaie · B&B
+- 🛏️ km 244 — Rifugio Refavaie · rifugio
+- 🛏️ km 250 — Rifugio Forestale Socede · bivacco
+- 🛏️ km 259 — Rifugio Malga Consèria · rifugio
+- 🍝 km 264 — ristorante
+- 🛏️ km 264 — Malga Caserina di Dentro · B&B
+- ⛲ km 264 — fontana
+- 🍝 km 265 — bar
+- 🍝 km 265 — ristorante
+- 🛏️ km 265 — Rifugio Carlettini · hotel
+- 🛏️ km 266 — Hotel SAT Lagorai · rifugio
+- ⛲ km 266 — fontana
+- 🍝 km 270 — bar
+- 🍝 km 270 — Rifugio Crucolo · ristorante
+- ⛲ km 272 — fontana (Era)
+- ⛲ km 274 — fontana
+- ⛲ km 276 — fontana (Masi di Carzano)
+- ⛲ km 276 — fontana (Carzano)
+**km 278 — Telve** · 8 mangiare · 2 alloggi · 6 fontane
+**km 283 — Borgo Valsugana** · 43 mangiare · 14 alloggi · 9 fontane
+**km 288 — Marter** · 4 mangiare · 2 fontane
+- ⛲ km 290 — fontana
+- 🍝 km 291 — Bici Grill Novaledo · bar (Novaledo)
+- 🍝 km 291 — Morelli Giuseppe srl - Food Service ingrosso alimentari · supermercato (Novaledo)
+- ⛲ km 291 — fontana (Novaledo)
+- 🍝 km 295 — Famiglia Cooperativa · supermercato (Barco)
+- 🍝 km 295 — Bar Al Caselo · bar (Barco)
+- 🛏️ km 295 — B&B Renè · B&B (Barco)
+**km 302 — Levico Terme** · 16 mangiare · 14 alloggi · 3 fontane
+**km 307 — Ischia** · 4 mangiare · 1 alloggi
+**km 312 — Pergine Valsugana** · 8 mangiare · 4 alloggi · 1 fontane
+**km 314 — Valcanover** · 5 mangiare · 3 alloggi · 1 fontane
+- 🍝 km 315 — Ristorante Pizzeria Happy Days · ristorante (Santa Caterina)
+- 🛏️ km 315 — Happy Days · B&B (Santa Caterina)
+**km 317 — Calceranica al Lago** · 11 mangiare · 7 alloggi · 5 fontane
+**km 319 — Caldonazzo** · 14 mangiare · 2 alloggi · 4 fontane
+**km 324 — Pian dei Pradi** · 4 mangiare · 2 fontane
+**km 327 — Vattaro** · 4 mangiare · 4 alloggi · 4 fontane
+- 🍝 km 328 — Bar Manta · bar (Vigolo Vattaro)
+- 🛏️ km 328 — Garni' Casa Vigolana · motel (Vigolo Vattaro)
+- 🍝 km 329 — Famiglia Cooperativa · supermercato (Vigolo Vattaro)
+- 🛏️ km 329 — Agriturismo La Val · B&B (Vigolo Vattaro)
+- 🛏️ km 330 — Agritur Berry House · B&B
+- ⛲ km 332 — fontana (Valsorda)
+- ⛲ km 332 — fontana (Valsorda)
+- ⛲ km 332 — fontana (Valsorda)
+**km 335 — Mattarello** · 15 mangiare · 2 alloggi · 10 fontane
+- 🍝 km 345 — Ristorante Posta Vecchia · ristorante (Besenello)
+- 🍝 km 345 — Il Viandante · ristorante (Besenello)
+**km 346 — Calliano** · 7 mangiare · 1 alloggi · 2 fontane
+**km 349 — Nomi** · 7 mangiare · 1 fontane
+- 🍝 km 351 — Ristorante Pizzeria Alle Palme · ristorante (Volano)
+**km 352 — Villa Lagarina** · 6 mangiare · 1 alloggi
+**km 354 — Rovereto** · 37 mangiare · 3 alloggi · 8 fontane
+- 🍝 km 355 — To New York · ristorante (Marano)
+- 🍝 km 355 — ristorante (Marano)
+- 🛏️ km 356 — BeB Anna · B&B (Reviano)
