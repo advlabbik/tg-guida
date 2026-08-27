@@ -287,6 +287,10 @@ for key, entries in risultato.items():
             det = [f"{e['ne']} mangiare" if e['ne'] else "", f"{e['ns']} alloggi" if e['ns'] else "",
                    f"{e['nf']} fontane" if e['nf'] else ""]
             md.append(f"**km {e['km']:.0f} — {e['nome']}** · " + " · ".join(x for x in det if x))
+        elif e["t"] == "p":
+            # voce pericolo manuale conservata dal merge: non viene da OSM,
+            # niente nome/sub — nella lista di revisione basta pid e km
+            md.append(f"- ⚠️ km {e['km']:.0f} — punto pericoloso ({e['pid']}, voce manuale)")
         else:
             ico = {"a":"⛲","m":"🍝","d":"🛏️"}[e["t"]]
             n = e["nome"] or e["sub"]
