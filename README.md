@@ -242,14 +242,14 @@ Da portare (stato al 27/8/2026):
    CSS `t-p` e `.kmgrp.pericolo` — più il dizionario `pericoli` in content.js
    (IT+EN) e le voci manuali in poi.js.
 4. **`docs/generazione-poi.md`** aggiornata (trappole + sezione tipo `p`).
-5. **Le tre correzioni d'uso dell'8/9/2026** (sezione qui sopra) — gia' fatte
-   su `tuscany-trail-app` e su questa; **resta `northcape4000-app`**. Tre
-   cherry-pick dai commit `Il tasto Cerca si vede`, `Le schede delle
-   Informazioni tornano chiuse`, `Il Live prende la posizione da solo`. Da
-   guardare nel portare: il prefisso localStorage dell'app (li' `nc-`), il
-   logo dell'intestazione a 360/375 px, e le `.icard` del Rientro che **non**
-   hanno `.head` — il selettore `.icard > .head` le lascia stare, ma il CSS
-   `.icard .body{display:none}` le nasconderebbe.
+5. **Le tre correzioni d'uso dell'8/9/2026** (sezione qui sopra) — **fatte su
+   tutte e tre le app** l'8/9, ognuna sul branch `cerca-info-live-posizione`,
+   nessuna ancora mergiata. Da rifare solo su un'app nuova. Le trappole gia'
+   incontrate, per quando si clona: il prefisso localStorage dell'app nel flag
+   del fumetto (`tg-`, `tt-`, `nc-`), l'intestazione a 360/375 px col logo
+   dell'evento, e le `.icard` senza `.head` — in `northcape4000-app` sono
+   l'intro e la chiusa del Rientro, che vanno marcate `open` o il CSS
+   `.icard .body{display:none}` le fa sparire.
 6. Le regole di dato che valgono ovunque — km/D+ ufficiali MAI dal GPX
    (stanno in `content.js`), ancore POI per i km sulla traccia semplificata,
    bump della cache in `sw.js` a ogni modifica dei dati.
