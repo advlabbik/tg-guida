@@ -1281,6 +1281,12 @@ document.addEventListener('keydown', e => {
 });
 
 /* ---------- INFO ---------- */
+function apriInfoCard(card){
+  if (!card || !card.classList.contains('icard')) return;
+  card.classList.add('open');
+  const head = card.querySelector('.head');
+  if (head) head.setAttribute('aria-expanded', 'true');
+}
 function renderInfo(){
   let h = `<input id="infosearch" type="search" placeholder="Cerca nelle informazioni…" autocomplete="off"/>
     <div id="infolist">`;
@@ -1298,14 +1304,35 @@ function renderInfo(){
     // anche gli orari entrano nella ricerca, cosi' "briefing" o "7:30" trovano la card
     const cercaOrari = (c.orari || []).map(g => g.giorno+' '+g.voci.map(v=>v.ora+' '+v.cosa).join(' ')).join(' ');
     h += `<div class="card icard" id="info-${c.id}" data-tema="${esc(c.tema)}" data-cerca="${esc((c.titolo+' '+c.corpo+' '+cercaOrari+' '+c.cerca).toLowerCase())}">
-      <div class="head"><span class="e">${icon(ICONS[c.id] || 'info', 20)}</span><h3>${esc(c.titolo)}</h3></div>
-      <div class="body">${paragrafi(c.corpo)}
+      <div class="head" role="button" tabindex="0" aria-expanded="false" aria-controls="ibody-${c.id}"><span class="e">${icon(ICONS[c.id] || 'info', 20)}</span><h3>${esc(c.titolo)}</h3><span class="chev"></span></div>
+      <div class="body" id="ibody-${c.id}">${paragrafi(c.corpo)}
       ${tabella ? `<div class="orari">${tabella}</div>` : ''}
       ${c.link ? `<a class="btn small sec" href="${c.link.url}" target="_blank" rel="noopener">${esc(c.link.testo)}</a>` : ''}</div>
     </div>`;
   });
   h += `</div>`;
   $('#tab-info').innerHTML = h;
+  /* Le schede stanno chiuse: si legge la lista dei titoli, si apre quella che
+     serve. Con venti schede aperte tutte insieme la pagina era un muro di
+     testo lungo tre schermate e i titoli non si trovavano piu'. */
+  const scambia = head => {
+    const card = head.parentElement;
+    const apri = !card.classList.contains('open');
+    card.classList.toggle('open', apri);
+    head.setAttribute('aria-expanded', apri ? 'true' : 'false');
+  };
+  $('#infolist').addEventListener('click', e => {
+    const head = e.target.closest('.icard > .head');
+    if (head) scambia(head);
+  });
+  // testata come bottone (div + role): la tastiera va gestita a mano
+  $('#infolist').addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const head = e.target.closest('.icard > .head');
+    if (!head) return;
+    e.preventDefault();
+    scambia(head);
+  });
   $('#infosearch').addEventListener('input',e=>{
     const q = e.target.value.trim().toLowerCase();
     document.querySelectorAll('#infolist .icard').forEach(c=>{
@@ -1758,6 +1785,8 @@ $('#searchinput').addEventListener('input',e=>{
     $('#searchov').classList.remove('open');
     openTab(h.tab);
     if (h.el){ const el = document.getElementById(h.el);
+      // la scheda info nasce chiusa: chi ci arriva dalla ricerca vuole leggerla, non aprirla a mano
+      apriInfoCard(el);
       if (el){ setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150); } }
   }));
 });

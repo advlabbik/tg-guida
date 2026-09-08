@@ -383,7 +383,8 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .rpill.on{background:var(--pill-color,var(--lime));border-color:var(--pill-color,var(--lime));color:#fff}
 .pfil.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
 /* info */
-.icard .head{display:flex;align-items:center;gap:10px}
+.icard .head{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.icard .head:focus-visible{outline:2px solid var(--lime);outline-offset:4px;border-radius:12px}
 .icard .head .e{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;flex:0 0 auto;background:rgba(194,88,50,.14);color:var(--mint)}
 .icard[data-tema="Arrivare a Rovereto"] .head .e{background:rgba(47,158,68,.14);color:var(--lime)}
@@ -391,7 +392,14 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 .icard[data-tema="Durante l'evento"] .head .e{background:rgba(193,18,31,.14);color:var(--red)}
 .icard[data-tema="Regole e vantaggi"] .head .e{background:rgba(63,179,86,.14);color:var(--lime-br)}
 .icard .head h3{flex:1;margin:0}
-.icard .body{display:block;margin-top:8px}
+/* chiusa si legge solo il titolo, si tocca per aprire: la freccia dice che
+   sotto c'e' altro, ed e' disegnata in CSS per non toccare lo sprite icone */
+.icard .chev{width:9px;height:9px;flex:0 0 auto;margin-right:5px;position:relative;top:-3px;
+  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
+  transform:rotate(45deg);transition:transform .15s,top .15s}
+.icard.open .chev{transform:rotate(-135deg);top:2px}
+.icard .body{display:none;margin-top:8px}
+.icard.open .body{display:block}
 /* tabella oraria dentro una card info (campo `orari` in content.js) */
 .orari{margin-top:12px}
 .ogiorno + .ogiorno{margin-top:16px}
@@ -520,7 +528,7 @@ nav button.fab{color:var(--lime);font-weight:700}
   .rcard-liv{font-size:12px}
   #rv-desc{padding:0 12px;max-width:800px}
   #infolist{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;align-items:stretch}
-  #infolist .icard{margin-bottom:0}
+  #infolist .icard{margin-bottom:0;align-self:start} /* chiusa e' bassa: non si stira sulla vicina aperta */
   #infolist .itheme{grid-column:1/-1}
   .bigbtns{grid-template-columns:repeat(4,1fr);max-width:900px}
   #gpsmap{height:560px}
