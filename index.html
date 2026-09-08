@@ -391,6 +391,11 @@ function openTab(name){
   // resta libera di rifare fetch ad ogni apertura: è leggera e mostra messaggi nuovi.
   if (name==='live' && !mapsInit.notif) { mapsInit.notif = true; refreshNotifCard(); }
   if (name==='live') { loadComunicazioni(); }
+  /* Il Live e' la schermata "dove sono": chi ci entra — dal pulsante in mezzo
+     al menu, da un link, da una notifica — vuole vedere subito il suo punto,
+     cosa ha davanti e che tempo fa, non un pulsante da premere. La posizione
+     si chiede quindi all'apertura della tab, una volta sola per sessione. */
+  if (name==='live') avviaLive();
   // il profilo del Live si ridisegna solo qui e al fix GPS: se un fix e' arrivato
   // a tab nascosta il disegno era stato saltato, e questo rientro lo recupera
   if (name==='live' && lvRid && lvKm != null){
@@ -555,8 +560,8 @@ function bindTabLinks(root){
     el.addEventListener('click',e=>{
       e.preventDefault();
       openTab(el.dataset.tab);
-      if (el.dataset.gps) setTimeout(startGPS, 250);
-      if (el.dataset.share) { autoShare = true; setTimeout(startGPS, 250); }
+      if (el.dataset.gps) setTimeout(()=>avviaLive(true), 250);
+      if (el.dataset.share) { autoShare = true; setTimeout(()=>avviaLive(true), 250); }
       if (el.dataset.meteo) setTimeout(()=>{
         const s = document.getElementById('meteosec');
         if (s) s.scrollIntoView({behavior:'smooth'});
@@ -1463,10 +1468,7 @@ function renderLive(){
     $('#lv-tip').style.display = 'none';
     if (lvRid && lvKm != null) lvAggiorna(lvRid, lvKm);
   }));
-  /* Un tocco solo: chi accende il GPS vuole sapere dove e' E che tempo fa —
-     il permesso di posizione e' gia' quello, chiederlo due volte era lavoro
-     inutile per l'utente (decisione di Andrea, 19/8). */
-  $('#gpsbtn').addEventListener('click', () => { startGPS(); meteoGPS(); });
+  $('#gpsbtn').addEventListener('click', () => avviaLive(true));
   $('#meteogpsbtn').addEventListener('click', meteoGPS);
   $('#notifbtn').addEventListener('click', activatePush);
   $('#gpsinfo').addEventListener('click', e => { if (e.target.id === 'shareposbtn') sharePos(); });
@@ -1626,6 +1628,18 @@ function lvPoiMappa(){
   gpsMk = poiSuMappa(gpsMap, routeGeom(lvRid), poiDi(lvRid), 'tutti');
 }
 let gpsMap, gpsMarker, gpsLine, gpsLineRoute, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
+/* Posizione + meteo insieme, al primo ingresso nel Live: un permesso solo,
+   nessun tocco in piu'. Il flag si alza PRIMA di startGPS() perche' startGPS
+   chiama openTab('live'), che rientrerebbe qui all'infinito. Il pulsante
+   "Attiva il GPS" resta e forza: serve a riprovare dopo un rifiuto o quando
+   il primo fix non arriva. */
+let liveAvviato = false;
+function avviaLive(forza){
+  if (liveAvviato && !forza) return;
+  liveAvviato = true;
+  startGPS();
+  meteoGPS();
+}
 function sharePos(){
   if (!lastPos) return;
   const url = `https://maps.google.com/?q=${lastPos[0].toFixed(5)},${lastPos[1].toFixed(5)}`;
@@ -1694,6 +1708,11 @@ function startGPS(){
       info.innerHTML = fmt(esc(U.gpsPosizione), `<b>${km.toFixed(0)}</b>`, kmTot, esc(p.nome), `<b>${Math.max(0,kmTot-km).toFixed(0)}</b>`);
     }
     info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">${esc(U.condividiPos)}</button></div>`;
+    /* La posizione ora arriva da sola: dal primo fix in poi il pulsante non
+       serve piu' ad "attivare" ma a rinfrescare, e lo dice. Se il permesso
+       viene negato resta "Attiva il GPS", che li' e' la cosa giusta. */
+    const btn = $('#gpsbtn');
+    if (btn && btn.textContent !== U.aggiornaPos) btn.textContent = U.aggiornaPos;
     /* "Davanti a te" e profilo restano visibili ANCHE da lontano, calcolati dal
        punto piu' vicino del percorso. La prima versione di questa correzione li
        nascondeva oltre i 3 km per non dichiarare una posizione falsa, ma da

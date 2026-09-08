@@ -262,7 +262,7 @@ live: {
   },
   gps: {
     titolo: "Dove sono?",
-    testo: "Attiva il GPS del telefono e la guida ti dice a che chilometro sei, cosa hai davanti — acqua, cibo, alloggi — che tempo fa dove sei, e ti fa condividere la posizione con un tocco."
+    testo: "Appena apri questa schermata la guida cerca la tua posizione e ti dice a che chilometro sei, cosa hai davanti — acqua, cibo, alloggi — che tempo fa dove sei, e ti fa condividere la posizione con un tocco."
   }
 },
 
@@ -389,6 +389,7 @@ ui: {
   caricamentoAlloggi: "Caricamento mappa alloggi…",
   mioPercorso: "Il mio percorso",
   attivaGps: "Attiva il GPS",
+  aggiornaPos: "Aggiorna la posizione",
   gpsCerco: "Ricerca posizione…",
   gpsNo: "GPS non disponibile su questo dispositivo.",
   gpsNegato: "Non riesco a leggere la posizione. Controlla i permessi del telefono.",
@@ -670,7 +671,7 @@ live: {
   },
   gps: {
     titolo: "Where am I?",
-    testo: "Turn on your phone's GPS and the guide tells you which kilometre you are at, what lies ahead — water, food, places to sleep — the weather where you are, and lets you share your position with one tap."
+    testo: "As soon as you open this screen the guide looks for your position and tells you which kilometre you are at, what lies ahead — water, food, places to sleep — the weather where you are, and lets you share your position with one tap."
   }
 },
 
@@ -796,6 +797,7 @@ ui: {
   caricamentoAlloggi: "Loading accommodation map…",
   mioPercorso: "My route",
   attivaGps: "Turn on GPS",
+  aggiornaPos: "Refresh my position",
   gpsCerco: "Finding your position…",
   gpsNo: "GPS not available on this device.",
   gpsNegato: "Cannot read your position. Check your phone permissions.",
