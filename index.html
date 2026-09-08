@@ -1782,11 +1782,11 @@ $('#searchov').addEventListener('click',e=>{ if(e.target.id==='searchov') $('#se
    speso dietro al pannello del gate, cioe' sprecato. */
 (function(){
   const tip = $('#cercatip');
-  if (!tip || localStorage.getItem('tt-cerca-visto')) return;
+  if (!tip || localStorage.getItem('tg-cerca-visto')) return;
   if ($('#gate').style.display === 'flex') return;
   tip.textContent = U.cercaTip;
   tip.classList.add('on');
-  const via = () => { tip.classList.remove('on'); localStorage.setItem('tt-cerca-visto', '1'); };
+  const via = () => { tip.classList.remove('on'); localStorage.setItem('tg-cerca-visto', '1'); };
   tip.addEventListener('click', via);
   $('#searchbtn').addEventListener('click', via);
   setTimeout(via, 7000);
