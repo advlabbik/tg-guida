@@ -177,6 +177,50 @@ percorso ha anche la nota ⚠️ nella scheda (`percorsi[].note`, IT+EN).
 ma **se cambia la traccia nel loro tratto, km e coordinate vanno ricontrollati**
 (procedura in `docs/generazione-poi.md`). Service worker a v38.
 
+## Tre correzioni d'uso (8 settembre 2026, branch `cerca-info-live-posizione`)
+
+Nascono da tre osservazioni di Andrea sull'uso reale e valgono per **tutte** le
+app della serie. Sono nate su `tuscany-trail-app` e portate qui con tre
+cherry-pick, un commit per correzione.
+
+1. **Il tasto Cerca si vede** — era una lente grigia fra elementi grigi e chi
+   non lo provava non sapeva che dietro c'e' tutta la guida. Ora e' in accento
+   (`--lime`, qui il verde) con la parola scritta accanto alla lente; sotto i
+   360 px resta la sola lente, colorata. Alla prima apertura un fumetto sotto
+   l'intestazione dice a cosa serve, con esempi concreti: si chiude al tocco o
+   da solo dopo 7 secondi e non torna piu' (`tg-cerca-visto`, prefisso di
+   questa app). Il pallino delle novita' e' passato a rosso, sul tasto colorato
+   spariva. Il logo dell'intestazione ora sa restringersi (`flex:0 1 auto` +
+   `object-fit:contain`), altrimenti a 375 px il tasto scritto per esteso
+   finiva fuori schermo. Testi nuovi: `cercaLabel`, `cercaTip` (IT+EN).
+
+2. **Le schede delle Informazioni tornano chiuse** — lista di titoli, si tocca
+   quella che serve; aperte tutte insieme facevano un muro di testo lungo tre
+   schermate. Testata come bottone (`div` + `role="button"` + `aria-expanded`,
+   Invio e Barra spaziatrice gestite a mano), freccia disegnata in CSS —
+   nessuna icona nuova nello sprite. Chi arriva a una scheda dalla ricerca
+   globale la trova gia' aperta (`apriInfoCard`). **Qui dentro riguarda anche
+   la card "Tutti gli orari"**, che ha la tabella `orari`: adesso e' a un
+   tocco. Se durante l'evento si decide che quella deve stare aperta, e' una
+   riga sola in `renderInfo()`.
+
+3. **Il Live prende la posizione da solo** — chi apre il Live vuole sapere dove
+   si trova, non trovare un pulsante da premere. L'apertura della tab chiede la
+   posizione e con lo stesso permesso accende il meteo (che qui gia' viaggiava
+   insieme al GPS): al primo fix ci sono gia' chilometro, «davanti a te», mappa
+   e tempo dove sei. Tutto passa da `avviaLive(forza)`, che alza il flag
+   **prima** di `startGPS()` — che a sua volta chiama `openTab('live')` e
+   altrimenti rientrerebbe all'infinito — e parte una volta sola per sessione;
+   anche i link `data-gps` e `data-share` passano di li'. Il pulsante resta e
+   forza il riavvio (la via per riprovare dopo un rifiuto) e dal primo fix si
+   chiama «Aggiorna la posizione» (`aggiornaPos`, IT+EN). Le notifiche e le
+   comunicazioni della tab Live restano dove erano, invariate.
+
+Collaudo dell'8/9 in locale a 375 px con posizione simulata sul Corto (km 79):
+fumetto, apri/chiudi schede, salto dalla ricerca a una scheda, e Live con km,
+«davanti a te» (fontana, Borzago, Mezzosoldo), profilo, mappa e meteo al primo
+fix, senza rientri infiniti. Service worker a `tg-guida-v42`.
+
 ## Porting alle altre app-evento — cosa portare, da dove
 
 Le app sorelle (`tuscany-trail-app`, `northcape4000-app`) sono derivate da
@@ -198,7 +242,15 @@ Da portare (stato al 27/8/2026):
    CSS `t-p` e `.kmgrp.pericolo` — più il dizionario `pericoli` in content.js
    (IT+EN) e le voci manuali in poi.js.
 4. **`docs/generazione-poi.md`** aggiornata (trappole + sezione tipo `p`).
-5. Le regole di dato che valgono ovunque — km/D+ ufficiali MAI dal GPX
+5. **Le tre correzioni d'uso dell'8/9/2026** (sezione qui sopra) — gia' fatte
+   su `tuscany-trail-app` e su questa; **resta `northcape4000-app`**. Tre
+   cherry-pick dai commit `Il tasto Cerca si vede`, `Le schede delle
+   Informazioni tornano chiuse`, `Il Live prende la posizione da solo`. Da
+   guardare nel portare: il prefisso localStorage dell'app (li' `nc-`), il
+   logo dell'intestazione a 360/375 px, e le `.icard` del Rientro che **non**
+   hanno `.head` — il selettore `.icard > .head` le lascia stare, ma il CSS
+   `.icard .body{display:none}` le nasconderebbe.
+6. Le regole di dato che valgono ovunque — km/D+ ufficiali MAI dal GPX
    (stanno in `content.js`), ancore POI per i km sulla traccia semplificata,
    bump della cache in `sw.js` a ogni modifica dei dati.
 
