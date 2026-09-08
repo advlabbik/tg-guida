@@ -26,8 +26,11 @@ button,input{appearance:none;-webkit-appearance:none;font-family:inherit}
 /* header */
 header{background:var(--ground);color:var(--ink);padding:14px 16px 12px;border-bottom:1px solid var(--line)}
 header .row{display:flex;align-items:center;gap:10px}
-header .logomark{height:38px;width:auto;flex:0 0 auto;display:block}
-.avatar{display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+header .logomark{height:38px;width:auto;max-width:100%;object-fit:contain;object-position:left;
+  flex:0 1 auto;display:block}
+/* col tasto Cerca scritto per esteso l'intestazione a 360-375 px non ci
+   starebbe: il pezzo che cede e' il logo, non il tasto */
+.avatar{display:flex;align-items:center;justify-content:flex-start;flex:0 1 auto;min-width:0;
   background:none;border:none;padding:0;margin:0;cursor:pointer;outline:none}
 .avatar:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:8px}
 header h1{display:none}
@@ -46,11 +49,24 @@ header .sub{display:none}
   .langs .lbl{display:inline}
   .flag{width:16px;height:11px}
 }
-#searchbtn{position:relative;background:var(--card-2);border:1px solid var(--line);color:var(--ink);font-size:15px;
-  width:44px;height:44px;border-radius:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  flex:0 0 auto}
+/* Il tasto Cerca e' colorato e ha la parola scritta accanto alla lente: e'
+   l'unico elemento in accento dell'intestazione, quindi si vede prima di
+   ogni altra cosa. Sotto i 360 px resta la sola lente, ma il colore no. */
+#searchbtn{position:relative;background:var(--lime);border:1px solid var(--lime);color:var(--lime-ink);
+  font-family:inherit;font-size:13.5px;font-weight:700;letter-spacing:.2px;
+  min-width:44px;height:44px;border-radius:13px;padding:0 12px;gap:6px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+#searchbtn .slbl{display:none}
+@media(min-width:360px){ #searchbtn .slbl{display:inline} }
+/* fumetto della prima apertura: dice a cosa serve, poi sparisce per sempre */
+#cercatip{display:none;margin:8px 0 2px;background:var(--lime);color:var(--lime-ink);
+  border-radius:12px;padding:9px 13px;font-size:13px;font-weight:600;line-height:1.35;
+  cursor:pointer;position:relative}
+#cercatip.on{display:block}
+#cercatip::before{content:"";position:absolute;top:-6px;right:16px;width:12px;height:12px;
+  background:var(--lime);transform:rotate(45deg);border-radius:2px}
 #searchbtn .dot{position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;
-  background:var(--lime);border:2px solid var(--ground);display:none}
+  background:var(--red);border:2px solid var(--ground);display:none}
 #searchbtn.has-news .dot{display:block}
 /* search overlay */
 #searchov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:900;display:none}

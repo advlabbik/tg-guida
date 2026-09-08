@@ -42,8 +42,9 @@
         <div class="sub" id="h-sub"></div>
       </div>
       <div class="langs" id="langsw"></div>
-      <button id="searchbtn"><span class="dot"></span></button>
+      <button id="searchbtn" type="button"><span class="dot"></span></button>
     </div>
+    <div id="cercatip"></div>
   </header>
 
   <div id="searchov"><div id="searchbox">
@@ -1727,6 +1728,23 @@ INDEX.push({tab:'home', t:'Checklist di preparazione', s:'Le cose da fare prima 
 
 $('#searchbtn').addEventListener('click',()=>{ $('#searchov').classList.add('open'); $('#searchinput').focus(); });
 $('#searchov').addEventListener('click',e=>{ if(e.target.id==='searchov') $('#searchov').classList.remove('open'); });
+/* Il tasto Cerca e' la scorciatoia piu' utile e la piu' ignorata: chi non lo
+   prova non sa che dietro c'e' TUTTA la guida. Alla prima apertura si annuncia
+   da solo con una riga sotto l'intestazione, poi non torna mai piu'. Si chiude
+   al primo tocco (sul fumetto o sul tasto) e comunque da solo dopo 7 secondi.
+   Se il codice d'accesso e' ancora da inserire il fumetto non parte: sarebbe
+   speso dietro al pannello del gate, cioe' sprecato. */
+(function(){
+  const tip = $('#cercatip');
+  if (!tip || localStorage.getItem('tt-cerca-visto')) return;
+  if ($('#gate').style.display === 'flex') return;
+  tip.textContent = U.cercaTip;
+  tip.classList.add('on');
+  const via = () => { tip.classList.remove('on'); localStorage.setItem('tt-cerca-visto', '1'); };
+  tip.addEventListener('click', via);
+  $('#searchbtn').addEventListener('click', via);
+  setTimeout(via, 7000);
+})();
 $('#searchinput').addEventListener('input',e=>{
   const q = e.target.value.trim().toLowerCase();
   const box = $('#searchres');
@@ -1770,7 +1788,9 @@ $('#searchinput').addEventListener('input',e=>{
     const map = {home:'house', percorso:'route', info:'info', dormire:'bed-double', live:'satellite'};
     el.innerHTML = icon(map[el.closest('button').dataset.tab], 19);
   });
-  $('#searchbtn').innerHTML = icon('search', 17) + '<span class="dot"></span>';
+  $('#searchbtn').innerHTML = icon('search', 17) +
+    `<span class="slbl">${esc(U.cercaLabel)}</span><span class="dot"></span>`;
+  $('#searchbtn').setAttribute('aria-label', U.cercaGlobale);
   $('#iosmodal-icon').innerHTML = icon('smartphone', 20);
   $('#gatekicker').textContent = C.meta.sottotitolo;
   $('#homelogo').addEventListener('click', () => openTab('home'));

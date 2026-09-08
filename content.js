@@ -349,6 +349,8 @@ ui: {
     emergenze: "Emergenze · 112", condividi: "Condividi posizione",
     meteo: "Meteo e tramonto", dormire: "Dormire stanotte", info: "Tutte le info"
   },
+  cercaLabel: "Cerca",
+  cercaTip: "Qui dentro cerchi tutto: acqua, treno, pacco, meteo, alloggi.",
   cercaGlobale: "Cerca fra tutte le informazioni…",
   cercaNulla: "Nessun risultato. Prova con un'altra parola.",
   cercaInfo: "Cerca nelle informazioni…",
@@ -754,6 +756,8 @@ ui: {
     emergenze: "Emergency · 112", condividi: "Share position",
     meteo: "Weather and sunset", dormire: "Sleep tonight", info: "All the info"
   },
+  cercaLabel: "Search",
+  cercaTip: "Search everything in here: water, train, race pack, weather, beds.",
   cercaGlobale: "Search all the information…",
   cercaNulla: "No results. Try another word.",
   cercaInfo: "Search the information…",
