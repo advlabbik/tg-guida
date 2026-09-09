@@ -27,7 +27,7 @@ window.TG_EVENTO_ID = 'b059ed05-79cc-4da0-a0d4-e82763fe02ba';
 // tutte le lingue.
 window.EVENTO_CONFIG = {
   prefissoStorage: 'tg',            // le chiavi di quest'app sono gia' 'tg-...'
-  analytics: false,
+  analytics: true,
   backend: {
     supabaseUrl: window.TG_SUPABASE_URL,
     anonKey: window.TG_SUPABASE_ANON_KEY,
