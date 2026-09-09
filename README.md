@@ -104,12 +104,21 @@ Il disegno, con le ragioni di ogni scelta, sta nel template:
 l'identità è un codice casuale che si rigenera ogni notte, quindi risponde a
 «quante persone oggi» senza essere un identificativo che dura; il vocabolario
 dei contatori è chiuso; non si registrano le parole cercate, né la posizione,
-né il chilometro. Le tabelle su Supabase esistono già e questa app ha già il
-suo `TG_EVENTO_ID`.
+né il chilometro. Questa app ha già il suo `TG_EVENTO_ID`, e le tabelle sono state applicate al
+progetto condiviso `guide-eventi` il 9 settembre 2026 — lo schema vive nel
+template, in `supabase/riferimento/analytics-uso.sql`, e **non è copiato in
+questa repo**.
 
-**Diciassette contatori su ventidue.** Restano fuori i tre «bisogni» (acqua,
-cibo, spesa) e i due salti alloggi «+60 / +100 km», perché in questa versione
-dell'app quelle funzioni non ci sono.
+> Se un giorno quelle tabelle non ci fossero (progetto ripristinato da un
+> backup vecchio, schema riapplicato a metà), PostgREST risponderebbe **404**, e
+> il 404 è fra i rifiuti che `uso.js` considera definitivi- ogni lotto verrebbe
+> buttato **in silenzio**, senza un errore da nessuna parte. Prima di accendere,
+> vale la pena aprire il Table Editor e vedere che `uso` ci sia davvero.
+
+**Sedici contatori su ventidue.** Restano fuori i tre «bisogni» (acqua, cibo,
+spesa), i due salti alloggi «+60 / +100 km» e `maps:cerca`, perché in questa
+versione dell'app quelle funzioni e quei link non ci sono. Chi guarda i numeri
+non deve aspettarsi quei sei — non arriveranno mai.
 
 ### Cosa serve PRIMA di accenderlo
 

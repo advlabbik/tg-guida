@@ -399,7 +399,7 @@ function openTab(name){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on', b.dataset.tab===name));
   window.scrollTo({top:0});
   if (name==='percorso' && !mapsInit.mini) { mapsInit.mini = true; setTimeout(initMiniMap, 60); }
-  if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; loadStay22(); }
+  if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; USO.conta('alloggi:mappa'); loadStay22(); }
   if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
   // refreshNotifCard() trigger verifyPushSubscription() (service worker ready +
   // getSubscription + eventuale POST): va bene farlo una volta per sessione come
@@ -570,7 +570,7 @@ function bindTabLinks(root){
   root.querySelectorAll('[data-tab]').forEach(el=>{
     el.addEventListener('click',e=>{
       e.preventDefault();
-      openTab(el.dataset.tab);
+      apriDaGesto(el.dataset.tab);
       if (el.dataset.gps) setTimeout(startGPS, 250);
       if (el.dataset.share) { autoShare = true; setTimeout(startGPS, 250); }
       if (el.dataset.meteo) setTimeout(()=>{
@@ -1378,7 +1378,6 @@ function renderDormire(){
   }));
 }
 function loadStay22(){
-  USO.conta('alloggi:mappa');
   const s = C.dormire.stay22;
   const rid = myRoute();
   const p = C.percorsi.find(x=>x.id===rid);
@@ -1623,6 +1622,7 @@ function lvPoiMappa(){
 }
 let gpsMap, gpsMarker, gpsLine, gpsLineRoute, gpsWatch, gpsArrows, gpsArrowsRoute, lastPos = null, autoShare = false;
 let usoGpsDetto = false; // il GPS si conta acceso una volta, non a ogni fix
+let usoGpsNegato = false; // e negato una volta, non a ogni errore che si ripete
 let usoCercaInfo = false; // e una ricerca e' una, non una per lettera battuta
 function sharePos(){
   if (!lastPos) return;
@@ -1737,7 +1737,10 @@ function startGPS(){
     lvAggiorna(rid, km);
     lvPoiMappa();
   }, err=>{
-    USO.conta('gps:negato');
+    /* Solo il rifiuto VERO (codice 1) e una volta sola. Un tempo scaduto in
+       galleria non e' un no, e il watch ripete l'errore ogni quindici secondi
+       finche' non trova il segnale. */
+    if (err && err.code === 1 && !usoGpsNegato){ usoGpsNegato = true; USO.conta('gps:negato'); }
     info.textContent = U.gpsNegato;
   }, {enableHighAccuracy:true, maximumAge:10000, timeout:15000});
 }
@@ -1768,7 +1771,7 @@ $('#searchinput').addEventListener('input',e=>{
   box.querySelectorAll('.sres').forEach(r=>r.addEventListener('click',()=>{
     const h = INDEX[+r.dataset.i];
     $('#searchov').classList.remove('open');
-    openTab(h.tab);
+    apriDaGesto(h.tab);
     if (h.el){ const el = document.getElementById(h.el);
       if (el){ setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150); } }
   }));
@@ -1891,7 +1894,9 @@ function disegnaAvvisoUso(){
   $('#uso-chiudi').addEventListener('click', () => { USO.avvisoChiuso(); box.hidden = true; });
   $('#uso-leggi').addEventListener('click', e => {
     e.preventDefault();
-    apriDaGesto('info');
+    openTab('info');            // non e' una visita alla scheda Info, e' l'avviso
+    USO.avvisoChiuso();         // letto e' come chiuso
+    box.hidden = true;          // se no la striscia copre la scheda appena aperta
     const scheda = $('#info-privacy');
     if (scheda) scheda.scrollIntoView({behavior: 'smooth', block: 'start'});
   });
