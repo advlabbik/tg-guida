@@ -390,6 +390,13 @@ ui: {
   gpsCerco: "Ricerca posizione…",
   gpsNo: "GPS non disponibile su questo dispositivo.",
   gpsNegato: "Non riesco a leggere la posizione. Controlla i permessi del telefono.",
+  // L'avviso sulla misurazione d'uso, sopra la barra. Il testo lungo e'
+  // la scheda Info con id "privacy".
+  uso: {
+    avviso: "Questa app conta in forma anonima quante persone la usano e quali funzioni. Nessun tracciamento pubblicitario.",
+    leggi: "Come funziona",
+    chiudi: "Chiudi l'avviso"
+  },
   gpsLontano: "Sei a | km dal percorso |. Il punto più vicino è al km |.",
   gpsPosizione: "Sei circa al km | di | del | — mancano | km all'arrivo a Rovereto. Forza! 💪",
   condividiPos: "Condividi la posizione",
@@ -795,6 +802,13 @@ ui: {
   gpsCerco: "Finding your position…",
   gpsNo: "GPS not available on this device.",
   gpsNegato: "Cannot read your position. Check your phone permissions.",
+  // L'avviso sulla misurazione d'uso, sopra la barra. Il testo lungo e'
+  // la scheda Info con id "privacy".
+  uso: {
+    avviso: "This app anonymously counts how many people use it and which features. No advertising tracking.",
+    leggi: "How it works",
+    chiudi: "Dismiss this notice"
+  },
   gpsLontano: "You are | km from the | route. The nearest point is at km |.",
   gpsPosizione: "You are around km | of | on the | — | km to go to the finish in Rovereto. Keep going! 💪",
   condividiPos: "Share my position",
