@@ -249,7 +249,17 @@ infoCards: [
     cerca: "tenda bivacco campeggio dormire regole parco vietato" },
   { id: "ebike", tema: "Le regole", icona: "🔋", titolo: "E-bike",
     corpo: "Le e-bike sono ammesse. Pianifica le ricariche in autonomia presso le strutture dove dormi, perché lungo il percorso non ci sono punti di ricarica dedicati.",
-    cerca: "ebike e-bike bici elettrica ricarica ammesse" }
+    cerca: "ebike e-bike bici elettrica ricarica ammesse" },
+  /* ✱ TESTO DA CONFERMARE con chi segue la privacy prima di pubblicare, e non
+     e' un parere legale. Sta qui perche' l'avviso sopra la barra ci rimanda
+     con «Come funziona»: senza questa scheda quel tasto apre la sezione Info e
+     basta. Le quattro cose che dice — codice rigenerato ogni giorno, niente
+     terzi, niente posizione ne' parole cercate, 90 giorni — non sono zavorra:
+     sono le condizioni che tengono la misurazione fuori dal banner di consenso.
+     Se una cade, cade l'esenzione. */
+  { id: "privacy", tema: "Prima di partire", icona: "🔒", titolo: "Come funziona la misurazione",
+    corpo: "Questa applicazione impiega strumenti di misurazione di pubblico di prima parte, finalizzati esclusivamente a rilevare in forma anonima e aggregata quante persone la utilizzano e quali funzioni vengono consultate, al fine di migliorare il servizio.\n\nNon sono impiegati strumenti di tracciamento per finalità di marketing, profilazione o pubblicità comportamentale.\n\nLa rilevazione avviene mediante un identificativo casuale rigenerato ogni giorno, che non consente di riconoscere l'interessato nel tempo. I dati non sono comunicati a terzi, non sono incrociati con altre banche dati e non comprendono dati di geolocalizzazione né i termini digitati nelle ricerche.\n\nI dati non aggregati sono conservati per 90 giorni; decorso tale termine permangono i soli totali aggregati.",
+    cerca: "privacy dati personali anonimo statistiche misurazione cookie tracciamento gdpr" },
 ],
 
 live: {
@@ -662,7 +672,11 @@ infoCards: [
     cerca: "tent wild camping bivouac campsite sleep rules park forbidden" },
   { id: "ebike", tema: "The rules", icona: "🔋", titolo: "E-bikes",
     corpo: "E-bikes are allowed. Plan your charging independently at the places where you sleep, because there are no dedicated charging points along the route.",
-    cerca: "ebike e-bike electric bike charging allowed" }
+    cerca: "ebike e-bike electric bike charging allowed" },
+  /* ✱ SAME TEXT, to be confirmed before publishing. See the Italian card. */
+  { id: "privacy", tema: "Before you leave", icona: "🔒", titolo: "How the measurement works",
+    corpo: "This application uses first-party audience measurement tools, solely to record, in anonymous and aggregated form, how many people use it and which features are consulted, for the purpose of improving the service.\n\nNo trackers are used for marketing, profiling or behavioural advertising purposes.\n\nMeasurement relies on a random identifier regenerated every day, which does not allow a user to be recognised over time. The data are not disclosed to third parties, are not combined with any other dataset, and include neither location data nor the terms typed into searches.\n\nNon-aggregated data are retained for 90 days; thereafter only aggregate totals remain.",
+    cerca: "privacy personal data anonymous statistics measurement cookies tracking gdpr" },
 ],
 
 live: {
