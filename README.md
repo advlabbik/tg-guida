@@ -27,6 +27,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 | `index.html` | Markup + tutta la logica dell'app (tab, gate d'accesso, vista percorso con mappa e altimetria, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA, opt-in notifiche push, feed Comunicazioni). Vista percorso e Live condividono i mattoni: `creaProfilo`/`profDisegna`/`profPin` per l'altimetria (che sa disegnare sia tutto il tracciato sia una finestra), `poiSuMappa` per i segni, `raggruppa` per non far sparire i punti sovrapposti |
 | `staff.html` | Pagina riservata allo staff per inviare comunicazioni push a tutti i partecipanti iscritti (gate separato da `index.html`, chiama la Edge Function `invia-comunicazione`), con sotto l'archivio di quelle già mandate |
 | `config.js` | Unica fonte per `TG_SUPABASE_URL`, `TG_SUPABASE_ANON_KEY` e `TG_EVENTO_ID`, caricato sia da `index.html` sia da `staff.html` — evita di tenere sincronizzato a mano lo stesso valore in più file |
+| `uso.js` | **Analytics d'uso — spento.** Conta quante persone usano la guida e quali funzioni, con un codice anonimo che si rigenera ogni notte. Arriva dal template (`advlabbik/event-app-template`, `motore/uso.js`) e **va tenuto identico byte per byte**: e' l'unico modo perche' le correzioni fatte la' si riportino qui con una copia invece che con una riconciliazione a mano. Si accende da `config.js` → `analytics` |
 | `styles.css` | Tutto il CSS del design system (token in `:root`, componenti, schermate) |
 | `icons.js` | Helper `icon(name, size)` per le icone (sprite SVG) e mappa id-scheda-info → nome icona |
 | `icons/sprite.svg` | Sprite SVG con i simboli usati nell'app (referenziato via `<use>`) |
@@ -90,6 +91,50 @@ Prima della pubblicazione reale, da fare in quest'ordine:
 - [x] `STAFF_CODE` impostato (24/8) sul progetto `guide-eventi` insieme ai VAPID rigenerati (`npx supabase secrets set ... --project-ref tokqvqrebunfshjtpkog`); il codice ce l'ha Francesco. Se serve cambiarlo di nuovo: `staff.html` non ha più una copia locale del codice (fix #16): valida solo il server, e su 403 pulisce da sola il codice salvato in `localStorage` e riapre il gate — non serve coordinare un secondo update né avvisare chi ha già sbloccato il gate col placeholder.
 - [ ] Se si tocca di nuovo `sw.js`, incrementare `CACHE` — altrimenti i client con la PWA installata restano sulla versione cache precedente.
 - [ ] Verificare il fallback iOS su un iPhone reale — finora testato solo per via statica/logica.
+
+## Analytics d'uso — c'è, ed è spento
+
+Dal ramo `analytics-uso` (settembre 2026). L'app sa contare quante persone la
+usano in un giorno e quali funzioni toccano, ma **`analytics` in `config.js` è
+`false`** e finché resta così non scrive niente nel browser e non manda niente
+in rete.
+
+Il disegno, con le ragioni di ogni scelta, sta nel template:
+`docs/superpowers/specs/2026-09-08-analytics-uso-design.md`. In breve —
+l'identità è un codice casuale che si rigenera ogni notte, quindi risponde a
+«quante persone oggi» senza essere un identificativo che dura; il vocabolario
+dei contatori è chiuso; non si registrano le parole cercate, né la posizione,
+né il chilometro. Questa app ha già il suo `TG_EVENTO_ID`, e le tabelle sono state applicate al
+progetto condiviso `guide-eventi` il 9 settembre 2026 — lo schema vive nel
+template, in `supabase/riferimento/analytics-uso.sql`, e **non è copiato in
+questa repo**.
+
+> Se un giorno quelle tabelle non ci fossero (progetto ripristinato da un
+> backup vecchio, schema riapplicato a metà), PostgREST risponderebbe **404**, e
+> il 404 è fra i rifiuti che `uso.js` considera definitivi- ogni lotto verrebbe
+> buttato **in silenzio**, senza un errore da nessuna parte. Prima di accendere,
+> vale la pena aprire il Table Editor e vedere che `uso` ci sia davvero.
+
+**Sedici contatori su ventidue.** Restano fuori i tre «bisogni» (acqua, cibo,
+spesa), i due salti alloggi «+60 / +100 km» e `maps:cerca`, perché in questa
+versione dell'app quelle funzioni e quei link non ci sono. Chi guarda i numeri
+non deve aspettarsi quei sei — non arriveranno mai.
+
+### Cosa serve PRIMA di accenderlo
+
+1. **Una scheda Info con `id: 'privacy'`**, in italiano e inglese, che spieghi
+   ai partecipanti che l'app conta in forma anonima quante persone la usano e
+   quali funzioni. L'avviso sopra la barra rimanda lì con «Come funziona»; senza
+   quella scheda il tasto apre la sezione Info e basta. I testi pronti stanno
+   nel template, in `docs/informativa-analytics.md`, e **vanno confermati da chi
+   segue la privacy prima di pubblicarli** — non sono un parere legale.
+2. Bumpare `CACHE` in `sw.js`, come per ogni modifica ai file dell'app.
+
+> **Qui non c'è la rete del template.** Sul template `scripts/verifica.mjs` si
+> rifiuta di dare l'ok se l'analytics è acceso senza informativa, e
+> `scripts/prova-uso.mjs` fa girare 30 prove sul sottosistema. Questa app non ha
+> né l'uno né l'altro: i controlli, qui, li fa una persona. È il motivo per cui
+> conviene accendere **a evento iniziato** e non il giorno della partenza.
 
 ## Stato del repo e dei branch
 
