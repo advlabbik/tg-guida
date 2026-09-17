@@ -405,6 +405,7 @@ ui: {
   mioPercorso: "Il mio percorso",
   attivaGps: "Attiva il GPS",
   aggiornaPos: "Aggiorna la posizione",
+  tornaAMe: "Torna a me",
   gpsCerco: "Ricerca posizione…",
   gpsNo: "GPS non disponibile su questo dispositivo.",
   gpsNegato: "Non riesco a leggere la posizione. Controlla i permessi del telefono.",
@@ -416,7 +417,7 @@ ui: {
     chiudi: "Chiudi l'avviso"
   },
   gpsLontano: "Sei a | km dal percorso |. Il punto più vicino è al km |.",
-  gpsPosizione: "Sei circa al km | di | del | — mancano | km all'arrivo a Rovereto. Forza! 💪",
+  gpsPosizione: "Sei circa al km | di | del | — mancano | km e | m di dislivello all'arrivo a Rovereto. Forza! 💪",
   condividiPos: "Condividi la posizione",
   condividiTesto: "La mia posizione al Trentino Gravel",
   davanti: "Davanti a te", tra: "tra", km: "km", fontana: "fontana", fontane: "fontane", posti: "posti", alloggi: "alloggi",
@@ -829,6 +830,7 @@ ui: {
   mioPercorso: "My route",
   attivaGps: "Turn on GPS",
   aggiornaPos: "Refresh my position",
+  tornaAMe: "Back to me",
   gpsCerco: "Finding your position…",
   gpsNo: "GPS not available on this device.",
   gpsNegato: "Cannot read your position. Check your phone permissions.",
@@ -840,7 +842,7 @@ ui: {
     chiudi: "Dismiss this notice"
   },
   gpsLontano: "You are | km from the | route. The nearest point is at km |.",
-  gpsPosizione: "You are around km | of | on the | — | km to go to the finish in Rovereto. Keep going! 💪",
+  gpsPosizione: "You are around km | of | on the | — | km and | m of climbing to go to the finish in Rovereto. Keep going! 💪",
   condividiPos: "Share my position",
   condividiTesto: "My position at Trentino Gravel",
   davanti: "Ahead of you", tra: "in", km: "km", fontana: "fountain", fontane: "fountains", posti: "places", alloggi: "stays",

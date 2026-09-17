@@ -1723,6 +1723,10 @@ function aheadHtml(rid, km){
   ss.forEach(e => h += row(icon('bed-double',16), 't-d', e, e.t === 'c' ? esc(e.nome) + ` (${e.ns} ${esc(U.alloggi)})` : esc(e.nome || subLingua(e.sub)), true));
   return h;
 }
+/* La mappa della Live segue la posizione finche' non la si trascina a mano.
+   Vedi il commento dentro startGPS, dove nasce il tasto «Torna a me». */
+let gpsSegui = true;
+function tornaAMeAggiorna(){ const b = $('#tornaame'); if (b) b.hidden = gpsSegui; }
 function startGPS(){
   openTab('live');
   const info = $('#gpsinfo');
@@ -1757,7 +1761,12 @@ function startGPS(){
     if (lontano){
       info.innerHTML = fmt(esc(U.gpsLontano), `<b>${kmDec(distTrack)}</b>`, esc(p.nome), `<b>${km.toFixed(0)}</b>`);
     } else {
-      info.innerHTML = fmt(esc(U.gpsPosizione), `<b>${km.toFixed(0)}</b>`, kmTot, esc(p.nome), `<b>${Math.max(0,kmTot-km).toFixed(0)}</b>`);
+      /* Anche il dislivello che manca, non solo i km: il quadro completo sta
+         qui, nella prima riga, e non tre schermate piu' giu' sotto il profilo
+         (Andrea, prova traccia del Trentino, settembre 2026). Lo stesso numero
+         della riga sotto il profilo, dalla stessa geometria. Dal template. */
+      const dplusManca = g.dplusFrom[g.idxFromKm(km)];
+      info.innerHTML = fmt(esc(U.gpsPosizione), `<b>${km.toFixed(0)}</b>`, kmTot, esc(p.nome), `<b>${Math.max(0,kmTot-km).toFixed(0)}</b>`, `<b>${dplusManca}</b>`);
     }
     info.innerHTML += `<div style="margin-top:7px"><button class="btn small sec" id="shareposbtn">${esc(U.condividiPos)}</button></div>`;
     /* La posizione ora arriva da sola: dal primo fix in poi il pulsante non
@@ -1783,6 +1792,22 @@ function startGPS(){
       L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© CyclOSM · © OpenStreetMap'}).addTo(gpsMap);
       gpsMap.on('moveend', lvPoiMappa);
       agganciaPopup(gpsMap, lvPoiMappa);
+      /* Trascinare la mappa per guardare cosa c'e' davanti la stacca dalla
+         posizione. Prima si ricentrava appena la posizione usciva
+         dall'inquadratura — cioe' pochi secondi dopo aver trascinato, al fix
+         successivo — e la mappa era di fatto inesplorabile (Andrea, prova
+         traccia del Trentino, settembre 2026). Il tasto «Torna a me» la
+         riaggancia; finche' e' agganciata il tasto non c'e'. Lo zoom non la
+         stacca: si sta guardando lo stesso posto piu' da vicino. Dal template. */
+      gpsMap.on('dragstart', () => { gpsSegui = false; tornaAMeAggiorna(); });
+      mapEl.insertAdjacentHTML('beforeend',
+        `<button type="button" class="tornaame" id="tornaame" hidden>${icon('crosshair',15)}<span>${esc(U.tornaAMe)}</span></button>`);
+      const tb = $('#tornaame');
+      L.DomEvent.disableClickPropagation(tb);   // un tocco sul tasto non e' un trascinamento
+      tb.addEventListener('click', () => {
+        gpsSegui = true; tornaAMeAggiorna();
+        if (lastPos) gpsMap.setView(lastPos, gpsMap.getZoom(), {animate:false});
+      });
     }
     if (gpsLineRoute !== rid){
       if (gpsLine) gpsMap.removeLayer(gpsLine);
@@ -1801,7 +1826,7 @@ function startGPS(){
        riportava indietro dopo pochi secondi — e ogni ricentraggio ricostruiva
        i segni per pochi metri di movimento. */
     if (gpsMap.getZoom() == null) gpsMap.setView(me, 13);
-    else if (!gpsMap.getBounds().pad(-0.2).contains(me)) gpsMap.setView(me, gpsMap.getZoom(), {animate:false});
+    else if (gpsSegui && !gpsMap.getBounds().pad(-0.2).contains(me)) gpsMap.setView(me, gpsMap.getZoom(), {animate:false});
     // lvAggiorna salva lvRid/lvKm (anche a tab nascosta), poi i segni sulla mappa
     lvLontano = lontano;
     lvAggiorna(rid, km);
