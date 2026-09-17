@@ -93,7 +93,8 @@
     <div id="rv-top">
       <button id="rv-back"></button>
       <div id="rv-titles"><b id="rv-nome"></b><span id="rv-stats"></span></div>
-      <a id="rv-gpx" href="#" target="_blank" rel="noopener"></a>
+      <!-- Medio e Lungo si scaricano in due file (limite dei 10.000 punti sui GPS): il secondo tasto compare solo per loro -->
+      <div id="rv-dl"><a id="rv-gpx" href="#" target="_blank" rel="noopener"></a><a id="rv-gpx2" href="#" target="_blank" rel="noopener" hidden></a></div>
     </div>
     <div id="rv-scroll">
       <div id="rv-map"></div>
@@ -866,8 +867,13 @@ function openRouteView(id){
   view.style.setProperty('--rv-col', g.colore);
   $('#rv-nome').textContent = g.nome;
   $('#rv-stats').textContent = `${p.km} km · ${p.dplus} m D+`;
-  $('#rv-gpx').href = gpxUrl(id);
-  $('#rv-gpx').textContent = U.gpx;
+  // download: un file per il Corto, due parti per Medio e Lungo; la mappa
+  // (Stay22) usa sempre il file unito, vedi gpxUrl/gpxFiles
+  const gf = gpxFiles(id), a1 = $('#rv-gpx'), a2 = $('#rv-gpx2');
+  a1.href = gf[0].url; a1.download = gf[0].nome; a1.textContent = gf.length > 1 ? U.gpx1 : U.gpx;
+  a2.hidden = gf.length < 2;
+  $('#rv-dl').classList.toggle('due', gf.length > 1);
+  if (gf[1]){ a2.href = gf[1].url; a2.download = gf[1].nome; a2.textContent = U.gpx2; }
   $('#rv-filters').innerHTML =
     `<button class="btn small sec pfil on" data-rf="tutti">${esc(U.filtri.tutti)}</button>` +
     ['a','m','d','b'].map(t => `<button class="btn small sec pfil" data-rf="${t}">${icon(RV_ICO[t],15)} ${esc(U.filtri[t])}</button>`).join('');
@@ -897,6 +903,8 @@ function descPercorso(p){
   let h = `<div class="rvblock"><h3>${esc(S.descrizione)}</h3>`;
   if (p.alto) h += `<div class="rvalto">${icon('mountain',16)}<span><b>${esc(S.alto)}</b> — ${esc(p.alto.nome)}, ${esc(p.alto.quota)}, km ${p.alto.km}</span></div>`;
   h += p.descLunga.map(t=>`<p>${esc(t)}</p>`).join('');
+  // la traccia in due file va spiegata dove si legge del percorso, non solo coi due tasti
+  if ((GPX_PARTI[p.id] || 1) > 1) h += `<div class="rnote">• ${esc(U.gpxDue.replace('|', p.nome))}</div>`;
   h += (p.note||[]).map(n=>`<div class="rnote">• ${esc(n)}</div>`).join('');
   h += `</div>`;
   if (p.fondo) h += `<div class="rvblock"><h3>${esc(S.fondo)}</h3><p>${esc(p.fondo)}</p></div>`;
@@ -1352,8 +1360,23 @@ function renderInfo(){
 }
 
 /* ---------- DORMIRE ---------- */
-function gpxUrl(id){
-  return `${C.mappeBase}gpx/Trentino-Gravel-2026-${id[0].toUpperCase()+id.slice(1)}-V2.2.gpx`;
+/* GPX definitivi V3.0 (17 settembre 2026), serviti da questo stesso repo
+   (cartella gpx/). Medio e Lungo superano i 10.000 punti, il tetto che molti
+   GPS (Garmin in testa) impongono a una traccia: per il DOWNLOAD esistono in
+   due parti (parte1 fino a Predazzo, parte2 da Predazzo all'arrivo), mentre la
+   VISUALIZZAZIONE resta unica per percorso — tracks.js, la vista percorso e la
+   mappa Stay22 usano il file unito. L'URL e' assoluto perche' Stay22 lo scarica
+   dai suoi server (da localhost quindi non lo vede: normale in anteprima). */
+const GPX_VER = 'V3.0';
+const GPX_PARTI = { medio: 2, lungo: 2 };
+function gpxNome(id, parte){
+  return `Trentino-Gravel-2026-${id[0].toUpperCase()+id.slice(1)}-${GPX_VER}${parte ? '-parte'+parte : ''}.gpx`;
+}
+function gpxUrl(id, parte){ return new URL('gpx/' + gpxNome(id, parte), location.href).href; }
+function gpxFiles(id){
+  const n = GPX_PARTI[id] || 1;
+  if (n < 2) return [{ url: gpxUrl(id), nome: gpxNome(id) }];
+  return Array.from({length:n}, (_, i) => ({ url: gpxUrl(id, i+1), nome: gpxNome(id, i+1) }));
 }
 function myRoute(){ return localStorage.getItem('tg-route') || 'corto'; }
 function setMyRoute(id){

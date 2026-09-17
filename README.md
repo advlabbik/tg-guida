@@ -35,6 +35,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 | `content.js` | `window.CONTENT.it` / `window.CONTENT.en` — tutti i testi editoriali (checklist, percorsi, info-card, sponsor, meteo, fasi prima/durante/dopo, live tracking), bilingue con switch in alto |
 | `tracks.js` | `window.TRACKS` — coordinate GPX dei tre percorsi (corto/medio/lungo), usate per le mappe e per il calcolo posizione GPS |
 | `poi.js` | `window.POI` — punti di interesse lungo il percorso (acqua, cibo, alloggi) per km, fonte OpenStreetMap, generati con `scripts/gen_poi.py` (procedura in `docs/generazione-poi.md`) |
+| `gpx/` | I GPX definitivi V3.0 serviti dall'app stessa (dal 17/9/2026 non più dal repo mappe): Corto intero; Medio e Lungo **uniti** (li usano la mappa Stay22 e la vista percorso) e in **due parti** `-parte1`/`-parte2` (quelli che si scaricano: oltre i 10.000 punti i GPS Garmin non caricano). Non in precache del service worker |
 | `docs/liste-poi/` | Liste POI grezze per percorso, output intermedio dello script di generazione |
 | `manifest.webmanifest` | Manifest PWA (nome, icone, colori del brand, `display: standalone`) |
 | `sw.js` | Service worker: **network-first** per i file dell'app (chi ha rete vede sempre l'ultima versione), cache come rete di salvataggio quando il segnale manca. Mappe/meteo/Stay22 non passano di qui. Versione cache attuale: vedi costante `CACHE` in cima al file — **va incrementata a ogni modifica di `sw.js`** o dell'elenco asset, altrimenti i client con la PWA installata restano bloccati sulla versione precedente |
@@ -46,7 +47,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 ## Funzionalità principali
 
 - **Tre fasi dell'evento** (`prima` / `durante` / `dopo`), calcolate automaticamente da `content.js → meta.fasi` in base alla data, con una home diversa per fase. C'è un demobar per forzare manualmente la fase durante lo sviluppo/demo (dietro `?demo=1`, nascosta di default).
-- **Percorso**: la scelta fra i tre tracciati (Corto 216 km, Medio 357 km, Lungo 376 km — tracce V2.2 del 27 agosto 2026) con foto, dati e note, il bottone che apre la vista percorso, il download GPX e la minimappa d'insieme. **La lista servizi non sta più qui**: stava staccata dal percorso, con un suo secondo selettore dopo quello appena usato sulle schede, e ripeteva in 220-245 righe quello che ora si vede su mappa e altimetria.
+- **Percorso**: la scelta fra i tre tracciati (Corto 216 km, Medio 357 km, Lungo 376 km — tracce V3.0 definitive del 17 settembre 2026) con foto, dati e note, il bottone che apre la vista percorso, il download GPX (un tasto per il Corto, due tasti impilati «GPX 1/2» e «GPX 2/2» per Medio e Lungo, vedi `gpxFiles()`) e la minimappa d'insieme. **La lista servizi non sta più qui**: stava staccata dal percorso, con un suo secondo selettore dopo quello appena usato sulle schede, e ripeteva in 220-245 righe quello che ora si vede su mappa e altimetria.
 - **Vista percorso** (`#routeview`, il bottone "Mappa + altimetria"): schermata a tutto schermo **dentro l'app** che raccoglie tutto quello che riguarda un percorso — mappa Esri, profilo altimetrico e lista servizi, **tre viste sugli stessi dati comandate da un filtro solo** (tutto / acqua / mangiare / dormire). I punti compaiono sul profilo alla loro quota e sulla mappa come segni per categoria, la lista sotto è ordinata per km e contiene gli avvisi sui tratti senza rifornimenti. Trascinando il dito sul profilo si muove il cursore sulla mappa, toccando un'icona o un segno si legge nome, km, quota e quanto manca all'arrivo in km e in dislivello. La barra in alto resta ferma mentre il resto scorre, quindi la via d'uscita non scompare mai nemmeno in fondo alla lista — e le uscite sono tre, il tasto "Percorsi", il tasto indietro del telefono (`history.pushState` + `popstate`) e il tasto Esc. Prima questo bottone apriva `percorso-{id}.html` del repo mappe in una scheda esterna che non aveva nessun link di ritorno.
 - **Info**: schede a tema (gli orari, prima di partire, arrivare a Rovereto, sul percorso, durante l'evento, regole e vantaggi) con ricerca full-text. La prima scheda porta la **tabella oraria** dell'evento: una card info può avere un campo `orari` (giorni → righe `ora` + `cosa`) che viene disegnato come tabella invece che come prosa, ed entra anche nella ricerca, così "briefing" o "7:30" trovano la card.
 - **Dormire**: mappa alloggi via iframe Stay22 (account aziendale reale `adventurelabsrl`, campagna `tgguida2026`).
@@ -99,6 +100,66 @@ Deploy automatico su GitHub Pages da `main`, su **<https://trentinogravel.bikead
 **Branch attivo: solo `main`.** Tutto lo sviluppo corrente procede qui con branch di vita breve mergiati appena pronti. Il branch `feat/poi-mappa-altimetria` (vista percorso, POI su mappa e altimetria, revisione del Live — 13 agosto) è stato sviluppato a parte su richiesta di Andrea, revisionato e mergiato: dopo il merge non va più usato.
 
 **`ds-restyle` è congelato, tenuto solo come reference storico — non va mergiato.** Era nato come branch di redesign parallelo (piano `docs/superpowers/plans/2026-08-12-golive-restyle.md`, non presente su `main`), ed è stato riconciliato più volte con `main` mentre entrambi i rami andavano avanti in parallelo sugli stessi file (vedi la storia di [issue #11](https://github.com/advlabbik/tg-guida/issues/11)). L'ultima riconciliazione risale al 12/08: da allora `main` ha ricevuto in autonomia la veste grafica ufficiale ("veste grafica di Alessio", 13/08) e i contenuti bilingue/POI/copy che la superano — `ds-restyle` non li ha. Le parti tecniche che aveva di utile (notifiche push, `staff.html`, service worker network-first) sono già presenti identiche su `main`. **Prima di considerare di nuovo un merge di `ds-restyle`, verificare a mano se `main` non l'ha già superato** — è già successo due volte che sembrasse "pronto, manca solo il subdominio" mentre nel frattempo `main` era andato avanti per conto suo.
+
+## Tracce V3.0 — le definitive (17 settembre 2026, branch `tracce-finali-v3`, NON pubblicato)
+
+Andrea ha consegnato le tracce finali in cinque file: Corto intero, **Medio e
+Lungo spezzati in due a Predazzo** (km 171,3, stesso punto per entrambi: la
+parte 1 e' identica) perche' superano i 10.000 punti, il tetto che i GPS Garmin
+impongono a una traccia. Il Medio combacia al metro con l'export «Trentino
+Gravel v3.0» del 16/9. Regola di prodotto decisa con Andrea: **il download da'
+entrambe le parti, la visualizzazione resta unica per percorso** (tracks.js,
+vista percorso e Stay22 usano il file unito).
+
+Cosa cambia rispetto alla V2.2 (misurato al metro sui GPX):
+
+- **Cinque Croci fuori → passo Brocon (1.616 m) e Pieve Tesino**, su Medio (km
+  ~230-275) e Lungo (~248-292): la strada Carlettini→Ponte Conseria in Val
+  Campelle e' un cantiere fino a meta' ottobre (email 4 agli iscritti
+  dell'11/9). Caoria, Refavaie, Consèria, Carlettini e Telve non sono piu' sul
+  percorso;
+- uscita da Rovereto (km 2-8) e Sarche (43-46) su tutti e tre; Sarche→Padergnone
+  (48-60) su Medio e Lungo; ritocchi brevi a San Martino (206-214), Calaita,
+  Levico, Caldonazzo/Vattaro, Mattarello/Calliano (Corto 191-198).
+
+Il GPX misura 210,2 / 352,2 / 370,1 km (D+ grezzo 2.500 / 6.100 / 6.800): i
+numeri ufficiali **restano 216×3.000 / 357×7.100 / 376×7.900** finche' Andrea
+non li cambia — lo scarto e' piu' largo di prima (2,7% sul Corto).
+
+Cosa e' stato rigenerato o ritoccato:
+
+- `gpx/` — nuova cartella (vedi Struttura): i 5 file di Andrea copiati
+  byte-identici col nome canonico + i due file uniti generati (GPX 1.1, lat/lon/
+  ele, punto di giunzione deduplicato sul Medio). **Il repo `trentino-gravel-
+  mappe` NON e' stato toccato e resta alla V2.2** (pagine, embed Notion APT, GPX
+  pubblici): quando l'app si pubblica, va rigenerato anche quello e alzato il
+  `?v=` degli embed;
+- `index.html` — `GPX_VER`, `GPX_PARTI`, `gpxNome()`, `gpxUrl()` (file unito,
+  URL assoluto perche' Stay22 lo scarica dai suoi server — da localhost non lo
+  vede, normale in anteprima) e `gpxFiles()` (le parti per il download);
+  `#rv-dl` con due link e attributo `download` (si salva il file invece di
+  aprire l'XML); nota «in due file» in testa alle note della descrizione;
+- `tracks.js` — rigenerato con `scripts/rigenera_tracce.py --guida` del repo
+  mappe **su una copia usa-e-getta** del repo (1.228 / 1.316 / 1.386 punti);
+- `poi.js` — `gen_poi.py` con Overpass fresco (cache `_osm_*` cancellate) poi
+  `gen_meccanici.py`: __POI_CONTEGGI__. Voci `p` riallineate sulla V3.0: SP34
+  61,9 e SS43 160,6 sul Corto, SS43 95,9 su Medio e Lungo, venegia 171,9,
+  venegiaLungo 204,0; **`conseria` tolta** (8,5 km fuori traccia);
+- `content.js` — km nelle note pericolo 62/161 (Corto) e 96 (Medio, Lungo);
+  punto piu' alto del Corto km 104; Sarche «al chilometro 45»; testi Medio e
+  Lungo con Brocon e Pieve Tesino al posto di Caoria/Cinque Croci (Telve fuori);
+  meteo del Medio con Passo Brocon 1.616 m 12°/3° (ERA5, stesso metodo degli
+  altri punti); checklist «Studia la traccia definitiva»; scheda `gpsguide`
+  riscritta (la definitiva e' nell'app, due file, cosa e' cambiato); etichette
+  `gpx1`/`gpx2`/`gpxDue`; pericolo `conseria` rimosso. Tutto in IT e EN;
+- `styles.css` — `#rv-dl` (tasti impilati: in fila lasciavano 50 px al titolo);
+- `sw.js` → cache v44.
+
+Attenzione al merge: questo branch parte da `cerca-info-live-posizione` (6
+commit dell'8/9 mai andati in main, piu' il commit «Pericoli malghe Venegia»
+rimasto non committato dall'8/9), mentre `main` ha nel frattempo 4 commit di
+Francesco (analytics d'uso #31, repo pubblica, ramo tedesco, feedback→issue)
+che qui non ci sono.
 
 ## Tracce V2.2 (27 agosto 2026, sera)
 
@@ -462,8 +523,8 @@ composto da `descPercorso()` in index.html con i dati di `content.js`:
 (Open-Meteo archive, gratuita) sui giorni **20-30 settembre 2022, 2023, 2024 e
 2025**, 44 giornate per punto, con la quota reale del punto passata all'API cosi'
 che la temperatura sia corretta sull'altitudine e non su quella media della cella.
-Quote e chilometri dei punti piu' alti vengono dai GPX V2.2 (`Campo Carlo Magno
-1.682 m` al km 107 sul Corto, `Baita Segantini 2.173 m` al km 196 sul Medio,
+Quote e chilometri dei punti piu' alti vengono dai GPX V3.0 (`Campo Carlo Magno
+1.682 m` al km 104 sul Corto, `Baita Segantini 2.173 m` al km 196 sul Medio,
 `Col Margherita 2.337 m` al km 198 sul Lungo). **Km e dislivelli totali restano
 quelli ufficiali di `content.js`** — dal GPX si legge solo *come* e' distribuito
 il dislivello, mai il totale (la traccia semplificata e il calcolo con soglia

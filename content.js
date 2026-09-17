@@ -39,8 +39,8 @@ checklist: [
   { id: "certificato", testo: "1. Carica il certificato medico entro il 27 agosto",
     dettaglio: "Agonistico per il ciclismo, in corso di validità. Vai nella tua area personale, apri la sezione Certificati e carica il file.",
     url: "https://www.bikeadventureseries.com/my-account/", cta: "Vai all'area personale" },
-  { id: "studia", testo: "2. Studia la traccia preliminare",
-    dettaglio: "Guardala sulla mappa con l'altimetria e pianifica le tappe. Non caricarla sul GPS — sul GPS andrà solo la traccia definitiva, in arrivo pochi giorni prima della partenza.",
+  { id: "studia", testo: "2. Studia la traccia definitiva",
+    dettaglio: "Guardala sulla mappa con l'altimetria, pianifica le tappe e scaricala sul GPS dal tasto GPX. Il Medio e il Lungo arrivano in due file, caricali entrambi.",
     tab: "percorso" },
   { id: "prima-notte", testo: "3. Prenota almeno la prima notte a Rovereto",
     dettaglio: "Venerdì 25 settembre sarete in 500 nella stessa città, la stessa notte. Le altre notti, se preferisci, prenotale già ora dalla mappa lungo il percorso.",
@@ -83,12 +83,12 @@ percorsi: [
     livello: "Accessibile",
     desc: "Il percorso per chi vuole l'avventura senza l'estremo. Si stacca dagli altri due a Sarche e chiude l'anello a Rovereto.",
     note: ["Circa il 70% su ciclabili e sterrato",
-      "⚠️ Due punti da massima prudenza — al km 65 la svolta sulla SP34 fra Sclemo e Seo, al km 163 l'attraversamento della SS43 alla Rocchetta. Li trovi segnati sulla mappa e sull'altimetria del percorso"],
-    alto: { nome: "Passo Campo Carlo Magno", quota: "1.682 m", km: 107 },
+      "⚠️ Due punti da massima prudenza — al km 62 la svolta sulla SP34 fra Sclemo e Seo, al km 161 l'attraversamento della SS43 alla Rocchetta. Li trovi segnati sulla mappa e sull'altimetria del percorso"],
+    alto: { nome: "Passo Campo Carlo Magno", quota: "1.682 m", km: 104 },
     descLunga: [
       "Un anello che parte in fondovalle, sale una volta sola e torna a casa lungo i fiumi. Dai primi chilometri vai verso il lago — Mori, Loppio, Nago e la discesa su Torbole con il Garda davanti — poi risali la valle del Sarca fino ad Arco, attraversi le Marocche di Dro e arrivi a Sarche, dove il Corto si stacca dagli altri due.",
-      "Da lì il percorso punta nelle Giudicarie, passa da Stenico e risale la val Rendena fino a Pinzolo e Madonna di Campiglio, con le Dolomiti di Brenta sempre di fianco. Il punto più alto è il passo di Campo Carlo Magno, 1.682 metri, poco dopo il chilometro 105. Da lassù in avanti è quasi tutta discesa e pianura — val di Sole, Malé, la val di Non fra i meleti, Mezzolombardo, Trento e la ciclabile dell'Adige che ti riporta a Rovereto.",
-      "Il dislivello sta quasi tutto nella prima metà. Fino a Sarche, al chilometro 48, hai salito pochissimo; il grosso arriva nei sessanta chilometri fra Sarche e Campo Carlo Magno, circa due terzi del totale, in una salita lunga e regolare più che ripida. Negli ultimi cento chilometri resta meno di un sesto del dislivello complessivo."
+      "Da lì il percorso punta nelle Giudicarie, passa da Stenico e risale la val Rendena fino a Pinzolo e Madonna di Campiglio, con le Dolomiti di Brenta sempre di fianco. Il punto più alto è il passo di Campo Carlo Magno, 1.682 metri, intorno al chilometro 104. Da lassù in avanti è quasi tutta discesa e pianura — val di Sole, Malé, la val di Non fra i meleti, Mezzolombardo, Trento e la ciclabile dell'Adige che ti riporta a Rovereto.",
+      "Il dislivello sta quasi tutto nella prima metà. Fino a Sarche, al chilometro 45, hai salito pochissimo; il grosso arriva nei sessanta chilometri fra Sarche e Campo Carlo Magno, circa due terzi del totale, in una salita lunga e regolare più che ripida. Negli ultimi cento chilometri resta meno di un sesto del dislivello complessivo."
     ],
     fondo: "Circa il 70% fra ciclabili asfaltate e sterrato, il resto su strade aperte al traffico. Lo sterrato si concentra fra le Giudicarie e la val Rendena; il rientro da Trento a Rovereto è tutto sulla ciclabile asfaltata della valle dell'Adige. Nessun tratto da fare a spinta.",
     meteo: [
@@ -102,12 +102,12 @@ percorsi: [
     livello: "Intermedio",
     desc: "Identico al Lungo per quasi tutto il tracciato, con una differenza sola — evita la Val di Fassa e il tratto a spinta del Col Margherita.",
     note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita",
-      "⚠️ Al km 95 si attraversa a raso la SS43 della Val di Non, veloce e trafficata — piede a terra e massima prudenza. Il punto è segnato sulla mappa e sull'altimetria del percorso"],
+      "⚠️ Al km 96 si attraversa a raso la SS43 della Val di Non, veloce e trafficata — piede a terra e massima prudenza. Il punto è segnato sulla mappa e sull'altimetria del percorso"],
     alto: { nome: "Baita Segantini, sopra il passo Rolle", quota: "2.173 m", km: 196 },
     descLunga: [
       "Il giro grande del Trentino, senza il tratto a spinta. Fino a Sarche è uguale al Corto — lago, valle del Sarca, Marocche — poi sale verso il Brenta a Molveno e Andalo, scende sulla Rotaliana a Mezzocorona e risale la Strada del Vino fra Salorno, Egna e Montagna.",
-      "Dalla val di Fiemme, superate Cavalese e Predazzo, comincia la parte alta del percorso — Bellamonte, il passo Rolle e la salita fino alla Baita Segantini, 2.173 metri, il punto più alto del Medio, con le Pale di San Martino davanti. Si scende a San Martino di Castrozza, poi Canal San Bovo e Caoria, e si attraversa il Lagorai al passo Cinque Croci, poco sopra i 2.000 metri.",
-      "L'ultima parte è la Valsugana — Telve, Borgo, Levico e i laghi — con una gobba finale verso Vattaro prima di rientrare a Rovereto per Mattarello e Calliano. Il dislivello arriva a ondate, non tutto insieme — il Brenta, la lunga salita al Rolle, il Lagorai e l'ultimo strappo prima di casa. A metà percorso, al chilometro 200, ne hai fatti circa due terzi."
+      "Dalla val di Fiemme, superate Cavalese e Predazzo, comincia la parte alta del percorso — Bellamonte, il passo Rolle e la salita fino alla Baita Segantini, 2.173 metri, il punto più alto del Medio, con le Pale di San Martino davanti. Si scende a San Martino di Castrozza e poi a Canal San Bovo, da dove si sale al passo Brocon, 1.616 metri, e si scende su Pieve Tesino verso la Valsugana.",
+      "L'ultima parte è la Valsugana — Borgo, Levico e i laghi — con una gobba finale verso Vattaro prima di rientrare a Rovereto per Mattarello e Calliano. Il dislivello arriva a ondate, non tutto insieme — il Brenta, la lunga salita al Rolle, il Brocon e l'ultimo strappo prima di casa. A metà percorso, al chilometro 200, ne hai fatti circa due terzi."
     ],
     fondo: "Fondovalle su ciclabili asfaltate — Rotaliana, Strada del Vino, val di Fiemme e Valsugana — e sterrato nelle salite e nei traversi in quota. Nessun tratto da fare a spinta, ed è esattamente il motivo per cui il Medio esiste.",
     meteo: [
@@ -115,7 +115,7 @@ percorsi: [
       { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°" },
       { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°" },
       { luogo: "Baita Segantini", quota: "2.173 m", max: "9°", min: "0°" },
-      { luogo: "Passo Cinque Croci", quota: "2.008 m", max: "10°", min: "1°" },
+      { luogo: "Passo Brocon", quota: "1.616 m", max: "12°", min: "3°" },
       { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
     ],
     meteoNota: "Fra il fondovalle e i 2.000 metri ballano dodici gradi di giorno e altrettanti di notte. Alla Baita Segantini, negli ultimi quattro anni, la notte più fredda del periodo è arrivata a 6 sotto zero." },
@@ -123,12 +123,12 @@ percorsi: [
     livello: "Impegnativo",
     desc: "Rispetto al Medio affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita.",
     note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica",
-      "⚠️ Al km 95 si attraversa a raso la SS43 della Val di Non, veloce e trafficata — piede a terra e massima prudenza. Il punto è segnato sulla mappa e sull'altimetria del percorso"],
+      "⚠️ Al km 96 si attraversa a raso la SS43 della Val di Non, veloce e trafficata — piede a terra e massima prudenza. Il punto è segnato sulla mappa e sull'altimetria del percorso"],
     alto: { nome: "Col Margherita", quota: "2.337 m", km: 198 },
     descLunga: [
       "Il percorso più duro dei tre, e l'unico che entra in val di Fassa. Fino a Predazzo ricalca il Medio — lago, Marocche, Brenta a Molveno e Andalo, Rotaliana, Strada del Vino e val di Fiemme — poi invece di puntare a Bellamonte prosegue su Moena e sale al passo San Pellegrino su sterrato.",
       "Dal passo si continua a salire fino al Col Margherita, 2.337 metri, il punto più alto di tutto il Trentino Gravel, raggiunto intorno al chilometro 198. Lì stanno i 2,5 chilometri che si fanno per la maggior parte spingendo la bici, ripagati da una vista a 300 gradi sulle Dolomiti. Si scende verso Falcade e il passo Valles, si risale al passo Rolle e alla Baita Segantini e si arriva a San Martino di Castrozza.",
-      "Da San Martino in poi è identico al Medio — Canal San Bovo, Caoria, la traversata del Lagorai al passo Cinque Croci, la Valsugana con Borgo, Levico e i laghi, e il rientro su Rovereto per Vattaro e Mattarello. Nei cinquanta chilometri fra Moena e San Martino si concentra la parte più alta e più lenta del viaggio, con tre valichi sopra i 1.900 metri uno dietro l'altro."
+      "Da San Martino in poi è identico al Medio — Canal San Bovo, il passo Brocon e la discesa su Pieve Tesino, la Valsugana con Borgo, Levico e i laghi, e il rientro su Rovereto per Vattaro e Mattarello. Nei cinquanta chilometri fra Moena e San Martino si concentra la parte più alta e più lenta del viaggio, con tre valichi sopra i 1.900 metri uno dietro l'altro."
     ],
     fondo: "Come il Medio nei fondovalle, con in più la salita al passo San Pellegrino su sterrato e i 2,5 chilometri del Col Margherita, che farai per il 70% a piedi spingendo la bici. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti.",
     meteo: [
@@ -150,8 +150,6 @@ pericoli: {
     testo: "Predazzo è l'ultimo posto dove fare scorta prima della salita più lunga del percorso. Da qui a Baita Segantini sono 24,7 km con 1.320 metri di dislivello, sempre in salita, e Capanna Cervino arriva solo al km 197. Le due malghe della Val Venegia, che sulla carta stanno a metà strada, quest'anno non ci sono — Malga Venegiota è chiusa da fine agosto per lavori di ristrutturazione e Malga Venegia chiude domenica 27 settembre. Acqua ne trovi, le fontane lungo il Travignolo e le Sorgenti al km 193 ci sono sempre. Quello che manca è il cibo. Riempi le tasche prima di lasciare il paese." },
   venegiaLungo: { nome: "In Val Venegia le due malghe sono chiuse",
     testo: "Passo Valles e Malga Vallazza sono gli ultimi posti dove mangiare prima di Passo Rolle. Le due malghe della Val Venegia, che sulla carta stanno più avanti, quest'anno non ci sono — Malga Venegiota è chiusa da fine agosto per lavori di ristrutturazione e Malga Venegia chiude domenica 27 settembre. Da Malga Vallazza a Baita Segantini restano 10,2 km con 520 metri di dislivello, e poi c'è Capanna Cervino. Acqua ne trovi lungo tutta la valle, le Sorgenti del Travignolo non si fermano mai. Il cibo no." },
-  conseria: { nome: "Rifugio Consèria aperto solo il sabato e la domenica",
-    testo: "Dal 21 settembre il Rifugio Malga Consèria apre soltanto il sabato e la domenica. Se passi di qui da lunedì lo trovi chiuso, e allora da Refavaie al Rifugio Carlettini sono 21,3 km con 900 metri di dislivello, con la Forcella Magna a 2.014 metri in mezzo e nient'altro. Il Rifugio Forestale Socede che incontri prima è un bivacco e non dà da mangiare. Refavaie invece è aperto tutti i giorni fino a fine ottobre — è lì che conviene fermarsi a mangiare, non dopo." },
   ss43: { nome: "Attraversamento della SS43",
     testo: "Alla Rocchetta la traccia attraversa a raso la statale della Val di Non, veloce e molto trafficata. Si passa dritti, per andare a prendere la Strada delle Roste che corre tranquilla lungo il Noce — è il motivo per cui questo attraversamento esiste. Rallenta per tempo, fermati col piede a terra prima dell'asfalto e guarda bene nei due sensi. Si attraversa solo a strada libera, in un colpo solo e con la massima prudenza." },
   sp34: { nome: "Svolta sulla SP34",
@@ -194,9 +192,9 @@ infoCards: [
     corpo: "Per partecipare è obbligatorio il certificato medico agonistico per il ciclismo, in corso di validità. Hai tempo fino al 27 agosto per caricarlo nella tua area personale su bikeadventureseries.com, nella sezione Certificati.",
     link: { testo: "Vai all'area personale", url: "https://www.bikeadventureseries.com/my-account/" },
     cerca: "certificato medico agonistico ciclismo obbligatorio caricare scadenza 27 agosto visita area personale" },
-  { id: "gpsguide", tema: "Prima di partire", icona: "🛰️", titolo: "Sul GPS va solo la traccia definitiva",
-    corpo: "Le tracce che vedi qui sono preliminari e servono per studiare il viaggio e prenotare le notti. Non caricarle sul GPS. Le tracce definitive arrivano pochi giorni prima della partenza e, se non ci saranno problematiche dell'ultimo periodo, resteranno uguali a queste.",
-    cerca: "gps traccia caricare navigazione definitiva preliminare" },
+  { id: "gpsguide", tema: "Prima di partire", icona: "🛰️", titolo: "La traccia definitiva è qui, ed è quella da caricare sul GPS",
+    corpo: "Le tracce che vedi in questa app sono quelle definitive e sono le stesse da caricare sul GPS. Le scarichi dal tasto GPX in alto nella mappa di ogni percorso. Il Medio e il Lungo arrivano in due file, prima e seconda parte, perché molti GPS non caricano una traccia sopra i 10.000 punti — caricali entrambi e passa al secondo quando il primo finisce, a Predazzo. Rispetto alla traccia preliminare cambia soprattutto il tratto dopo Canal San Bovo, che ora passa dal passo Brocon e da Pieve Tesino invece che dal Cinque Croci, chiuso per lavori. Ci sono poi ritocchi brevi in più punti, quindi butta via le versioni vecchie.",
+    cerca: "gps traccia caricare navigazione definitiva preliminare gpx due file parte brocon cinque croci" },
   { id: "pacco", tema: "Prima di partire", icona: "🎒", titolo: "Consegna pacco evento",
     corpo: "Il ritiro del pacco evento è venerdì 25 settembre dalle 16:00 alle 18:00, a Progetto Manifattura di Rovereto. Subito dopo, dalle 18:00 alle 19:00, c'è il briefing nello stesso posto.",
     cerca: "pacco evento ritiro consegna briefing venerdi 25 orario" },
@@ -362,7 +360,8 @@ ui: {
   cercaInfo: "Cerca nelle informazioni…",
   percorsoScegli: "Scegli il tuo percorso",
   percorsoIntro: "Partenza e arrivo per tutti da |. Puoi cambiare idea sul percorso in qualsiasi momento, senza bisogno di comunicarcelo — ti vedremo dall'app di live tracking.",
-  mappaAltimetria: "Mappa + altimetria", gpx: "↓ GPX",
+  mappaAltimetria: "Mappa + altimetria", gpx: "↓ GPX", gpx1: "↓ GPX 1/2", gpx2: "↓ GPX 2/2",
+  gpxDue: "Il | è in due file GPX, perché molti GPS non caricano una traccia sopra i 10.000 punti. Scaricali entrambi con i due tasti in alto e caricali tutti e due sul dispositivo. La seconda parte comincia dove finisce la prima, a Predazzo.",
   percorsoTocca: "Tocca un percorso e trovi la mappa, l'altimetria, la descrizione e i servizi lungo la strada.",
   rvSez: {
     descrizione: "Com'è", fondo: "Il fondo", meteo: "Che tempo aspettarsi",
@@ -468,8 +467,8 @@ checklist: [
   { id: "certificato", testo: "1. Upload your medical certificate by 27 August",
     dettaglio: "A competitive cycling medical certificate, still valid. Go to your personal area, open the Certificates section and upload the file.",
     url: "https://www.bikeadventureseries.com/my-account/", cta: "Go to your personal area" },
-  { id: "studia", testo: "2. Study the preliminary route",
-    dettaglio: "Explore it on the map with the elevation profile and plan your stages. Do not load it onto your GPS — only the final route goes on your GPS, arriving a few days before the start.",
+  { id: "studia", testo: "2. Study the final route",
+    dettaglio: "Look at it on the map with the elevation profile, plan your stages and download it to your GPS with the GPX button. The Medium and Long routes come as two files, load both.",
     tab: "percorso" },
   { id: "prima-notte", testo: "3. Book at least your first night in Rovereto",
     dettaglio: "On Friday 25 September there will be 500 of you in the same town, on the same night. If you like, book the other nights now too from the map along the route.",
@@ -506,12 +505,12 @@ percorsi: [
     livello: "Accessible",
     desc: "The route for those who want the adventure without the extreme. It splits from the other two at Sarche and closes the loop in Rovereto.",
     note: ["About 70% on cycleways and gravel",
-      "⚠️ Two spots that demand maximum caution — the SP34 turn between Sclemo and Seo at km 65, and the SS43 crossing at La Rocchetta at km 163. Both are marked on the route map and profile"],
-    alto: { nome: "Campo Carlo Magno pass", quota: "1,682 m", km: 107 },
+      "⚠️ Two spots that demand maximum caution — the SP34 turn between Sclemo and Seo at km 62, and the SS43 crossing at La Rocchetta at km 161. Both are marked on the route map and profile"],
+    alto: { nome: "Campo Carlo Magno pass", quota: "1,682 m", km: 104 },
     descLunga: [
       "A loop that starts on the valley floor, climbs once and comes home along the rivers. The first kilometres head for the lake — Mori, Loppio, Nago and the descent to Torbole with Lake Garda in front of you — then you ride up the Sarca valley to Arco, cross the Marocche di Dro landslide and reach Sarche, where the Short route leaves the other two.",
-      "From there it heads into the Giudicarie valleys, passes Stenico and climbs the val Rendena to Pinzolo and Madonna di Campiglio, with the Brenta Dolomites alongside all the way. The highest point is the Campo Carlo Magno pass, 1,682 m, just after kilometre 105. From up there it is almost all downhill and flat — val di Sole, Malé, the apple orchards of val di Non, Mezzolombardo, Trento and the Adige valley cycleway back to Rovereto.",
-      "Almost all the climbing sits in the first half. By Sarche, at kilometre 48, you have barely climbed; the bulk comes in the sixty kilometres between Sarche and Campo Carlo Magno, about two thirds of the total, on a long steady climb rather than a steep one. Less than a sixth of the total climbing is left for the last hundred kilometres."
+      "From there it heads into the Giudicarie valleys, passes Stenico and climbs the val Rendena to Pinzolo and Madonna di Campiglio, with the Brenta Dolomites alongside all the way. The highest point is the Campo Carlo Magno pass, 1,682 m, around kilometre 104. From up there it is almost all downhill and flat — val di Sole, Malé, the apple orchards of val di Non, Mezzolombardo, Trento and the Adige valley cycleway back to Rovereto.",
+      "Almost all the climbing sits in the first half. By Sarche, at kilometre 45, you have barely climbed; the bulk comes in the sixty kilometres between Sarche and Campo Carlo Magno, about two thirds of the total, on a long steady climb rather than a steep one. Less than a sixth of the total climbing is left for the last hundred kilometres."
     ],
     fondo: "About 70% between paved cycleways and gravel, the rest on roads open to traffic. The gravel is concentrated between the Giudicarie valleys and val Rendena; the run home from Trento to Rovereto is all on the paved Adige valley cycleway. No hike-a-bike sections.",
     meteo: [
@@ -525,12 +524,12 @@ percorsi: [
     livello: "Intermediate",
     desc: "Identical to the Long route for almost the entire way, with one difference — it avoids Val di Fassa and the hike-a-bike section of Col Margherita.",
     note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section",
-      "⚠️ At km 95 the route crosses the fast, busy SS43 Val di Non road at street level — foot down and maximum caution. The spot is marked on the route map and profile"],
+      "⚠️ At km 96 the route crosses the fast, busy SS43 Val di Non road at street level — foot down and maximum caution. The spot is marked on the route map and profile"],
     alto: { nome: "Baita Segantini, above Passo Rolle", quota: "2,173 m", km: 196 },
     descLunga: [
       "The big Trentino loop, without the hike-a-bike. As far as Sarche it is the same as the Short route — lake, Sarca valley, Marocche — then it climbs towards the Brenta at Molveno and Andalo, drops to Mezzocorona and rides up the Wine Road through Salorno, Egna and Montagna.",
-      "Past Cavalese and Predazzo in val di Fiemme the high part of the route begins — Bellamonte, Passo Rolle and the climb to Baita Segantini, 2,173 m, the highest point of the Medium route, with the Pale di San Martino right in front of you. You drop to San Martino di Castrozza, then Canal San Bovo and Caoria, and cross the Lagorai range at Passo Cinque Croci, just above 2,000 m.",
-      "The last part is the Valsugana — Telve, Borgo, Levico and the lakes — with one final bump towards Vattaro before returning to Rovereto via Mattarello and Calliano. The climbing comes in waves rather than all at once — the Brenta, the long haul to Passo Rolle, the Lagorai and the last kick before home. Halfway through, at kilometre 200, you have done about two thirds of it."
+      "Past Cavalese and Predazzo in val di Fiemme the high part of the route begins — Bellamonte, Passo Rolle and the climb to Baita Segantini, 2,173 m, the highest point of the Medium route, with the Pale di San Martino right in front of you. You drop to San Martino di Castrozza and then to Canal San Bovo, from where you climb Passo Brocon, 1,616 m, and descend to Pieve Tesino towards the Valsugana.",
+      "The last part is the Valsugana — Borgo, Levico and the lakes — with one final bump towards Vattaro before returning to Rovereto via Mattarello and Calliano. The climbing comes in waves rather than all at once — the Brenta, the long haul to Passo Rolle, the Brocon and the last kick before home. Halfway through, at kilometre 200, you have done about two thirds of it."
     ],
     fondo: "Paved cycleways along the valley floors — Rotaliana, the Wine Road, val di Fiemme and the Valsugana — and gravel on the climbs and high traverses. No hike-a-bike sections, which is exactly why the Medium route exists.",
     meteo: [
@@ -538,7 +537,7 @@ percorsi: [
       { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°" },
       { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°" },
       { luogo: "Baita Segantini", quota: "2,173 m", max: "9°", min: "0°" },
-      { luogo: "Passo Cinque Croci", quota: "2,008 m", max: "10°", min: "1°" },
+      { luogo: "Passo Brocon", quota: "1,616 m", max: "12°", min: "3°" },
       { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
     ],
     meteoNota: "Between the valley floor and 2,000 m there are twelve degrees of difference by day and as many at night. At Baita Segantini the coldest night of the period in the last four years hit 6 below zero." },
@@ -546,12 +545,12 @@ percorsi: [
     livello: "Demanding",
     desc: "Compared to the Medium route it takes on Val di Fassa and climbs to Passo San Pellegrino on gravel, then keeps climbing up Col Margherita.",
     note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort",
-      "⚠️ At km 95 the route crosses the fast, busy SS43 Val di Non road at street level — foot down and maximum caution. The spot is marked on the route map and profile"],
+      "⚠️ At km 96 the route crosses the fast, busy SS43 Val di Non road at street level — foot down and maximum caution. The spot is marked on the route map and profile"],
     alto: { nome: "Col Margherita", quota: "2,337 m", km: 198 },
     descLunga: [
       "The hardest of the three, and the only one that enters val di Fassa. As far as Predazzo it follows the Medium route — lake, Marocche, the Brenta at Molveno and Andalo, Rotaliana, the Wine Road and val di Fiemme — then, instead of heading to Bellamonte, it carries on to Moena and climbs Passo San Pellegrino on gravel.",
       "From the pass you keep climbing to Col Margherita, 2,337 m, the highest point of the whole Trentino Gravel, reached around kilometre 198. That is where the 2.5 kilometres of hike-a-bike are, repaid by a 300-degree view over the Dolomites. Then down towards Falcade and Passo Valles, back up to Passo Rolle and Baita Segantini, and on to San Martino di Castrozza.",
-      "From San Martino onwards it is identical to the Medium route — Canal San Bovo, Caoria, the Lagorai crossing at Passo Cinque Croci, the Valsugana with Borgo, Levico and the lakes, and the way home to Rovereto via Vattaro and Mattarello. The fifty kilometres between Moena and San Martino hold the highest and slowest part of the trip, with three passes above 1,900 m one after the other."
+      "From San Martino onwards it is identical to the Medium route — Canal San Bovo, Passo Brocon and the descent to Pieve Tesino, the Valsugana with Borgo, Levico and the lakes, and the way home to Rovereto via Vattaro and Mattarello. The fifty kilometres between Moena and San Martino hold the highest and slowest part of the trip, with three passes above 1,900 m one after the other."
     ],
     fondo: "Like the Medium route along the valley floors, plus the gravel climb to Passo San Pellegrino and the 2.5 kilometres of Col Margherita, which you will cover roughly 70% pushing the bike. It took us about 50 minutes when we tested it.",
     meteo: [
@@ -573,8 +572,6 @@ pericoli: {
     testo: "Predazzo is the last place to stock up before the longest climb on the route. From here to Baita Segantini it is 24.7 km with 1,320 metres of climbing, uphill all the way, and Capanna Cervino only comes at km 197. The two Val Venegia mountain dairies that look like a halfway stop on the map are not there this year — Malga Venegiota has been closed since the end of August for building work and Malga Venegia closes on Sunday 27 September. Water is not a problem, the fountains along the Travignolo and the springs at km 193 always run. Food is what is missing. Fill your pockets before you leave town." },
   venegiaLungo: { nome: "Both Val Venegia dairies are closed",
     testo: "Passo Valles and Malga Vallazza are the last places to eat before Passo Rolle. The two Val Venegia mountain dairies further down the valley are not there this year — Malga Venegiota has been closed since the end of August for building work and Malga Venegia closes on Sunday 27 September. From Malga Vallazza to Baita Segantini it is 10.2 km with 520 metres of climbing, and then comes Capanna Cervino. Water runs all the way down the valley, the Travignolo springs never stop. Food does not." },
-  conseria: { nome: "Rifugio Consèria open on Saturday and Sunday only",
-    testo: "From 21 September Rifugio Malga Consèria opens on Saturdays and Sundays only. If you come through from Monday on you will find it shut, and then it is 21.3 km from Refavaie to Rifugio Carlettini with 900 metres of climbing, Forcella Magna at 2,014 metres in the middle and nothing else. Rifugio Forestale Socede, which comes first, is an unstaffed shelter and serves no food. Refavaie is open every day until the end of October — that is where to stop and eat, not later." },
   ss43: { nome: "SS43 road crossing",
     testo: "At La Rocchetta the route crosses the fast, busy Val di Non trunk road at street level. You ride straight across, to pick up the Strada delle Roste that runs quietly along the Noce river — the whole reason this crossing exists. Slow down early, stop with a foot on the ground before the tarmac and look carefully both ways. Cross only when the road is clear, in one go and with maximum care." },
   sp34: { nome: "Turn on the SP34",
@@ -612,9 +609,9 @@ infoCards: [
     corpo: "A valid competitive cycling medical certificate is mandatory to take part. You have until 27 August to upload it in your personal area on bikeadventureseries.com, in the Certificates section.",
     link: { testo: "Go to your personal area", url: "https://www.bikeadventureseries.com/my-account/" },
     cerca: "medical certificate cycling mandatory upload deadline 27 august personal area" },
-  { id: "gpsguide", tema: "Before you leave", icona: "🛰️", titolo: "Only the final route goes on your GPS",
-    corpo: "The routes you see here are preliminary and are meant for planning your ride and booking your nights. Do not load them onto your GPS. The final routes arrive a few days before the start and, unless last-minute issues come up, they will stay the same as these.",
-    cerca: "gps route load navigation final preliminary track" },
+  { id: "gpsguide", tema: "Before you leave", icona: "🛰️", titolo: "The final route is here, and it is the one to load on your GPS",
+    corpo: "The routes you see in this app are the final ones and they are the same ones to load on your GPS. Download them with the GPX button at the top of each route map. The Medium and Long routes come as two files, part one and part two, because many GPS units will not load a track above 10,000 points — load both and switch to the second one when the first ends, at Predazzo. Compared with the preliminary route the main change is the section after Canal San Bovo, which now goes over Passo Brocon and Pieve Tesino instead of Passo Cinque Croci, closed for roadworks. There are also short tweaks in several places, so throw away the old versions.",
+    cerca: "gps route load navigation final preliminary track gpx two files part brocon cinque croci" },
   { id: "pacco", tema: "Before you leave", icona: "🎒", titolo: "Event pack pickup",
     corpo: "Event pack pickup is on Friday 25 September, from 16:00 to 18:00, at Progetto Manifattura in Rovereto. Right after, from 18:00 to 19:00, the briefing takes place in the same venue.",
     cerca: "event pack pickup collection briefing friday 25 time" },
@@ -776,7 +773,8 @@ ui: {
   cercaInfo: "Search the information…",
   percorsoScegli: "Choose your route",
   percorsoIntro: "Start and finish for everyone at |. You can change your mind about the route at any time, with no need to tell us — we will see you on the live tracking app.",
-  mappaAltimetria: "Map + elevation", gpx: "↓ GPX",
+  mappaAltimetria: "Map + elevation", gpx: "↓ GPX", gpx1: "↓ GPX 1/2", gpx2: "↓ GPX 2/2",
+  gpxDue: "The | comes as two GPX files, because many GPS units will not load a track above 10,000 points. Download both with the two buttons at the top and load both on your device. Part two starts where part one ends, at Predazzo.",
   percorsoTocca: "Tap a route for the map, the elevation profile, the description and the services along the way.",
   rvSez: {
     descrizione: "What it is like", fondo: "Surface", meteo: "What weather to expect",

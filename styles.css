@@ -271,8 +271,13 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
 #rv-titles b{display:block;font-family:'Space Grotesk','Inter',sans-serif;font-size:16px;line-height:1.2;
   color:var(--rv-col,var(--lime));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #rv-titles span{font-size:12px;font-weight:600;color:var(--muted)}
-#rv-gpx{flex:0 0 auto;font-size:12.5px;font-weight:700;color:var(--mint);text-decoration:none;
+/* due tasti di download (Medio e Lungo in due parti) impilati in colonna:
+   in fila sui 375 px lasciavano al titolo 50 px, e "Percorso Medio" spariva */
+#rv-dl{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;align-items:stretch}
+#rv-dl a{font-size:12.5px;font-weight:700;color:var(--mint);text-decoration:none;white-space:nowrap;text-align:center;
   border:1px solid var(--line);border-radius:999px;padding:8px 12px}
+#rv-dl.due a{font-size:12px;padding:5px 10px}
+#rv-dl a[hidden]{display:none}
 /* la barra in alto resta ferma, tutto il resto scorre: mappa, altimetria e
    servizi dello stesso percorso in un posto solo, e la via d'uscita non
    scompare mai anche quando si e' in fondo alla lista */
