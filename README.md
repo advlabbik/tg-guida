@@ -348,6 +348,15 @@ provato, **entro martedì 23**. Se il 23 non è pronto, non si fa per questa
 edizione: il QR è già nelle email e funziona da solo, come per
 Germany/Austria.
 
+**Stato al 17 settembre 2026, sera.** I passi da 1 a 7 sono fatti nel ramo
+[`qr-nell-app`](https://github.com/advlabbik/tg-guida/tree/qr-nell-app), un
+commit solo. La checklist qui sotto è stata fatta girare in locale su Chromium
+a 375 px, con un decoder che ha riletto il QR disegnato e ci ha trovato
+esattamente il codice; nessun errore JavaScript. **Restano** il passo 8, cioè
+il deploy di prova e le prove dal telefono (iPhone e Android, e il punto 4
+sull'app installata in Home, che in locale non si può fare), e i dati da altri
+nella tabella in fondo. `start_url` nel manifest è ancora `./`.
+
 #### Cosa si porta, e da dove
 
 Tutto viene da `advlabbik/event-app-template`, PR #37. Niente da altre app.
