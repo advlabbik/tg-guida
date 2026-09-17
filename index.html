@@ -903,6 +903,7 @@ function openRouteView(id){
     rvLayout();
   }));
   $('#rv-desc').innerHTML = descPercorso(p);
+  meteoPercorso(p);
   $('#rv-listtit').textContent = U.servizi;
   $('#rv-listintro').innerHTML = U.serviziIntro;
   view.classList.add('open');
@@ -928,7 +929,10 @@ function descPercorso(p){
   h += `</div>`;
   if (p.fondo) h += `<div class="rvblock"><h3>${esc(S.fondo)}</h3><p>${esc(p.fondo)}</p></div>`;
   if (p.meteo && p.meteo.length){
-    h += `<div class="rvblock"><h3>${esc(S.meteo)}</h3>
+    // #rv-prev lo riempie meteoPercorso() con la previsione per i giorni
+    // dell'evento, se le localita' hanno le coordinate e se siamo nella
+    // finestra dei 14 giorni. Altrimenti resta vuoto e non si vede.
+    h += `<div class="rvblock"><h3>${esc(S.meteo)}</h3><div id="rv-prev"></div>
       <table class="rvmeteo"><thead><tr><th></th><th>${esc(S.maxCol)}</th><th>${esc(S.minCol)}</th></tr></thead><tbody>` +
       p.meteo.map(m=>`<tr><td><b>${esc(m.luogo)}</b><span class="rvq">${esc(m.quota)}</span></td>
         <td class="rvmax">${esc(m.max)}</td><td class="rvmin">${esc(m.min)}</td></tr>`).join('') +
@@ -937,6 +941,56 @@ function descPercorso(p){
     h += `<p class="rvfonte">${esc(S.fonteMeteo)}</p></div>`;
   }
   return h;
+}
+/* La previsione per i giorni dell'evento, nella vista percorso, per le
+   localita' della tabella che hanno lat e lng. Sotto resta la tabella delle
+   temperature tipiche, che e' quella da leggere un mese prima, quando la
+   previsione non esiste ancora. Nasce dalla prova traccia del Trentino
+   (Andrea, settembre 2026). Dal template, motore/app.js: le medie da sole, lette a evento vicino,
+   sembravano una previsione sbagliata.
+   Compare solo quando i giorni dell'evento sono entro i 14 giorni di
+   Open-Meteo (stessa regola della tabella nella Live, meteoDays); prima non
+   c'e' niente da dire e il riquadro resta vuoto. `elevation` passa la quota
+   del posto: il modello corregge la temperatura per l'altitudine invece di
+   usare quella della sua griglia, che su un passo puo' stare mille metri piu'
+   in basso. Le risposte si tengono in memoria per la sessione: aprire e
+   chiudere un percorso non deve rifare le chiamate. Offline la tabella resta
+   coi puntini, come quella della Live. */
+const prevCache = {};
+async function meteoPercorso(p){
+  const box = $('#rv-prev');
+  if (!box) return;
+  const loc = (p && p.meteo || []).filter(m => m.lat && m.lng);
+  const { days, nota } = meteoDays();
+  if (!loc.length || nota){ box.innerHTML = ''; return; }
+  const S = U.rvSez;
+  box.innerHTML = `<p class="rvprevh">${esc(S.previsione)}</p><div class="meteowrap"><table class="rvprev">` +
+    '<tr><th class="loc"></th>' + days.map(d=>`<th>${fmtDay(d)}</th>`).join('') + '</tr>' +
+    loc.map(m=>`<tr><td class="loc">${esc(m.luogo)}</td>` + days.map(()=>'<td>…</td>').join('') + '</tr>').join('') +
+    `</table></div><p class="rvprevh">${esc(S.tipiche)}</p>`;
+  const tab = box.querySelector('table');
+  await Promise.all(loc.map(async (m, li) => {
+    try {
+      const quota = parseInt(String(m.quota || '').replace(/[^\d]/g, ''), 10);
+      const k = `${m.lat},${m.lng},${quota},${days[0]},${days[days.length-1]}`;
+      if (!prevCache[k]){
+        const u = `https://api.open-meteo.com/v1/forecast?latitude=${m.lat}&longitude=${m.lng}` +
+          (quota ? `&elevation=${quota}` : '') +
+          `&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FRome` +
+          `&start_date=${days[0]}&end_date=${days[days.length-1]}`;
+        prevCache[k] = await fetch(u).then(x=>x.json());
+      }
+      const r = prevCache[k];
+      const row = tab.rows[li+1];
+      if (!row) return;   // il percorso e' stato chiuso nel frattempo
+      days.forEach((d, di) => {
+        const j = r.daily.time.indexOf(d);
+        row.cells[di+1].innerHTML = j < 0 ? '—' :
+          `<span class="wi">${wIcon(r.daily.weather_code[j])}</span>` +
+          `<span class="tt">${Math.round(r.daily.temperature_2m_min[j])}°/${Math.round(r.daily.temperature_2m_max[j])}°</span>`;
+      });
+    } catch(e){ /* offline: la riga resta con i puntini */ }
+  }));
 }
 function closeRouteView(fromHistory){
   $('#routeview').classList.remove('open');

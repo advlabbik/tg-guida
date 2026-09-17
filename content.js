@@ -92,10 +92,10 @@ percorsi: [
     ],
     fondo: "Circa il 70% fra ciclabili asfaltate e sterrato, il resto su strade aperte al traffico. Lo sterrato si concentra fra le Giudicarie e la val Rendena; il rientro da Trento a Rovereto è tutto sulla ciclabile asfaltata della valle dell'Adige. Nessun tratto da fare a spinta.",
     meteo: [
-      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
-      { luogo: "Cles, val di Non", quota: "650 m", max: "19°", min: "10°" },
-      { luogo: "Madonna di Campiglio", quota: "1.520 m", max: "13°", min: "4°" },
-      { luogo: "Campo Carlo Magno", quota: "1.682 m", max: "12°", min: "2°" }
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°", lat: 45.8989, lng: 11.0278 },
+      { luogo: "Cles, val di Non", quota: "650 m", max: "19°", min: "10°", lat: 46.3654, lng: 11.0333 },
+      { luogo: "Madonna di Campiglio", quota: "1.520 m", max: "13°", min: "4°", lat: 46.2285, lng: 10.8285 },
+      { luogo: "Campo Carlo Magno", quota: "1.682 m", max: "12°", min: "2°", lat: 46.2336, lng: 10.832 }
     ],
     meteoNota: "In quattro anni, negli stessi giorni, a Campo Carlo Magno si sono misurati sia 21 gradi di giorno sia 8 sotto zero di notte. Mettiti in borsa di che coprirti anche se parti in maniche corte." },
   { id: "medio", nome: "Percorso Medio", breve: "Medio", colore: "#3d7a2e", km: 357, dplus: "7.100",
@@ -111,12 +111,12 @@ percorsi: [
     ],
     fondo: "Fondovalle su ciclabili asfaltate — Rotaliana, Strada del Vino, val di Fiemme e Valsugana — e sterrato nelle salite e nei traversi in quota. Nessun tratto da fare a spinta, ed è esattamente il motivo per cui il Medio esiste.",
     meteo: [
-      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
-      { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°" },
-      { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°" },
-      { luogo: "Baita Segantini", quota: "2.173 m", max: "9°", min: "0°" },
-      { luogo: "Passo Brocon", quota: "1.616 m", max: "12°", min: "3°" },
-      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°", lat: 45.8989, lng: 11.0278 },
+      { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°", lat: 46.2912, lng: 11.4604 },
+      { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°", lat: 46.2982, lng: 11.7879 },
+      { luogo: "Baita Segantini", quota: "2.173 m", max: "9°", min: "0°", lat: 46.2993, lng: 11.8028 },
+      { luogo: "Passo Brocon", quota: "1.616 m", max: "12°", min: "3°", lat: 46.1183, lng: 11.6694 },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°", lat: 46.0537, lng: 11.4546 }
     ],
     meteoNota: "Fra il fondovalle e i 2.000 metri ballano dodici gradi di giorno e altrettanti di notte. Alla Baita Segantini, negli ultimi quattro anni, la notte più fredda del periodo è arrivata a 6 sotto zero." },
   { id: "lungo", nome: "Percorso Lungo", breve: "Lungo", colore: "#1f4d1a", km: 376, dplus: "7.900",
@@ -132,12 +132,12 @@ percorsi: [
     ],
     fondo: "Come il Medio nei fondovalle, con in più la salita al passo San Pellegrino su sterrato e i 2,5 chilometri del Col Margherita, che farai per il 70% a piedi spingendo la bici. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti.",
     meteo: [
-      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
-      { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°" },
-      { luogo: "Passo San Pellegrino", quota: "1.918 m", max: "11°", min: "1°" },
-      { luogo: "Col Margherita", quota: "2.337 m", max: "8°", min: "-1°" },
-      { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°" },
-      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°", lat: 45.8989, lng: 11.0278 },
+      { luogo: "Cavalese, val di Fiemme", quota: "1.000 m", max: "17°", min: "8°", lat: 46.2912, lng: 11.4604 },
+      { luogo: "Passo San Pellegrino", quota: "1.918 m", max: "11°", min: "1°", lat: 46.3781, lng: 11.7821 },
+      { luogo: "Col Margherita", quota: "2.337 m", max: "8°", min: "-1°", lat: 46.3784, lng: 11.7986 },
+      { luogo: "Passo Rolle", quota: "1.984 m", max: "11°", min: "2°", lat: 46.2982, lng: 11.7879 },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°", lat: 46.0537, lng: 11.4546 }
     ],
     meteoNota: "Sul Col Margherita la media delle minime di fine settembre è sotto zero, e negli ultimi quattro anni la giornata più fredda non ha superato i 4 gradi. Ci arrivi bagnato di sudore dopo aver spinto la bici — guanti, giacca e qualcosa di asciutto non sono un extra." }
 ],
@@ -376,6 +376,7 @@ ui: {
   rvSez: {
     descrizione: "Com'è", fondo: "Il fondo", meteo: "Che tempo aspettarsi",
     alto: "Punto più alto", quota: "quota", maxCol: "max", minCol: "min",
+    previsione: "La previsione per i giorni dell'evento", tipiche: "Le temperature tipiche di quei giorni",
     fonteMeteo: "Medie delle massime e delle minime dal 20 al 30 settembre degli ultimi quattro anni, corrette sulla quota reale di ogni punto. Sono medie, non previsioni."
   },
   rv: {
@@ -531,10 +532,10 @@ percorsi: [
     ],
     fondo: "About 70% between paved cycleways and gravel, the rest on roads open to traffic. The gravel is concentrated between the Giudicarie valleys and val Rendena; the run home from Trento to Rovereto is all on the paved Adige valley cycleway. No hike-a-bike sections.",
     meteo: [
-      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
-      { luogo: "Cles, val di Non", quota: "650 m", max: "19°", min: "10°" },
-      { luogo: "Madonna di Campiglio", quota: "1,520 m", max: "13°", min: "4°" },
-      { luogo: "Campo Carlo Magno", quota: "1,682 m", max: "12°", min: "2°" }
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°", lat: 45.8989, lng: 11.0278 },
+      { luogo: "Cles, val di Non", quota: "650 m", max: "19°", min: "10°", lat: 46.3654, lng: 11.0333 },
+      { luogo: "Madonna di Campiglio", quota: "1,520 m", max: "13°", min: "4°", lat: 46.2285, lng: 10.8285 },
+      { luogo: "Campo Carlo Magno", quota: "1,682 m", max: "12°", min: "2°", lat: 46.2336, lng: 10.832 }
     ],
     meteoNota: "Over four years, in the same days, Campo Carlo Magno has seen both 21 degrees by day and 8 below zero at night. Pack something warm even if you start in short sleeves." },
   { id: "medio", nome: "Medium Route", breve: "Medium", colore: "#3d7a2e", km: 357, dplus: "7,100",
@@ -550,12 +551,12 @@ percorsi: [
     ],
     fondo: "Paved cycleways along the valley floors — Rotaliana, the Wine Road, val di Fiemme and the Valsugana — and gravel on the climbs and high traverses. No hike-a-bike sections, which is exactly why the Medium route exists.",
     meteo: [
-      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
-      { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°" },
-      { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°" },
-      { luogo: "Baita Segantini", quota: "2,173 m", max: "9°", min: "0°" },
-      { luogo: "Passo Brocon", quota: "1,616 m", max: "12°", min: "3°" },
-      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°", lat: 45.8989, lng: 11.0278 },
+      { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°", lat: 46.2912, lng: 11.4604 },
+      { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°", lat: 46.2982, lng: 11.7879 },
+      { luogo: "Baita Segantini", quota: "2,173 m", max: "9°", min: "0°", lat: 46.2993, lng: 11.8028 },
+      { luogo: "Passo Brocon", quota: "1,616 m", max: "12°", min: "3°", lat: 46.1183, lng: 11.6694 },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°", lat: 46.0537, lng: 11.4546 }
     ],
     meteoNota: "Between the valley floor and 2,000 m there are twelve degrees of difference by day and as many at night. At Baita Segantini the coldest night of the period in the last four years hit 6 below zero." },
   { id: "lungo", nome: "Long Route", breve: "Long", colore: "#1f4d1a", km: 376, dplus: "7,900",
@@ -571,12 +572,12 @@ percorsi: [
     ],
     fondo: "Like the Medium route along the valley floors, plus the gravel climb to Passo San Pellegrino and the 2.5 kilometres of Col Margherita, which you will cover roughly 70% pushing the bike. It took us about 50 minutes when we tested it.",
     meteo: [
-      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°" },
-      { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°" },
-      { luogo: "Passo San Pellegrino", quota: "1,918 m", max: "11°", min: "1°" },
-      { luogo: "Col Margherita", quota: "2,337 m", max: "8°", min: "-1°" },
-      { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°" },
-      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
+      { luogo: "Rovereto", quota: "170 m", max: "22°", min: "13°", lat: 45.8989, lng: 11.0278 },
+      { luogo: "Cavalese, val di Fiemme", quota: "1,000 m", max: "17°", min: "8°", lat: 46.2912, lng: 11.4604 },
+      { luogo: "Passo San Pellegrino", quota: "1,918 m", max: "11°", min: "1°", lat: 46.3781, lng: 11.7821 },
+      { luogo: "Col Margherita", quota: "2,337 m", max: "8°", min: "-1°", lat: 46.3784, lng: 11.7986 },
+      { luogo: "Passo Rolle", quota: "1,984 m", max: "11°", min: "2°", lat: 46.2982, lng: 11.7879 },
+      { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°", lat: 46.0537, lng: 11.4546 }
     ],
     meteoNota: "On Col Margherita the average late-September low is below zero, and in the last four years the coldest day of the period never went above 4 degrees. You get there soaked in sweat after pushing the bike — gloves, a jacket and something dry are not an extra." }
 ],
@@ -800,6 +801,7 @@ ui: {
   rvSez: {
     descrizione: "What it is like", fondo: "Surface", meteo: "What weather to expect",
     alto: "Highest point", quota: "elevation", maxCol: "high", minCol: "low",
+    previsione: "The forecast for the event days", tipiche: "Typical temperatures for those days",
     fonteMeteo: "Average daily highs and lows from 20 to 30 September over the last four years, corrected for the real elevation of each point. Averages, not a forecast."
   },
   rv: {
