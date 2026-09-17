@@ -66,5 +66,31 @@ sbagliata e non lo è: la riga viene scritta, è la rilettura a essere negata.
 ## I feedback
 
 Il modale "Qualcosa non funziona?" scrive in `feedback` con l'`evento_id` di
-questa app, e un trigger `pg_net` chiama il webhook n8n che li porta su Slack in
-`#feedback-app`.
+questa app, e un trigger `pg_net` chiama il webhook n8n `tg-feedback-slack`. Da
+lì il workflow "Guide eventi — Feedback → Slack + issue" (`r7ZcI2XT34iRv7px`)
+fa due cose: **apre una issue** etichettata `feedback` nella repo dell'evento e
+**posta in `#feedback-app`** il messaggio, col nome dell'evento e il link alla
+issue.
+
+**Il workflow serve tutte le app-evento, non solo questa.** La tabella
+`feedback` è condivisa e il trigger è sulla tabella, non filtrato: ci passa
+anche il feedback dell'app TGE Germania/Austria (repo
+`evento-tge-ger-austria-2026`, `evento_id`
+`96b30757-b71f-4211-8376-747715b69e41`, con `feedbackAttivo: true` sullo stesso
+progetto Supabase). Uno Switch sull'`evento_id` decide la repo di destinazione,
+e l'uscita di riserva manda su Slack — senza aprire niente — quello che arriva
+da un evento non mappato. **Ogni nuova app-evento va aggiunta a quello
+Switch**, altrimenti i suoi feedback restano solo su Slack: è esattamente la
+svista che ha lasciato i feedback tedeschi senza destinazione fino al
+31/8/2026.
+
+Il nodo GitHub ha `onError: continueRegularOutput`: se GitHub non risponde, la
+notifica Slack parte lo stesso. Il feedback non si perde mai comunque — la riga
+su Supabase è già scritta prima che il trigger parta.
+
+La riga `*Issue:*` del messaggio Slack è anche la spia della scadenza del token
+GitHub: normalmente porta il link alla issue, e se al suo posto compare
+**«⚠️ NON CREATA»** vuol dire che il PAT nella credenziale n8n è scaduto,
+revocato, o non ha accesso a quella repo. È l'unico modo per accorgersene —
+GitHub non avvisa nessuno — ed è il motivo per cui quel testo di ripiego è
+scritto come un allarme e non come una nota.

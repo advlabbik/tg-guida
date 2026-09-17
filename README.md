@@ -27,6 +27,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 | `index.html` | Markup + tutta la logica dell'app (tab, gate d'accesso, vista percorso con mappa e altimetria, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA, opt-in notifiche push, feed Comunicazioni). Vista percorso e Live condividono i mattoni: `creaProfilo`/`profDisegna`/`profPin` per l'altimetria (che sa disegnare sia tutto il tracciato sia una finestra), `poiSuMappa` per i segni, `raggruppa` per non far sparire i punti sovrapposti |
 | `staff.html` | Pagina riservata allo staff per inviare comunicazioni push a tutti i partecipanti iscritti (gate separato da `index.html`, chiama la Edge Function `invia-comunicazione`), con sotto l'archivio di quelle già mandate |
 | `config.js` | Unica fonte per `TG_SUPABASE_URL`, `TG_SUPABASE_ANON_KEY` e `TG_EVENTO_ID`, caricato sia da `index.html` sia da `staff.html` — evita di tenere sincronizzato a mano lo stesso valore in più file |
+| `uso.js` | **Analytics d'uso — spento.** Conta quante persone usano la guida e quali funzioni, con un codice anonimo che si rigenera ogni notte. Arriva dal template (`advlabbik/event-app-template`, `motore/uso.js`) e **va tenuto identico byte per byte**: e' l'unico modo perche' le correzioni fatte la' si riportino qui con una copia invece che con una riconciliazione a mano. Si accende da `config.js` → `analytics` |
 | `styles.css` | Tutto il CSS del design system (token in `:root`, componenti, schermate) |
 | `icons.js` | Helper `icon(name, size)` per le icone (sprite SVG) e mappa id-scheda-info → nome icona |
 | `icons/sprite.svg` | Sprite SVG con i simboli usati nell'app (referenziato via `<use>`) |
@@ -56,7 +57,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 - **Installabile**: prompt "aggiungi a schermata Home" per Android (`beforeinstallprompt`) e istruzioni guidate per iOS.
 - **Notifiche push e Comunicazioni**: opt-in Web Push (VAPID) nella tab Live, ricevute da `sw.js` anche ad app chiusa, più un feed in-app "Comunicazioni" come fallback per chi non riceve il push. Il feed porta giorno e ora, non solo l'ora: l'evento dura sei giorni e un messaggio di sabato e uno di domenica sarebbero identici. **Su iPhone in Safari il push non esiste** — Apple lo dà solo alle app aggiunte alla schermata Home — e la card lo dice invece di sparire, che è la ragione per cui `push_subscribe_attempts` era rimasta a zero. Lo staff invia i messaggi da `staff.html`, che sotto al modulo mostra anche l'archivio di quelle già mandate, per non mandare due volte la stessa cosa quando scrivono in più persone.
 - **Fase "dopo" a sequenza spuntabile** (19 agosto 2026): la home post-evento ha la stessa forma della checklist del "prima" — voci numerate con casella, salvate in `localStorage` (`tg-ck-dopo`, chiave separata da `tg-ck`). Le voci con `url` vuoto in `content.js → dopo.azioni` appaiono in stato "In arrivo" (testo `attesa`, niente casella né link): appena si compila l'url la voce si accende da sola, senza toccare il codice. Il prossimo evento (`dopo.prossimo`) è una card in evidenza col bordo oro, non una casella — un invito, non un compito; anche qui il bottone compare solo se `url` è compilato.
-- **Feedback dei partecipanti**: link fisso in fondo alla pagina ("Qualcosa non funziona? Scrivicelo") che apre un modale con textarea + email facoltativa. Il messaggio va nella tabella Supabase `feedback` (insert-only per anon, rate limit per IP e per evento — stesso pattern delle push) insieme al contesto tecnico (fase, tab, lingua, user agent, PWA sì/no) e all'`evento_id` di questa app. Nessuna policy di lettura per anon: i feedback si leggono dal dashboard Supabase e arrivano in tempo reale su Slack `#feedback-app` via trigger `pg_net` → webhook n8n "TG Guida — Feedback → Slack".
+- **Feedback dei partecipanti**: link fisso in fondo alla pagina ("Qualcosa non funziona? Scrivicelo") che apre un modale con textarea + email facoltativa. Il messaggio va nella tabella Supabase `feedback` (insert-only per anon, rate limit per IP e per evento — stesso pattern delle push) insieme al contesto tecnico (fase, tab, lingua, user agent, PWA sì/no) e all'`evento_id` di questa app. Nessuna policy di lettura per anon: i feedback si leggono dal dashboard Supabase e arrivano in tempo reale su Slack `#feedback-app` via trigger `pg_net` → webhook n8n. Dal 31/8/2026 lo stesso workflow (rinominato "Guide eventi — Feedback → Slack + issue", `r7ZcI2XT34iRv7px`) **apre anche una issue GitHub** etichettata `feedback`, con testo, contatto, contesto tecnico e id Supabase; il messaggio Slack porta il nome dell'evento e il link alla issue. **Il workflow non è più solo di questa app**: la tabella `feedback` è condivisa e il trigger è sulla tabella, quindi ci passano i feedback di *tutte* le app-evento. Uno Switch sull'`evento_id` li smista nella repo giusta — `b059ed05…` → `tg-guida`, `96b30757…` → `evento-tge-ger-austria-2026` (l'app TGE Germania/Austria, che ha `feedbackAttivo: true` sullo stesso progetto Supabase) — e un'uscita di riserva manda su Slack, senza aprire niente, quello che arriva da un `evento_id` non ancora mappato. **Quando nasce una nuova app-evento va aggiunta lì**, altrimenti i suoi feedback restano solo su Slack.
 
 ## Da sapere
 
@@ -78,6 +79,9 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 
 - [x] ~~Applicare `supabase/migrations/20260819000000_tg_feedback.sql`~~ **Fatto (24/8)** sul nuovo progetto `guide-eventi` (`tokqvqrebunfshjtpkog`), con RLS abilitata anche su `tg_feedback_attempts` (su kqsr l'omologa delle push era rimasta scoperta, advisory critico).
 - [x] ~~Configurare il Database Webhook verso Slack~~ **Fatto (24/8)** con trigger `pg_net` nella migrazione stessa → webhook n8n `tg-feedback-slack` → canale `#feedback-app`.
+- [x] ~~**Feedback → issue GitHub**~~ **Fatto e in produzione (31/8/2026).** Il workflow n8n `r7ZcI2XT34iRv7px` apre la issue prima di postare su Slack; provato end-to-end con un feedback vero mandato all'endpoint REST (issue [#27](https://github.com/advlabbik/tg-guida/issues/27), chiusa) — passa il trigger `pg_net`, lo Switch sull'`evento_id`, la label `feedback` e il link nel messaggio Slack. La credenziale n8n è **"GitHub account"**, un PAT fine-grained intestato all'organizzazione `advlabbik` con `Issues: read and write` sulla sola repo `tg-guida`. **Ha una scadenza**, e il nodo GitHub ha `onError: continueRegularOutput` — un guasto di GitHub non deve mangiarsi la notifica Slack, e la riga su Supabase è comunque già scritta prima che il trigger parta. Perché la scadenza non passi inosservata, la riga `*Issue:*` del messaggio Slack fa da spia: se al posto del link compare **«⚠️ NON CREATA»**, il token è scaduto, revocato, o non ha accesso a quella repo. Non serve nessun controllo periodico: il segnale arriva da solo col primo feedback.
+- [x] ~~**Allargare il token GitHub alla repo tedesca**~~ **Fatto (31/8).** Entrambi i rami provati in produzione con feedback veri: [tg-guida#27](https://github.com/advlabbik/tg-guida/issues/27) e [evento-tge-ger-austria-2026#28](https://github.com/advlabbik/evento-tge-ger-austria-2026/issues/28), tutt'e due chiuse.
+- **Trappola da conoscere prima di diagnosticare questo workflow: i dati bloccati (*pinned*) di n8n.** Se un nodo ha dei dati bloccati nell'editor, **nelle esecuzioni manuali** restituisce quelli invece di chiamare davvero il servizio — e continua a farlo anche dopo che il problema è stato risolto. È successo il 31/8: il nodo GitHub tedesco aveva bloccato un vecchio `404` e faceva sembrare rotto un token già sistemato. Si riconosce dal tempo di esecuzione del nodo a **0 ms** invece di qualche centinaio, e dalla presenza del nodo dentro `pinData` nell'esecuzione. Non si toglie riscrivendo il workflow via API: va sbloccato dall'editor (tasto destro sul nodo → *Unpin*). **In produzione i dati bloccati vengono ignorati**, quindi nel dubbio la prova che vale è un feedback vero mandato all'endpoint REST, non un'esecuzione manuale.
 - [ ] Compilare i tre url in `content.js → dopo` (IT **e** EN): `azioni[questionario].url` (il questionario post-evento), `azioni[foto].url` (le foto ufficiali — chiedere a Francesco il link del sistema di riconoscimento facciale), `prossimo.url` (form email "avvisami" del sito Tuscany Trail 2027). Le voci si accendono da sole appena l'url c'è.
 - [ ] La data della finestra alumni (31 ottobre ore 18) è già nel testo di `dopo.prossimo`: i partecipanti la vedono dal 1° ottobre (inizio fase "dopo"), prima del reveal pubblico di metà ottobre. È voluto — sono gli alumni, il vantaggio è il messaggio — ma se il piano lanci cambia va aggiornata qui.
 
@@ -89,9 +93,57 @@ Prima della pubblicazione reale, da fare in quest'ordine:
 - [ ] Se si tocca di nuovo `sw.js`, incrementare `CACHE` — altrimenti i client con la PWA installata restano sulla versione cache precedente.
 - [ ] Verificare il fallback iOS su un iPhone reale — finora testato solo per via statica/logica.
 
+## Analytics d'uso — c'è, ed è spento
+
+Dal ramo `analytics-uso` (settembre 2026). L'app sa contare quante persone la
+usano in un giorno e quali funzioni toccano, ma **`analytics` in `config.js` è
+`false`** e finché resta così non scrive niente nel browser e non manda niente
+in rete.
+
+Il disegno, con le ragioni di ogni scelta, sta nel template:
+`docs/superpowers/specs/2026-09-08-analytics-uso-design.md`. In breve —
+l'identità è un codice casuale che si rigenera ogni notte, quindi risponde a
+«quante persone oggi» senza essere un identificativo che dura; il vocabolario
+dei contatori è chiuso; non si registrano le parole cercate, né la posizione,
+né il chilometro. Questa app ha già il suo `TG_EVENTO_ID`, e le tabelle sono state applicate al
+progetto condiviso `guide-eventi` il 9 settembre 2026 — lo schema vive nel
+template, in `supabase/riferimento/analytics-uso.sql`, e **non è copiato in
+questa repo**.
+
+> Se un giorno quelle tabelle non ci fossero (progetto ripristinato da un
+> backup vecchio, schema riapplicato a metà), PostgREST risponderebbe **404**, e
+> il 404 è fra i rifiuti che `uso.js` considera definitivi- ogni lotto verrebbe
+> buttato **in silenzio**, senza un errore da nessuna parte. Prima di accendere,
+> vale la pena aprire il Table Editor e vedere che `uso` ci sia davvero.
+
+**Sedici contatori su ventidue.** Restano fuori i tre «bisogni» (acqua, cibo,
+spesa), i due salti alloggi «+60 / +100 km» e `maps:cerca`, perché in questa
+versione dell'app quelle funzioni e quei link non ci sono. Chi guarda i numeri
+non deve aspettarsi quei sei — non arriveranno mai.
+
+### Cosa serve PRIMA di accenderlo
+
+1. **Una scheda Info con `id: 'privacy'`**, in italiano e inglese, che spieghi
+   ai partecipanti che l'app conta in forma anonima quante persone la usano e
+   quali funzioni. L'avviso sopra la barra rimanda lì con «Come funziona»; senza
+   quella scheda il tasto apre la sezione Info e basta. I testi pronti stanno
+   nel template, in `docs/informativa-analytics.md`, e **vanno confermati da chi
+   segue la privacy prima di pubblicarli** — non sono un parere legale.
+2. Bumpare `CACHE` in `sw.js`, come per ogni modifica ai file dell'app.
+
+> **Qui non c'è la rete del template.** Sul template `scripts/verifica.mjs` si
+> rifiuta di dare l'ok se l'analytics è acceso senza informativa, e
+> `scripts/prova-uso.mjs` fa girare 30 prove sul sottosistema. Questa app non ha
+> né l'uno né l'altro: i controlli, qui, li fa una persona. È il motivo per cui
+> conviene accendere **a evento iniziato** e non il giorno della partenza.
+
 ## Stato del repo e dei branch
 
 Deploy automatico su GitHub Pages da `main`, su **<https://trentinogravel.bikeadventureseries.com>** (dal 27/8/2026, [issue #10](https://github.com/advlabbik/tg-guida/issues/10)). Il vecchio `advlabbik.github.io/tg-guida/` risponde 301 verso il nuovo indirizzo conservando il path, quindi i link già distribuiti reggono. Il file `CNAME` in radice tiene ferma la configurazione: se sparisce, al primo deploy il dominio si perde.
+
+**Questa repo deve restare pubblica, altrimenti il sito va giù.** L'organizzazione `advlabbik` è sul piano **Free**, e su Free GitHub Pages non pubblica repo privati: nel momento in cui la visibilità passa a privato, GitHub **disattiva Pages da solo** (`has_pages` va a `false`, l'endpoint API `repos/.../pages` risponde 404) e il dominio custom comincia a servire la pagina «Site not found · GitHub Pages». Non c'è nessun avviso, nessun build fallito da guardare, nessuna traccia nei commit: da fuori sembra un guasto del deploy o del DNS, ma DNS e `CNAME` restano perfettamente a posto. È successo il **31/8/2026 alle 11:17**: la repo è stata resa privata e la guida è andata offline finché non è stata rimessa pubblica e Pages riacceso su `main` / root. Il certificato HTTPS del dominio è sopravvissuto allo spegnimento, quindi al riaccendere non serve riemetterlo.
+
+Nel repo **non ci sono segreti**, ed è il motivo per cui tenerlo pubblico è sostenibile: `config.js` porta solo la chiave *publishable* di Supabase (pubblica per definizione in un sito statico), mentre `STAFF_CODE` e le chiavi VAPID stanno nei secret del progetto Supabase. Il `GATE_CODE` in `index.html` è un deterrente dichiarato, non un segreto. Se un domani servisse davvero tenere il codice privato, le strade sono due: portare l'organizzazione su GitHub Team (Pages pubblica anche i repo privati) oppure spostare l'hosting su Cloudflare Pages/Netlify, che buildano repo privati anche sul piano gratuito — rifacendo però il DNS del sottodominio.
 
 **Backend: dal 24/8/2026 l'app punta al progetto Supabase dedicato `guide-eventi` (`tokqvqrebunfshjtpkog`)**, creato per separare le app evento dal DB marketing (`kqsrtuzeeiljozdnjott`, dove le tabelle `tg_*` sono nate). Lo switch è avvenuto a tabelle quasi vuote (0 subscription push, 0 broadcast reali), quindi senza migrazione dati; i VAPID e lo `STAFF_CODE` sono stati rigenerati nell'occasione. Le vecchie tabelle `tg_*` su kqsr vanno droppate dopo un periodo di osservazione.
 

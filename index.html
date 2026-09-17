@@ -80,6 +80,10 @@
     </div>
   </div></div>
 
+  <!-- Avviso sulla misurazione d'uso: lo riempie il codice, e solo se
+       `analytics` e' acceso in config.js. -->
+  <div id="usoavviso" hidden></div>
+
   <nav><div class="in">
     <button data-tab="home"><span class="e"></span><span class="tlbl" data-t="home"></span></button>
     <button data-tab="percorso"><span class="e"></span><span class="tlbl" data-t="percorso"></span></button>
@@ -112,6 +116,7 @@
 </div>
 
 <script src="config.js"></script>
+<script src="uso.js"></script>
 <script src="content.js"></script>
 <script src="tracks.js"></script>
 <script src="poi.js"></script>
@@ -287,12 +292,16 @@ const paragrafi = txt => String(txt || '').split('\n\n').map(t => `<p>${esc(t)}<
    Nell'area personale su bikeadventureseries.com il login sostituirà tutto questo. */
 const GATE_CODE = 'PIONEER26'; // ✱ segnaposto
 function initGate(){
-  if (localStorage.getItem('tg-access') === GATE_CODE) return;
+  if (localStorage.getItem('tg-access') === GATE_CODE){ USO.contaApertura(); return; }
   $('#gate').style.display = 'flex';
   const tryCode = () => {
     const v = $('#gatecode').value.trim().toUpperCase();
     if (v === GATE_CODE){
       localStorage.setItem('tg-access', GATE_CODE);
+      /* Anche chi entra ADESSO: se si contasse solo chi ha gia' la chiave
+         salvata, la prima sessione di ogni partecipante non conterebbe mai — e
+         per chi apre la guida una volta sola e' l'unica che ha. */
+      USO.contaApertura();
       $('#gate').style.display = 'none';
     } else {
       $('#gateerr').textContent = U.gate.errore;
@@ -373,6 +382,14 @@ $('#h-sub').textContent = C.meta.sottotitolo;
 
 /* ---------- tabs ---------- */
 let mapsInit = {};
+/* Il cambio scheda si conta qui e non dentro `openTab`, perche' openTab la
+   chiamano anche startGPS() e goBook(): contando li' dentro, aprire il GPS
+   valeva una visita al Live che nessuno aveva chiesto. Stessa scelta del
+   template, stessa ragione. */
+function apriDaGesto(name){
+  USO.conta('scheda:' + name);
+  openTab(name);
+}
 function openTab(name){
   // un cambio tab chiude la vista percorso, da qualunque strada arrivi (bottone,
   // tocco su una notifica push, codice): altrimenti la tab cambia sotto l'overlay
@@ -384,7 +401,7 @@ function openTab(name){
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on', b.dataset.tab===name));
   window.scrollTo({top:0});
   if (name==='percorso' && !mapsInit.mini) { mapsInit.mini = true; setTimeout(initMiniMap, 60); }
-  if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; loadStay22(); }
+  if (name==='dormire' && !mapsInit.stay) { mapsInit.stay = true; USO.conta('alloggi:mappa'); loadStay22(); }
   if (name==='live' && !mapsInit.meteo) { mapsInit.meteo = true; loadMeteoTable(); loadSunset(); }
   // refreshNotifCard() trigger verifyPushSubscription() (service worker ready +
   // getSubscription + eventuale POST): va bene farlo una volta per sessione come
@@ -405,7 +422,7 @@ function openTab(name){
     lvPoiMappa();
   }
 }
-document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>apriDaGesto(b.dataset.tab)));
 window.addEventListener('resize', ()=>{
   if (miniMap) miniMap.invalidateSize();
   if (gpsMap) gpsMap.invalidateSize();
@@ -560,7 +577,7 @@ function bindTabLinks(root){
   root.querySelectorAll('[data-tab]').forEach(el=>{
     el.addEventListener('click',e=>{
       e.preventDefault();
-      openTab(el.dataset.tab);
+      apriDaGesto(el.dataset.tab);
       if (el.dataset.gps) setTimeout(()=>avviaLive(true), 250);
       if (el.dataset.share) { autoShare = true; setTimeout(()=>avviaLive(true), 250); }
       if (el.dataset.meteo) setTimeout(()=>{
@@ -727,6 +744,7 @@ function poiListHtml(rid, filter){
 }
 let stayCenter = null;
 function goBook(lat, lng){
+  USO.conta('alloggi:prenota');
   stayCenter = {lat, lng};
   const alreadyLoaded = mapsInit.stay;
   openTab('dormire'); // openTab chiude da solo la vista percorso se e' aperta
@@ -855,6 +873,7 @@ const RV_ICO = { a:'droplets', m:'utensils', d:'bed-double', b:'wrench', c:'land
 // un decimale, con la virgola in italiano e il punto in inglese
 function kmDec(v){ const s = v.toFixed(1); return LANG === 'it' ? s.replace('.', ',') : s; }
 function openRouteView(id){
+  USO.conta('percorso:vista');
   rvId = id; rvSel = -1; rvFilter = 'tutti';
   // aprire un percorso lo elegge a "mio percorso" per Live e Dormire, come
   // faceva la vecchia lista servizi: senza questa riga la tab Percorso non
@@ -1348,6 +1367,10 @@ function renderInfo(){
   });
   $('#infosearch').addEventListener('input',e=>{
     const q = e.target.value.trim().toLowerCase();
+    /* Si conta che una ricerca e' avvenuta, non cosa diceva — e una volta
+       sola: su `input` una parola di otto lettere conterebbe otto ricerche. */
+    if (q && !usoCercaInfo) USO.conta('info:cerca');
+    usoCercaInfo = !!q;
     document.querySelectorAll('#infolist .icard').forEach(c=>{
       c.style.display = (!q || c.dataset.cerca.includes(q)) ? '' : 'none';
     });
@@ -1663,8 +1686,12 @@ function avviaLive(forza){
   startGPS();
   meteoGPS();
 }
+let usoGpsDetto = false; // il GPS si conta acceso una volta, non a ogni fix
+let usoGpsNegato = false; // e negato una volta, non a ogni errore che si ripete
+let usoCercaInfo = false; // e una ricerca e' una, non una per lettera battuta
 function sharePos(){
   if (!lastPos) return;
+  USO.conta('posizione:condivisa');
   const url = `https://maps.google.com/?q=${lastPos[0].toFixed(5)},${lastPos[1].toFixed(5)}`;
   const text = `${U.condividiTesto} — ${url}`;
   if (navigator.share) navigator.share({text}).catch(()=>{});
@@ -1704,6 +1731,8 @@ function startGPS(){
   info.textContent = U.gpsCerco;
   if (gpsWatch) navigator.geolocation.clearWatch(gpsWatch);
   gpsWatch = navigator.geolocation.watchPosition(pos=>{
+    // al PRIMO fix, non a ogni aggiornamento: ne arriva uno ogni pochi secondi
+    if (!usoGpsDetto){ usoGpsDetto = true; USO.conta('gps:acceso'); }
     const me = [pos.coords.latitude, pos.coords.longitude];
     lastPos = me;
     if (autoShare){ autoShare = false; sharePos(); }
@@ -1778,6 +1807,10 @@ function startGPS(){
     lvAggiorna(rid, km);
     lvPoiMappa();
   }, err=>{
+    /* Solo il rifiuto VERO (codice 1) e una volta sola. Un tempo scaduto in
+       galleria non e' un no, e il watch ripete l'errore ogni quindici secondi
+       finche' non trova il segnale. */
+    if (err && err.code === 1 && !usoGpsNegato){ usoGpsNegato = true; USO.conta('gps:negato'); }
     info.textContent = U.gpsNegato;
   }, {enableHighAccuracy:true, maximumAge:10000, timeout:15000});
 }
@@ -1795,7 +1828,7 @@ INDEX.push({tab:'dormire', t:'Arrivare e dormire', s:'La mappa alloggi con prezz
 INDEX.push({tab:'live', t:'Dove sono / Meteo', s:'GPS sul percorso, meteo e tramonto', k:'live gps dove sono posizione meteo tramonto davanti'});
 INDEX.push({tab:'home', t:'Checklist di preparazione', s:'Le cose da fare prima di partire', k:'checklist preparazione lista cose da fare prima'});
 
-$('#searchbtn').addEventListener('click',()=>{ $('#searchov').classList.add('open'); $('#searchinput').focus(); });
+$('#searchbtn').addEventListener('click',()=>{ USO.conta('cerca:globale'); $('#searchov').classList.add('open'); $('#searchinput').focus(); });
 $('#searchov').addEventListener('click',e=>{ if(e.target.id==='searchov') $('#searchov').classList.remove('open'); });
 /* Il tasto Cerca e' la scorciatoia piu' utile e la piu' ignorata: chi non lo
    prova non sa che dietro c'e' TUTTA la guida. Alla prima apertura si annuncia
@@ -1825,7 +1858,7 @@ $('#searchinput').addEventListener('input',e=>{
   box.querySelectorAll('.sres').forEach(r=>r.addEventListener('click',()=>{
     const h = INDEX[+r.dataset.i];
     $('#searchov').classList.remove('open');
-    openTab(h.tab);
+    apriDaGesto(h.tab);
     if (h.el){ const el = document.getElementById(h.el);
       // la scheda info nasce chiusa: chi ci arriva dalla ricerca vuole leggerla, non aprirla a mano
       apriInfoCard(el);
@@ -1853,7 +1886,11 @@ $('#searchinput').addEventListener('input',e=>{
   $('#langsw').innerHTML = ['it','en'].map(l =>
     `<button type="button" class="${l===LANG?'on':''}" data-lang="${l}">${BANDIERE[l]}<span class="lbl">${l.toUpperCase()}</span></button>`).join('');
   document.querySelectorAll('#langsw button').forEach(el => el.addEventListener('click', () => {
-    if (el.dataset.lang !== LANG){ localStorage.setItem('tg-lang', el.dataset.lang); location.reload(); }
+    if (el.dataset.lang !== LANG){
+      USO.conta('lingua:cambiata'); // prima del reload: dopo non conta piu' nessuno
+      localStorage.setItem('tg-lang', el.dataset.lang);
+      location.reload();
+    }
   }));
   document.querySelectorAll('nav button .e').forEach(el => {
     const map = {home:'house', percorso:'route', info:'info', dormire:'bed-double', live:'satellite'};
@@ -1864,7 +1901,7 @@ $('#searchinput').addEventListener('input',e=>{
   $('#searchbtn').setAttribute('aria-label', U.cercaGlobale);
   $('#iosmodal-icon').innerHTML = icon('smartphone', 20);
   $('#gatekicker').textContent = C.meta.sottotitolo;
-  $('#homelogo').addEventListener('click', () => openTab('home'));
+  $('#homelogo').addEventListener('click', () => apriDaGesto('home'));
 })();
 
 /* ---------- feedback dei partecipanti ----------
@@ -1922,12 +1959,47 @@ $('#searchinput').addEventListener('input',e=>{
 })();
 initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
-paintDemo(); openTab('home');
+paintDemo();
+
+/* --------------------------------------------------------------- analytics
+   Parte per ultima e sa solo tre cose sul contesto. `fase` e' una funzione e
+   non un valore perche' la barra demo la cambia a runtime. */
+USO.avvia(() => ({ fase: phase(), lingua: LANG, standalone: isStandalone() }));
+/* Per delega e non con un listener dentro openRouteView: `#rv-gpx` sta fisso
+   nell'HTML, e un listener aggiunto a ogni apertura si sommerebbe ai
+   precedenti — al terzo percorso aperto un tocco conterebbe tre scaricamenti. */
+document.addEventListener('click', e => {
+  if (e.target && e.target.closest && e.target.closest('#rv-gpx')) USO.conta('percorso:gpx');
+});
+
+/* L'avviso ai partecipanti. Non e' un banner di consenso e non ha "accetta"
+   ne' "rifiuta": la misurazione sta dentro le condizioni che la esentano dal
+   consenso, ma non dal dirlo. Si chiude una volta e non torna. */
+function disegnaAvvisoUso(){
+  const box = $('#usoavviso');
+  if (!box || !USO.avvisoDaMostrare()) return;
+  box.innerHTML = '<div class="in"><p>' + esc(U.uso.avviso) +
+    ' <a href="#" id="uso-leggi">' + esc(U.uso.leggi) + ' &rarr;</a></p>' +
+    '<button type="button" id="uso-chiudi" aria-label="' + esc(U.uso.chiudi) + '">&#10005;</button></div>';
+  box.hidden = false;
+  $('#uso-chiudi').addEventListener('click', () => { USO.avvisoChiuso(); box.hidden = true; });
+  $('#uso-leggi').addEventListener('click', e => {
+    e.preventDefault();
+    openTab('info');            // non e' una visita alla scheda Info, e' l'avviso
+    USO.avvisoChiuso();         // letto e' come chiuso
+    box.hidden = true;          // se no la striscia copre la scheda appena aperta
+    const scheda = $('#info-privacy');
+    if (scheda) scheda.scrollIntoView({behavior: 'smooth', block: 'start'});
+  });
+}
+disegnaAvvisoUso();
+
+openTab('home');
 const tabRichiesta = new URLSearchParams(location.search).get('tab');
-if (['home','percorso','info','dormire','live'].includes(tabRichiesta)) openTab(tabRichiesta);
+if (['home','percorso','info','dormire','live'].includes(tabRichiesta)) apriDaGesto(tabRichiesta);
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', ev => {
-    if (ev.data && ev.data.type === 'open-live') openTab('live');
+    if (ev.data && ev.data.type === 'open-live') apriDaGesto('live');
   });
   // se arriva una versione nuova mentre l'app è aperta, si ricarica da sola
   const avevaSW = !!navigator.serviceWorker.controller;
