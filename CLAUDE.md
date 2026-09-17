@@ -69,8 +69,13 @@ si chiude, e la modifica si rifà nel template.
 Il motore di questa guida va **sostituito con quello del template**. È un
 lavoro di Francesco, ancora da fare, e finché non è fatto ogni riga di motore
 scritta qui è una riga in più da riconciliare. Le funzioni che il template ha e
-questa app no (per esempio `?code=` nel cancello, il QR personale del ritiro
-pacco) **arrivano con quella migrazione**, non con un porting a mano.
+questa app no **arrivano con quella migrazione**, non con un porting a mano.
+
+L'unica eccezione è decisa da Francesco, non da chi apre una sessione: il QR
+personale del ritiro pacco, con `?code=` nel cancello, portato **dal template**
+nel ramo `qr-nell-app` a settembre 2026, con deploy di prova prima di `main`.
+Il piano sta nel README della PR #30. Se stai lavorando a quello, sei dentro
+l'eccezione e valgono le regole scritte lì; per qualunque altra cosa, no.
 
 Se ti accorgi che questa nota è vecchia — cioè il motore è già stato portato e
 c'è una cartella `motore/` — aggiorna questa sezione e il README, come parte

@@ -170,11 +170,13 @@ non deve aspettarsi quei sei — non arriveranno mai.
 **Rispetto al template (17/9/2026).** Il motore di questa app è ancora quello
 originale dentro `index.html`: la sostituzione con il motore di
 `advlabbik/event-app-template` è un lavoro di Francesco, non ancora fatto. Le
-funzioni che il template ha e questa app no — il cancello che legge `?code=`
-dall'indirizzo, il QR personale del ritiro pacco — arrivano con quella
-migrazione. La [PR #30](https://github.com/advlabbik/tg-guida/pull/30) (il
-link col codice dentro per i QR dinamici) resta aperta per questo motivo: non
-si porta a mano in `index.html`, si aspetta il motore nuovo.
+funzioni che il template ha e questa app no arrivano con quella migrazione.
+**Una sola eccezione, decisa da Francesco il 17/9**: il QR personale del
+ritiro pacco, con la lettura di `?code=` nel cancello, si porta qui **dal
+template** in un ramo a sé (`qr-nell-app`) con un deploy di prova prima di
+`main`, entro il 23/9. Il piano, file per file, è nel README della
+[PR #30](https://github.com/advlabbik/tg-guida/pull/30), sezione «Il QR del
+ritiro pacco dentro l'app».
 
 Deploy automatico su GitHub Pages da `main`, su **<https://trentinogravel.bikeadventureseries.com>** (dal 27/8/2026, [issue #10](https://github.com/advlabbik/tg-guida/issues/10)). Il vecchio `advlabbik.github.io/tg-guida/` risponde 301 verso il nuovo indirizzo conservando il path, quindi i link già distribuiti reggono. Il file `CNAME` in radice tiene ferma la configurazione: se sparisce, al primo deploy il dominio si perde.
 
