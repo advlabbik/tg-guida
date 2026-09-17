@@ -38,7 +38,8 @@ CHUNK = 22
 # collauda_endpoint). Mai aggiungere un mirror senza quel collaudo: esistono
 # istanze regionali (es. overpass.osm.ch = solo Svizzera) che rispondono
 # "200 OK, zero risultati" fuori dalla loro area e svuotano i dati in silenzio.
-CANDIDATI = ["https://overpass-api.de/api/interpreter",
+CANDIDATI = ["https://overpass.openstreetmap.fr/api/interpreter",   # 17/9/2026: l'unico vivo mentre overpass-api.de non rispondeva piu' (WinError 10060) dopo un'ora di 429/504
+             "https://overpass-api.de/api/interpreter",
              "https://overpass.kumi.systems/api/interpreter"]
 ENDPOINTS = []  # riempita dal collaudo all'avvio
 RAGGIO = {"city": 4000, "town": 2500, "village": 1200, "hamlet": 700}

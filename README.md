@@ -194,7 +194,7 @@ Cosa e' stato rigenerato o ritoccato:
 - `tracks.js` — rigenerato con `scripts/rigenera_tracce.py --guida` del repo
   mappe **su una copia usa-e-getta** del repo (1.228 / 1.316 / 1.386 punti);
 - `poi.js` — `gen_poi.py` con Overpass fresco (cache `_osm_*` cancellate) poi
-  `gen_meccanici.py`: __POI_CONTEGGI__. Voci `p` riallineate sulla V3.0: SP34
+  `gen_meccanici.py`: 234 / 255 / 276 voci (prima 237 / 230 / 252; Medio e Lungo crescono per i paesi del Tesino sulla variante Brocon). Overpass principale (`overpass-api.de`) e' caduto a meta' lavoro dopo un'ora di 429/504 e non ha piu' risposto: aggiunto `overpass.openstreetmap.fr` in testa ai candidati di entrambi gli script, che ha fatto Medio e Lungo in dieci minuti. Voci `p` riallineate sulla V3.0: SP34
   61,9 e SS43 160,6 sul Corto, SS43 95,9 su Medio e Lungo, venegia 171,9,
   venegiaLungo 204,0; **`conseria` tolta** (8,5 km fuori traccia);
 - `content.js` — km nelle note pericolo 62/161 (Corto) e 96 (Medio, Lungo);

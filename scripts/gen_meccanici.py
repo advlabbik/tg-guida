@@ -26,7 +26,8 @@ import io, json, math, os, re, sys, time, urllib.parse, urllib.request
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(REPO, "_osm_bici.json")
-ENDPOINTS = ["https://overpass-api.de/api/interpreter",
+ENDPOINTS = ["https://overpass.openstreetmap.fr/api/interpreter",  # vedi gen_poi.py, 17/9/2026
+             "https://overpass-api.de/api/interpreter",
              "https://overpass.kumi.systems/api/interpreter"]
 BUFFER, VICINI = 1000, 150
 # stessi valori di gen_poi.py: un punto dentro il raggio del paese e' "in paese"
