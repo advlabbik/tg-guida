@@ -146,6 +146,12 @@ percorsi: [
    poi.js portano un pid che pesca qui nome e testo, così la spiegazione vive in
    un posto solo ed è bilingue. */
 pericoli: {
+  venegia: { nome: "Da Predazzo alla Val Venegia senza cibo",
+    testo: "Predazzo è l'ultimo posto dove fare scorta prima della salita più lunga del percorso. Da qui a Baita Segantini sono 24,7 km con 1.320 metri di dislivello, sempre in salita, e Capanna Cervino arriva solo al km 197. Le due malghe della Val Venegia, che sulla carta stanno a metà strada, quest'anno non ci sono — Malga Venegiota è chiusa da fine agosto per lavori di ristrutturazione e Malga Venegia chiude domenica 27 settembre. Acqua ne trovi, le fontane lungo il Travignolo e le Sorgenti al km 193 ci sono sempre. Quello che manca è il cibo. Riempi le tasche prima di lasciare il paese." },
+  venegiaLungo: { nome: "In Val Venegia le due malghe sono chiuse",
+    testo: "Passo Valles e Malga Vallazza sono gli ultimi posti dove mangiare prima di Passo Rolle. Le due malghe della Val Venegia, che sulla carta stanno più avanti, quest'anno non ci sono — Malga Venegiota è chiusa da fine agosto per lavori di ristrutturazione e Malga Venegia chiude domenica 27 settembre. Da Malga Vallazza a Baita Segantini restano 10,2 km con 520 metri di dislivello, e poi c'è Capanna Cervino. Acqua ne trovi lungo tutta la valle, le Sorgenti del Travignolo non si fermano mai. Il cibo no." },
+  conseria: { nome: "Rifugio Consèria aperto solo il sabato e la domenica",
+    testo: "Dal 21 settembre il Rifugio Malga Consèria apre soltanto il sabato e la domenica. Se passi di qui da lunedì lo trovi chiuso, e allora da Refavaie al Rifugio Carlettini sono 21,3 km con 900 metri di dislivello, con la Forcella Magna a 2.014 metri in mezzo e nient'altro. Il Rifugio Forestale Socede che incontri prima è un bivacco e non dà da mangiare. Refavaie invece è aperto tutti i giorni fino a fine ottobre — è lì che conviene fermarsi a mangiare, non dopo." },
   ss43: { nome: "Attraversamento della SS43",
     testo: "Alla Rocchetta la traccia attraversa a raso la statale della Val di Non, veloce e molto trafficata. Si passa dritti, per andare a prendere la Strada delle Roste che corre tranquilla lungo il Noce — è il motivo per cui questo attraversamento esiste. Rallenta per tempo, fermati col piede a terra prima dell'asfalto e guarda bene nei due sensi. Si attraversa solo a strada libera, in un colpo solo e con la massima prudenza." },
   sp34: { nome: "Svolta sulla SP34",
@@ -563,6 +569,12 @@ percorsi: [
    poi.js carry a pid that looks up name and text here, so the explanation
    lives in one place and is bilingual. */
 pericoli: {
+  venegia: { nome: "From Predazzo to Val Venegia with no food",
+    testo: "Predazzo is the last place to stock up before the longest climb on the route. From here to Baita Segantini it is 24.7 km with 1,320 metres of climbing, uphill all the way, and Capanna Cervino only comes at km 197. The two Val Venegia mountain dairies that look like a halfway stop on the map are not there this year — Malga Venegiota has been closed since the end of August for building work and Malga Venegia closes on Sunday 27 September. Water is not a problem, the fountains along the Travignolo and the springs at km 193 always run. Food is what is missing. Fill your pockets before you leave town." },
+  venegiaLungo: { nome: "Both Val Venegia dairies are closed",
+    testo: "Passo Valles and Malga Vallazza are the last places to eat before Passo Rolle. The two Val Venegia mountain dairies further down the valley are not there this year — Malga Venegiota has been closed since the end of August for building work and Malga Venegia closes on Sunday 27 September. From Malga Vallazza to Baita Segantini it is 10.2 km with 520 metres of climbing, and then comes Capanna Cervino. Water runs all the way down the valley, the Travignolo springs never stop. Food does not." },
+  conseria: { nome: "Rifugio Consèria open on Saturday and Sunday only",
+    testo: "From 21 September Rifugio Malga Consèria opens on Saturdays and Sundays only. If you come through from Monday on you will find it shut, and then it is 21.3 km from Refavaie to Rifugio Carlettini with 900 metres of climbing, Forcella Magna at 2,014 metres in the middle and nothing else. Rifugio Forestale Socede, which comes first, is an unstaffed shelter and serves no food. Refavaie is open every day until the end of October — that is where to stop and eat, not later." },
   ss43: { nome: "SS43 road crossing",
     testo: "At La Rocchetta the route crosses the fast, busy Val di Non trunk road at street level. You ride straight across, to pick up the Strada delle Roste that runs quietly along the Noce river — the whole reason this crossing exists. Slow down early, stop with a foot on the ground before the tarmac and look carefully both ways. Cross only when the road is clear, in one go and with maximum care." },
   sp34: { nome: "Turn on the SP34",
