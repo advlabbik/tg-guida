@@ -315,6 +315,194 @@ dopo l'installazione.
    senza ristampare niente — ma il link non si genera finché quel codice non è
    deciso.
 
+Il punto 1 si chiude dentro il ramo del QR personale, qui sotto: la lettura di
+`?code=` è il primo pezzo di quel lavoro, non un lavoro a parte.
+
+### Il QR del ritiro pacco dentro l'app — valutazione e piano (17 settembre 2026)
+
+**La decisione.** Il QR personale si porta in questa app **dal template**, dove
+è già fatto e provato ([event-app-template#37](https://github.com/advlabbik/event-app-template/pull/37),
+12 settembre), in un **ramo a sé**, `qr-nell-app`, con un **deploy di prova**
+prima di toccare `main`. È l'eccezione dichiarata alla regola di `CLAUDE.md`
+(«il motore non si tocca qui»), e sta in piedi per tre motivi:
+
+1. si porta dal template, non da un'altra app — la direzione giusta;
+2. il modulo del QR è stato scritto apposta per essere copiato tale e quale,
+   come `uso.js`: non conosce nient'altro del motore;
+3. le righe che restano da scrivere a mano in `index.html` sono poche, e sono un
+   **debito dichiarato** che si estingue con la migrazione al motore del
+   template, dopo l'evento (vedi «Dopo l'evento» in fondo).
+
+**Perché non il refactor adesso.** Mettere questa app sul motore del template
+è più pulito e più fattibile di quanto sembri — le chiavi salvate nel telefono
+sono già identiche (`tg-…`), il nome della cache proseguirebbe in `tg-guida-v45`,
+tracce e punti hanno lo stesso formato, quindi chi ha l'app installata non
+perderebbe niente. Ma sono due o tre giorni pieni più la verifica di ogni
+schermata, e al template mancano ancora i GPX in due parti per il download.
+Non a otto giorni dall'evento.
+
+**Le date che comandano.** Ritiro pacco **venerdì 25 settembre, 16–18**, e la
+fase «durante» parte lo stesso giorno. Regola del template, che vale anche
+qui: **non si accende niente a evento in corso**. Quindi il ramo va su `main`,
+provato, **entro martedì 23**. Se il 23 non è pronto, non si fa per questa
+edizione: il QR è già nelle email e funziona da solo, come per
+Germany/Austria.
+
+#### Cosa si porta, e da dove
+
+Tutto viene da `advlabbik/event-app-template`, PR #37. Niente da altre app.
+
+| Pezzo | Nel template | Qui | Come |
+|---|---|---|---|
+| La logica del QR (forma, lettura, salvataggio) | `motore/qr.js` | `qr.js` in radice | **copia identica**, byte per byte, come `uso.js` |
+| Il disegno del QR (lean-qr 2.7.4) | `motore/lean-qr.js` | `lean-qr.js` in radice | **copia identica** |
+| L'interruttore | `evento/config.js` → `qr` | `config.js` → `window.EVENTO_CONFIG.qr` | una riga nella finta config che c'è già per `uso.js` |
+| `?code=` nel cancello | `motore/app.js` → `codiceDallUrl()` + `initGate()` | `index.html` → `initGate()` | ricopiare, con `K('access')` → `'tg-access'` |
+| `?qr=` dall'indirizzo | `motore/app.js` → `qrDallUrl()` | `index.html`, subito prima di `initGate()` | ricopiare |
+| La scheda in cima a Info | `motore/app.js` → `schedaQr()` | `index.html`, prima di `renderInfo()` | ricopiare tale e quale: `esc`, `paragrafi`, `fmt`, `icon`, `apriInfoCard` esistono già qui con lo stesso nome |
+| I tre gestori (incolla, «è il mio», Invio) e la riga d'errore | `motore/app.js` → dentro `renderInfo()` | `index.html` → `renderInfo()` | ricopiare; `schedaQr()` va messa in testa alla lista, prima dei gruppi a tema |
+| La voce nella ricerca globale | `motore/app.js` → `INDEX` | `index.html` → `INDEX` | quattro righe |
+| L'apertura sulla scheda per chi arriva dal link | ultima riga di `motore/app.js` | `index.html`, dopo `initGate()` | una riga |
+| Le etichette del motore | `motore/ui.js` → `qr` | `content.js` → `ui.qr`, IT **e** EN | ricopiare |
+| I testi della scheda | `evento/info.js` → `qr` | `content.js` → `qr`, IT **e** EN | **scrivere per il Trentino** — nel template sono dimostrativi |
+| Lo stile | `styles.css` → `.qrcorpo`, `.qrincolla`, `.qrnum`, `.qrimg` | `styles.css` | tredici righe |
+| L'icona | `icons/sprite.svg` → `qr-code` | `icons/sprite.svg` | dodici righe |
+| Il service worker | `sw.js` | `sw.js` | i due file in `ASSETS`; la pagina in cache **senza** `?code`/`?qr`; `CACHE` → `tg-guida-v45` |
+| L'icona in Home apre già dentro | — | `manifest.webmanifest` → `start_url` | `./?code=<codice vero>` — solo quando il codice c'è |
+| I due `<script>` | `index.html` | `index.html` | `qr.js` e `lean-qr.js` prima dello script in linea |
+
+In tutto: due file copiati, circa 120 righe ricopiate in `index.html`, testi e
+stile. Mezza giornata di lavoro, più le prove.
+
+#### I «find» da rispettare — sono già dentro il modulo, non vanno reinventati
+
+Vengono dalle prove del template (`scripts/prova-qr.mjs`, che passa, e la prova
+su iPhone vero dell'11 settembre). Chi tocca il ramo li deve conoscere per non
+«sistemarli»:
+
+- **Dentro il QR c'è solo il codice**, tipo `TG26.1.1c3992cdc4`: l'app lo
+  ridisegna, non scarica immagini. Verificato anche su 517 codici del Trentino
+  Gravel, quindi i nostri token sono già della forma giusta.
+- **Su iPhone l'app installata in Home ha una memoria sua**, separata da Safari
+  e da Gmail: il link dell'email non ci arriva mai. Per questo la scheda ha
+  **sempre** il campo per incollare il link o il codice, anche con un QR già
+  salvato. Non è un di più, è l'unica strada per chi ha già l'icona sul
+  telefono.
+- **Il codice arrivato da un link non sovrascrive il salvato** (l'amico che
+  fa il ritiro per un altro). C'è il pulsante «Questo è il mio QR» per il caso
+  opposto. Il codice **incollato** invece sovrascrive, perché lo sta scrivendo
+  la persona apposta.
+- **Il parametro si toglie sempre dalla barra**, anche a funzione spenta e
+  anche se malformato: altrimenti finisce in ogni screenshot e link condiviso.
+- **Il service worker mette in cache la pagina senza i parametri**: altrimenti
+  il codice personale resta nella copia offline.
+- **I file dei token hanno le righe alla Windows**: il ritorno a capo in coda
+  arriva fin dentro i link, e il modulo lo pulisce. Non «aggiustare» la forma.
+- **Bianco e nero fissi, margine di quattro moduli**: un QR nei colori
+  dell'evento o senza bordo gli scanner lo leggono peggio.
+- **Il campo ha il testo a 16px**: sotto, iPhone ingrandisce la pagina appena
+  lo si tocca.
+
+#### I passi, in ordine
+
+Ogni passo si guarda in locale (`python3 -m http.server 8001`, porta diversa
+dalle altre app) prima di passare al successivo. Il codice di prova è
+`?code=PIONEER26&qr=TG26.1.1c3992cdc4`.
+
+1. **Il ramo.** `qr-nell-app` da `main` aggiornato (con le tracce V3.0 dentro).
+   In quel ramo entra **solo** questo lavoro: niente testi, niente tracce,
+   niente altro, così se il deploy di prova rompe qualcosa si sa cos'è.
+2. **I due file identici e la riga di config.** Copiare `qr.js` e `lean-qr.js`
+   dal template; `qr: true` in `window.EVENTO_CONFIG` dentro `config.js`.
+   Verifica: `diff` vuoto con i file del template.
+3. **`?code=` nel cancello.** Chiude il punto 1 della sezione sopra. Verifica:
+   con `?code=PIONEER26` si entra senza cancello e la barra si pulisce, con
+   `?demo=1` la barra demo resta.
+4. **`?qr=`, la scheda, i gestori, la ricerca, l'apertura.** Verifica: col link
+   di prova Info si apre da sola sulla scheda, pettorale `1` e QR disegnato,
+   barra pulita; ricaricando la scheda c'è ancora.
+5. **Testi ed etichette IT e EN, stile, icona.** I testi della scheda vanno
+   scritti per il Trentino (dove si ritira, cosa dire al banco se lo scanner non
+   legge). La riga dello stato vuoto è la più importante: la legge chi è in
+   fila con un problema. Verifica: lingua EN, tutto in inglese; niente due
+   punti nella prosa.
+6. **Service worker e manifest.** `ASSETS`, la chiave di cache senza query,
+   `CACHE` a `tg-guida-v45` — **più alta di quella in `main` al momento del
+   merge**, non di quella da cui si è partiti. `start_url` col codice vero
+   appena Andrea lo dà; finché non c'è, resta `./`.
+7. **README.** Riga di `qr.js` e `lean-qr.js` in «Struttura», la funzione in
+   «Funzionalità principali», e questa sezione aggiornata con lo stato.
+8. **Deploy di prova e checklist** (sotto). Solo dopo, il merge su `main`.
+
+#### Il deploy di prova — come, senza passare da `main`
+
+`main` è produzione. Le tre strade possibili:
+
+- **Consigliata — un progetto Cloudflare collegato al ramo `qr-nell-app`**,
+  dall'account *Adventure Lab*, come per le app del template (dalla dashboard,
+  non dall'API: vedi il README del template). Dà un indirizzo `*.workers.dev`
+  o `*.pages.dev` **separato**, cioè un origin diverso: nessuna collisione con
+  la produzione — chiavi `tg-…`, cache e service worker restano distinti — e
+  HTTPS vero, che serve per installare l'app in Home su iPhone, che è proprio
+  il caso da provare. La repo è pubblica, quindi si collega senza permessi
+  speciali. A prova finita il progetto si spegne.
+- **Scartata — una cartella su `main`** come fu `anteprima-francesco/`.
+  Passerebbe da `main`, quindi da produzione, e vivrebbe sullo **stesso
+  origin** dell'app vera: il QR salvato durante la prova finirebbe nel
+  telefono di chi prova, in comune con l'app in produzione.
+- **Scartata — cambiare il ramo di GitHub Pages**: sostituirebbe la
+  produzione.
+
+**La checklist delle prove**, dal telefono, iPhone **e** Android, sull'indirizzo
+di prova. Serve un token vero di un iscritto (Francesco, dal generatore) oltre
+a quello di prova:
+
+1. Link con `?code=` e `?qr=` aperto in Safari — si entra senza cancello, Info
+   si apre sulla scheda, pettorale e QR, barra pulita.
+2. Ricarica — la scheda c'è ancora.
+3. Un secondo link con un altro token — si vede quello del link, con il
+   pulsante «Questo è il mio QR»; ricaricando torna il proprio.
+4. «Aggiungi a Home» da Safari, poi apri l'app installata — su iPhone la
+   scheda è **vuota** (atteso, è il find dell'11/9); incolla il link
+   dell'email → il QR compare. Incolla un codice sbagliato → riga d'errore, che
+   sparisce appena si riscrive.
+5. Modalità aereo — il QR si vede lo stesso.
+6. Cerca «QR» nella ricerca globale — porta alla scheda.
+7. Lingua EN — tutto in inglese.
+8. Il QR disegnato, letto con un lettore qualsiasi o con `tg-checkin` —
+   restituisce **esattamente** il token.
+9. Con `qr: false` in `config.js` — nessuna scheda, e `?qr=` sparisce comunque
+   dalla barra.
+10. Tutto il resto: percorsi, vista percorso, GPS, Dormire, notifiche,
+    `staff.html` — niente è cambiato.
+11. DevTools → Application → Cache Storage — la pagina in cache è senza
+    `?code` e senza `?qr`.
+
+#### Cosa serve da altri, e chi lo sblocca
+
+| Cosa | Chi | Blocca |
+|---|---|---|
+| Il codice d'accesso vero (oggi `PIONEER26` è un segnaposto) | Andrea | `start_url` nel manifest e i link nelle email e sui QR dinamici |
+| Un token vero di un iscritto, per la prova | Francesco | la checklist |
+| I testi della scheda, IT e EN | Andrea / Francesco | il passo 5 |
+| Il link `?code=…&qr=…` nell'email del ritiro pacco (Brevo) | Francesco | l'arrivo del QR nell'app senza incollare; se l'email è già partita senza, resta il campo per incollare, e il QR nell'email funziona comunque al banco |
+
+#### Cosa non si fa in questo ramo
+
+- Non si tocca nessun'altra parte del motore, nemmeno «già che ci siamo».
+- Non si copia niente da `tuscany-trail-app`, `northcape4000-app` o
+  `tge-tuscany-app`: solo dal template.
+- Non si cambia la forma del token, né la regola «il link non sovrascrive».
+- Non si merge dopo il 23 settembre.
+
+#### Dopo l'evento
+
+In fase «dopo», da ottobre, si fa la migrazione vera: `tg-guida` sul motore
+del template. Le 120 righe di questo ramo si buttano, e il QR resta perché sta
+nel motore. Prima serve aggiungere al template i GPX in due parti per il
+download (Medio e Lungo superano i 10.000 punti dei Garmin), che oggi il
+template non prevede.
+
 ### "Arriva preparato" nella checklist pre-evento (Andrea, 15 agosto 2026)
 
 Nella Home in fase "prima", tra le cose da fare, va aggiunto un punto
