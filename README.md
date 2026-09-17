@@ -440,6 +440,39 @@ profilo dice quanti punti sono in vista e in quanti segni sono raggruppati.
 
 ## Funzioni decise, non ancora costruite
 
+### Il link che apre la guida già dentro, per i QR dinamici (4 settembre 2026)
+
+Sui **QR dinamici** dell'evento — quelli stampati sulla tabellina, sui cartelli e
+sul materiale del pacco gara, il cui indirizzo si può cambiare dopo la stampa —
+non va messo il dominio nudo, ma il link col codice d'accesso dentro:
+
+```
+https://trentinogravel.bikeadventureseries.com/?code=PIONEER26
+```
+
+Chi lo scansiona si trova dentro la guida senza digitare niente. Non regala
+niente a nessuno: chi ha quel link ha già il codice, esattamente come chi ha
+l'email, e il codice sta comunque in chiaro nel sorgente che il browser scarica.
+Lo stesso link va scritto anche come `start_url` in `manifest.webmanifest`
+(oggi `./`), perché su iPhone l'app aggiunta alla schermata Home ha una memoria
+sua, separata da Safari, e senza quello il cancello ricompare una seconda volta
+dopo l'installazione.
+
+**Due cose da fare prima che quel link funzioni.**
+
+1. **Il motore qui non legge ancora `?code=`.** La funzione esiste da
+   [event-app-template#23](https://github.com/advlabbik/event-app-template/pull/23)
+   e va portata giù a mano, perché questa guida è nata prima del template e ha
+   il motore dentro `index.html` — il cancello sta a `index.html:286`,
+   `initGate()`. Sono una decina di righe: legge il codice dall'indirizzo, e se
+   coincide lo salva in `tg-access` e toglie il parametro dalla barra con
+   `history.replaceState`, lasciando al loro posto `?demo=` e gli altri.
+2. **`GATE_CODE` è ancora un segnaposto** (`PIONEER26`, con il suo ✱ in
+   `index.html`). Il codice vero lo dà Andrea, ed è quello che va nel link. Il
+   QR è dinamico apposta — se il codice cambia dopo la stampa si ripunta il QR,
+   senza ristampare niente — ma il link non si genera finché quel codice non è
+   deciso.
+
 ### "Arriva preparato" nella checklist pre-evento (Andrea, 15 agosto 2026)
 
 Nella Home in fase "prima", tra le cose da fare, va aggiunto un punto
