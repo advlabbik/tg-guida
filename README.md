@@ -6,6 +6,34 @@ Vanilla JS, nessun build step: `index.html` + file dati/logica/stile caricati co
 
 Design system: verde + logo/icone disegnate su misura ("veste grafica di Alessio"), tipografia e componenti in `styles.css`. Contenuti bilingue IT/EN (`content.js → CONTENT.it` / `CONTENT.en`).
 
+## Prima di toccare qualcosa — leggi qui, e leggi `CLAUDE.md`
+
+Questa è **un'app-evento**, non il template. Le app-evento di BAS hanno tutte
+lo stesso motore, e il motore vive in un posto solo — la repo
+[`advlabbik/event-app-template`](https://github.com/advlabbik/event-app-template).
+
+- **Qui si cambiano solo contenuti e veste grafica** — testi, date, tracce,
+  punti di interesse, loghi, colori. Cosa è contenuto e cosa è motore, file per
+  file, sta nella tabella in `CLAUDE.md`.
+- **Il motore non si tocca qui, nemmeno «solo per questa volta».** Serve una
+  funzione o c'è un bug? Si fa nel template, e da lì Francesco la porta giù in
+  ogni app. Copiare un pezzo da un'altra app-evento non è un porting: è
+  un'altra versione in più da riconciliare.
+- **Questa app è nata prima del template**, quindi il motore sta ancora dentro
+  `index.html` e non c'è un controllo automatico che blocchi una modifica
+  sbagliata. La sostituzione del motore con quello del template è un lavoro di
+  Francesco, ancora da fare; fino ad allora qui non entra nessuna riga di
+  motore nuova.
+- **Mai su `main`**: ramo, verifica in locale, poi merge. `main` è online con
+  partecipanti veri dentro.
+- **Tutto quello che deve arrivare a Francesco** — una PR che aspetta lui, un
+  dato mancante, una cosa rotta — va nel canale Slack `#segnalazioni-test`,
+  dove legge la sua sessione Claude sempre accesa.
+
+Se lanci Claude Code in questa cartella, legge `CLAUDE.md` da solo e ti dice
+all'inizio in quale repo sei e cosa può fare. Se ti risponde «questa è una
+modifica al motore, va fatta nel template», non è pigrizia: è la regola.
+
 ## Come si apre
 
 Serve un server statico qualsiasi (serve HTTPS/localhost per geolocalizzazione e service worker):
@@ -24,7 +52,7 @@ Poi apri `index.html`. Il codice di accesso demo è `PIONEER26` (vedi `#gate` in
 
 | File/cartella | Contenuto |
 |---|---|
-| `index.html` | Markup + tutta la logica dell'app (tab, gate d'accesso, vista percorso con mappa e altimetria, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA, opt-in notifiche push, feed Comunicazioni). Vista percorso e Live condividono i mattoni: `creaProfilo`/`profDisegna`/`profPin` per l'altimetria (che sa disegnare sia tutto il tracciato sia una finestra), `poiSuMappa` per i segni, `raggruppa` per non far sparire i punti sovrapposti |
+| `index.html` | **Motore — non si modifica qui, vedi `CLAUDE.md`.** Markup + tutta la logica dell'app (tab, gate d'accesso, vista percorso con mappa e altimetria, GPS live, meteo, mappe Leaflet, ricerca, installazione PWA, opt-in notifiche push, feed Comunicazioni). Vista percorso e Live condividono i mattoni: `creaProfilo`/`profDisegna`/`profPin` per l'altimetria (che sa disegnare sia tutto il tracciato sia una finestra), `poiSuMappa` per i segni, `raggruppa` per non far sparire i punti sovrapposti |
 | `staff.html` | Pagina riservata allo staff per inviare comunicazioni push a tutti i partecipanti iscritti (gate separato da `index.html`, chiama la Edge Function `invia-comunicazione`), con sotto l'archivio di quelle già mandate |
 | `config.js` | Unica fonte per `TG_SUPABASE_URL`, `TG_SUPABASE_ANON_KEY` e `TG_EVENTO_ID`, caricato sia da `index.html` sia da `staff.html` — evita di tenere sincronizzato a mano lo stesso valore in più file |
 | `uso.js` | **Analytics d'uso — spento.** Conta quante persone usano la guida e quali funzioni, con un codice anonimo che si rigenera ogni notte. Arriva dal template (`advlabbik/event-app-template`, `motore/uso.js`) e **va tenuto identico byte per byte**: e' l'unico modo perche' le correzioni fatte la' si riportino qui con una copia invece che con una riconciliazione a mano. Si accende da `config.js` → `analytics` |
@@ -138,6 +166,17 @@ non deve aspettarsi quei sei — non arriveranno mai.
 > conviene accendere **a evento iniziato** e non il giorno della partenza.
 
 ## Stato del repo e dei branch
+
+**Rispetto al template (17/9/2026).** Il motore di questa app è ancora quello
+originale dentro `index.html`: la sostituzione con il motore di
+`advlabbik/event-app-template` è un lavoro di Francesco, non ancora fatto. Le
+funzioni che il template ha e questa app no arrivano con quella migrazione.
+**Una sola eccezione, decisa da Francesco il 17/9**: il QR personale del
+ritiro pacco, con la lettura di `?code=` nel cancello, si porta qui **dal
+template** in un ramo a sé (`qr-nell-app`) con un deploy di prova prima di
+`main`, entro il 23/9. Il piano, file per file, è nel README della
+[PR #30](https://github.com/advlabbik/tg-guida/pull/30), sezione «Il QR del
+ritiro pacco dentro l'app».
 
 Deploy automatico su GitHub Pages da `main`, su **<https://trentinogravel.bikeadventureseries.com>** (dal 27/8/2026, [issue #10](https://github.com/advlabbik/tg-guida/issues/10)). Il vecchio `advlabbik.github.io/tg-guida/` risponde 301 verso il nuovo indirizzo conservando il path, quindi i link già distribuiti reggono. Il file `CNAME` in radice tiene ferma la configurazione: se sparisce, al primo deploy il dominio si perde.
 
@@ -335,11 +374,14 @@ fix, senza rientri infiniti. Service worker a `tg-guida-v42`.
 
 ## Porting alle altre app-evento — cosa portare, da dove
 
-Le app sorelle (`tuscany-trail-app`, `northcape4000-app`) sono derivate da
-questa e i loro repo sono **autonomi per scelta**: gli script e la logica sono
-COPIE, non librerie condivise. Quindi ogni miglioria nata qui va portata a
-mano quando quelle app ricevono le loro tracce. Questa lista è la fonte di
-verità del porting — aggiornarla quando nasce una miglioria nuova.
+**Sezione storica, superata dal template.** Le app sorelle
+(`tuscany-trail-app`, `northcape4000-app`) sono nate copiando questa repo, e
+per un periodo ogni miglioria nata qui andava portata a mano nelle altre due.
+Quel giro **non si fa più**: da settembre 2026 la fonte di verità del motore è
+`advlabbik/event-app-template`, e le migliorie si fanno lì e si portano giù da
+lì (vedi `CLAUDE.md`). La lista qui sotto resta come inventario di quello che
+questa app ha e che il template potrebbe non avere ancora — serve a chi farà
+la migrazione, non a chi vuole copiare da qui.
 
 Da portare (stato al 27/8/2026):
 
@@ -375,10 +417,12 @@ passi). Nota per Tuscany Trail: le tracce NON si pubblicano prima dell'evento
 
 ### Nuovo evento da zero (es. The Grand Escape Germania) — cosa serve in mano
 
-Questo repo è il capostipite: un'app nuova nasce clonandolo (come è già stato
-fatto per `tuscany-trail-app` e `northcape4000-app` — guardare quei due repo
-per vedere come si deriva in pratica). Prima di iniziare servono questi input,
-divisi per chi li decide:
+**Un'app nuova non nasce più da qui.** Nasce da `advlabbik/event-app-template`
+con **Use this template** su GitHub, e la procedura è nel Wiki (link in
+`PROCEDURA.md` di quella repo). `tuscany-trail-app` e `northcape4000-app` sono
+state clonate da questa prima che il template esistesse, ed è il motivo per cui
+il template esiste. Resta valido l'elenco di cosa serve avere in mano prima di
+cominciare, diviso per chi lo decide:
 
 **Decisioni (Andrea)**
 - nome evento, date, luogo di partenza/arrivo con indirizzo esatto
