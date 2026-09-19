@@ -79,7 +79,7 @@ extraHome: {
 },
 
 percorsi: [
-  { id: "corto", nome: "Percorso Corto", breve: "Corto", colore: "#5ea345", km: 216, dplus: "3.000",
+  { id: "corto", nome: "Percorso Corto", breve: "Corto", colore: "#5ea345", km: 210, dplus: "3.000",
     livello: "Accessibile",
     desc: "Il percorso per chi vuole l'avventura senza l'estremo. Si stacca dagli altri due a Sarche e chiude l'anello a Rovereto.",
     note: ["Circa il 70% su ciclabili e sterrato",
@@ -98,7 +98,7 @@ percorsi: [
       { luogo: "Campo Carlo Magno", quota: "1.682 m", max: "12°", min: "2°" }
     ],
     meteoNota: "In quattro anni, negli stessi giorni, a Campo Carlo Magno si sono misurati sia 21 gradi di giorno sia 8 sotto zero di notte. Mettiti in borsa di che coprirti anche se parti in maniche corte." },
-  { id: "medio", nome: "Percorso Medio", breve: "Medio", colore: "#3d7a2e", km: 357, dplus: "7.100",
+  { id: "medio", nome: "Percorso Medio", breve: "Medio", colore: "#3d7a2e", km: 353, dplus: "6.740",
     livello: "Intermedio",
     desc: "Identico al Lungo per quasi tutto il tracciato, con una differenza sola — evita la Val di Fassa e il tratto a spinta del Col Margherita.",
     note: ["Pensato per chi vuole la distanza senza il tratto a spinta del Col Margherita",
@@ -119,7 +119,7 @@ percorsi: [
       { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
     ],
     meteoNota: "Fra il fondovalle e i 2.000 metri ballano dodici gradi di giorno e altrettanti di notte. Alla Baita Segantini, negli ultimi quattro anni, la notte più fredda del periodo è arrivata a 6 sotto zero." },
-  { id: "lungo", nome: "Percorso Lungo", breve: "Lungo", colore: "#1f4d1a", km: 376, dplus: "7.900",
+  { id: "lungo", nome: "Percorso Lungo", breve: "Lungo", colore: "#1f4d1a", km: 371, dplus: "7.400",
     livello: "Impegnativo",
     desc: "Rispetto al Medio affronta la Val di Fassa e sale al Passo San Pellegrino su sterrato, per poi continuare a salire sul Col Margherita.",
     note: ["⚠️ Sul Col Margherita ci sono circa 2,5 km che farai per il 70% a spinta, per via delle pendenze. Quando lo abbiamo provato ci abbiamo messo circa 50 minuti. È dura, ma in vetta la vista a 300 gradi sulle Dolomiti ripaga la fatica",
@@ -541,7 +541,7 @@ extraHome: {
 },
 
 percorsi: [
-  { id: "corto", nome: "Short Route", breve: "Short", colore: "#5ea345", km: 216, dplus: "3,000",
+  { id: "corto", nome: "Short Route", breve: "Short", colore: "#5ea345", km: 210, dplus: "3,000",
     livello: "Accessible",
     desc: "The route for those who want the adventure without the extreme. It splits from the other two at Sarche and closes the loop in Rovereto.",
     note: ["About 70% on cycleways and gravel",
@@ -560,7 +560,7 @@ percorsi: [
       { luogo: "Campo Carlo Magno", quota: "1,682 m", max: "12°", min: "2°" }
     ],
     meteoNota: "Over four years, in the same days, Campo Carlo Magno has seen both 21 degrees by day and 8 below zero at night. Pack something warm even if you start in short sleeves." },
-  { id: "medio", nome: "Medium Route", breve: "Medium", colore: "#3d7a2e", km: 357, dplus: "7,100",
+  { id: "medio", nome: "Medium Route", breve: "Medium", colore: "#3d7a2e", km: 353, dplus: "6,740",
     livello: "Intermediate",
     desc: "Identical to the Long route for almost the entire way, with one difference — it avoids Val di Fassa and the hike-a-bike section of Col Margherita.",
     note: ["Made for riders who want the distance without the Col Margherita hike-a-bike section",
@@ -581,7 +581,7 @@ percorsi: [
       { luogo: "Borgo Valsugana", quota: "385 m", max: "21°", min: "12°" }
     ],
     meteoNota: "Between the valley floor and 2,000 m there are twelve degrees of difference by day and as many at night. At Baita Segantini the coldest night of the period in the last four years hit 6 below zero." },
-  { id: "lungo", nome: "Long Route", breve: "Long", colore: "#1f4d1a", km: 376, dplus: "7,900",
+  { id: "lungo", nome: "Long Route", breve: "Long", colore: "#1f4d1a", km: 371, dplus: "7,400",
     livello: "Demanding",
     desc: "Compared to the Medium route it takes on Val di Fassa and climbs to Passo San Pellegrino on gravel, then keeps climbing up Col Margherita.",
     note: ["⚠️ On Col Margherita there are about 2.5 km you will cover roughly 70% pushing the bike, because of the gradients. When we tested it, it took us about 50 minutes. It is hard, but the 300-degree view over the Dolomites from the top repays the effort",
