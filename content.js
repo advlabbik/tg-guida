@@ -30,13 +30,12 @@ intro: {
 /* Il box in evidenza tiene solo le cose che scadono. L'avviso sulle tracce
    preliminari e' uscito il 23/8 (vive gia' come card nelle Info). Quello sulla
    taglia della t-shirt e' uscito il 27/8, scaduto il giorno prima (Andrea).
-   Resta il certificato, finche' non scade il 27. */
-avvisi: [
-  { testo: "Hai tempo fino al 27 agosto per caricare il certificato medico nella tua area personale su bikeadventureseries.com." }
-],
+   Quello sul certificato e' uscito il 19/9: la scadenza del 27 agosto era
+   passata. Vuoto, il box non si disegna. */
+avvisi: [],
 
 checklist: [
-  { id: "certificato", testo: "1. Carica il certificato medico entro il 27 agosto",
+  { id: "certificato", testo: "1. Carica il certificato medico",
     dettaglio: "Agonistico per il ciclismo, in corso di validità. Vai nella tua area personale, apri la sezione Certificati e carica il file.",
     url: "https://www.bikeadventureseries.com/my-account/", cta: "Vai all'area personale" },
   { id: "studia", testo: "2. Studia la traccia definitiva",
@@ -188,10 +187,10 @@ infoCards: [
     ],
     link: { testo: "Apri in Google Maps", url: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto" },
     cerca: "orari orario programma tabella quando ritiro pacco briefing partenza ritrovo viale arrivo arrivi accoglienza venerdi sabato domenica lunedi martedi mercoledi 25 26 27 28 29 30 settembre" },
-  { id: "certificato", tema: "Prima di partire", icona: "🩺", titolo: "Certificato medico entro il 27 agosto",
-    corpo: "Per partecipare è obbligatorio il certificato medico agonistico per il ciclismo, in corso di validità. Hai tempo fino al 27 agosto per caricarlo nella tua area personale su bikeadventureseries.com, nella sezione Certificati.",
+  { id: "certificato", tema: "Prima di partire", icona: "🩺", titolo: "Certificato medico",
+    corpo: "Per partecipare è obbligatorio il certificato medico agonistico per il ciclismo, in corso di validità. Si carica nella tua area personale su bikeadventureseries.com, nella sezione Certificati.",
     link: { testo: "Vai all'area personale", url: "https://www.bikeadventureseries.com/my-account/" },
-    cerca: "certificato medico agonistico ciclismo obbligatorio caricare scadenza 27 agosto visita area personale" },
+    cerca: "certificato medico agonistico ciclismo obbligatorio caricare visita area personale" },
   { id: "gpsguide", tema: "Prima di partire", icona: "🛰️", titolo: "La traccia definitiva è qui, ed è quella da caricare sul GPS",
     corpo: "Le tracce che vedi in questa app sono quelle definitive e sono le stesse da caricare sul GPS. Le scarichi dal tasto GPX in alto nella mappa di ogni percorso. Il Medio e il Lungo arrivano in due file, prima e seconda parte, perché molti GPS non caricano una traccia sopra i 10.000 punti — caricali entrambi e passa al secondo quando il primo finisce, a Predazzo. Rispetto alla traccia preliminare cambia soprattutto il tratto dopo Canal San Bovo, che ora passa dal passo Brocon e da Pieve Tesino invece che dal Cinque Croci, chiuso per lavori. Ci sono poi ritocchi brevi in più punti, quindi butta via le versioni vecchie.",
     cerca: "gps traccia caricare navigazione definitiva preliminare gpx due file parte brocon cinque croci" },
@@ -476,12 +475,10 @@ intro: {
   testo: "You are one of the 500. The Pioneer Edition is the very first Trentino Gravel, and what we build this year — together with you — becomes the history of the event. No ranking, no clock. Self-supported bikepacking, at your own pace, through one of the most beautiful corners of the Alps. This guide is your single point of reference before, during and after the event."
 },
 
-avvisi: [
-  { testo: "You have until 27 August to upload your medical certificate in your personal area on bikeadventureseries.com." }
-],
+avvisi: [],
 
 checklist: [
-  { id: "certificato", testo: "1. Upload your medical certificate by 27 August",
+  { id: "certificato", testo: "1. Upload your medical certificate",
     dettaglio: "A competitive cycling medical certificate, still valid. Go to your personal area, open the Certificates section and upload the file.",
     url: "https://www.bikeadventureseries.com/my-account/", cta: "Go to your personal area" },
   { id: "studia", testo: "2. Study the final route",
@@ -622,10 +619,10 @@ infoCards: [
     ],
     link: { testo: "Open in Google Maps", url: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto" },
     cerca: "times schedule timetable programme when pack pickup briefing start meet avenue finish welcome friday saturday sunday monday tuesday wednesday 25 26 27 28 29 30 september" },
-  { id: "certificato", tema: "Before you leave", icona: "🩺", titolo: "Medical certificate by 27 August",
-    corpo: "A valid competitive cycling medical certificate is mandatory to take part. You have until 27 August to upload it in your personal area on bikeadventureseries.com, in the Certificates section.",
+  { id: "certificato", tema: "Before you leave", icona: "🩺", titolo: "Medical certificate",
+    corpo: "A valid competitive cycling medical certificate is mandatory to take part. You upload it in your personal area on bikeadventureseries.com, in the Certificates section.",
     link: { testo: "Go to your personal area", url: "https://www.bikeadventureseries.com/my-account/" },
-    cerca: "medical certificate cycling mandatory upload deadline 27 august personal area" },
+    cerca: "medical certificate cycling mandatory upload personal area" },
   { id: "gpsguide", tema: "Before you leave", icona: "🛰️", titolo: "The final route is here, and it is the one to load on your GPS",
     corpo: "The routes you see in this app are the final ones and they are the same ones to load on your GPS. Download them with the GPX button at the top of each route map. The Medium and Long routes come as two files, part one and part two, because many GPS units will not load a track above 10,000 points — load both and switch to the second one when the first ends, at Predazzo. Compared with the preliminary route the main change is the section after Canal San Bovo, which now goes over Passo Brocon and Pieve Tesino instead of Passo Cinque Croci, closed for roadworks. There are also short tweaks in several places, so throw away the old versions.",
     cerca: "gps route load navigation final preliminary track gpx two files part brocon cinque croci" },
