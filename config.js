@@ -28,6 +28,13 @@ window.TG_EVENTO_ID = 'b059ed05-79cc-4da0-a0d4-e82763fe02ba';
 window.EVENTO_CONFIG = {
   prefissoStorage: 'tg',            // le chiavi di quest'app sono gia' 'tg-...'
   analytics: true,
+  // Il QR personale del ritiro pacco, prima scheda di Info. Lo leggono qr.js e
+  // lean-qr.js, anche loro copie identiche del template (motore/qr.js e
+  // motore/lean-qr.js). Accesa, l'app legge il QR dal link ?qr= (email del
+  // ritiro pacco), lo tiene sul telefono e lo ridisegna anche senza segnale.
+  // Servono i testi `qr` e le etichette `ui.qr` in content.js, IT e EN.
+  // Vedi README, «Il QR del ritiro pacco dentro l'app».
+  qr: true,
   backend: {
     supabaseUrl: window.TG_SUPABASE_URL,
     anonKey: window.TG_SUPABASE_ANON_KEY,

@@ -117,6 +117,8 @@
 
 <script src="config.js"></script>
 <script src="uso.js"></script>
+<script src="qr.js"></script>
+<script src="lean-qr.js"></script>
 <script src="content.js"></script>
 <script src="tracks.js"></script>
 <script src="poi.js"></script>
@@ -291,8 +293,41 @@ const paragrafi = txt => String(txt || '').split('\n\n').map(t => `<p>${esc(t)}<
 /* Deterrente, non sicurezza vera: il codice arriva via email agli iscritti.
    Nell'area personale su bikeadventureseries.com il login sostituirà tutto questo. */
 const GATE_CODE = 'PIONEER26'; // ✱ segnaposto
+/* Il codice puo' arrivare anche dall'indirizzo — ?code=XXXX — cosi' un QR
+   stampato per gli iscritti, o l'icona installata in home (manifest →
+   start_url), aprono la guida gia' dentro. Non regala niente a nessuno: chi ha
+   quel link ha gia' il codice, esattamente come chi ha l'email. Appena letto lo
+   togliamo dalla barra dell'indirizzo, che altrimenti se lo porta dietro in
+   ogni schermata e in ogni link condiviso.
+   Ricopiato dal template (motore/app.js, codiceDallUrl) nel ramo qr-nell-app:
+   vedi README, «Il QR del ritiro pacco dentro l'app». */
+function codiceDallUrl(){
+  const q = new URLSearchParams(location.search);
+  const v = (q.get('code') || '').trim().toUpperCase();
+  if (!v) return null;
+  q.delete('code');
+  const resto = q.toString();
+  history.replaceState(null, '', location.pathname + (resto ? '?' + resto : '') + location.hash);
+  return v;
+}
+/* Il QR personale arriva dall'indirizzo come il codice — ?qr=... — e va letto
+   PRIMA di initGate: tutti e due riscrivono la barra, e codiceDallUrl lavora
+   su quella che trova. La logica sta in qr.js (copia identica del template). */
+function qrDallUrl(){
+  const resto = QR.leggiIndirizzo(location.search);
+  if (resto === null) return;
+  history.replaceState(null, '', location.pathname + (resto ? '?' + resto : '') + location.hash);
+}
 function initGate(){
+  // Sempre, anche per chi e' gia' entrato: se il codice e' nell'indirizzo va
+  // tolto comunque, altrimenti resta li' per tutta la sessione.
+  const daUrl = codiceDallUrl();
   if (localStorage.getItem('tg-access') === GATE_CODE){ USO.contaApertura(); return; }
+  if (daUrl === GATE_CODE){
+    localStorage.setItem('tg-access', GATE_CODE);
+    USO.contaApertura();
+    return;
+  }
   $('#gate').style.display = 'flex';
   const tryCode = () => {
     const v = $('#gatecode').value.trim().toUpperCase();
@@ -1319,9 +1354,74 @@ function apriInfoCard(card){
   const head = card.querySelector('.head');
   if (head) head.setAttribute('aria-expanded', 'true');
 }
+/* Il QR del ritiro pacco. E' la prima scheda di Info, sopra tutti i gruppi a
+   tema, richiudibile come le altre e chiusa di partenza — deciso da Francesco
+   l'11/9/2026: in Info sta insieme alle altre informazioni pratiche, chiusa
+   non occupa piu' la Home di chi non ne ha bisogno, e chi arriva dal link
+   (QR.arrivatoDalLink(), vedi l'avvio piu' sotto) la trova gia' aperta.
+   Resta in tutte le fasi, compreso "dopo": la finisher bag si ritira nei
+   giorni dopo l'arrivo, quindi l'invito a cercare il QR non smette di avere
+   senso. Si ridisegna dal codice con lean-qr invece di scaricare l'immagine:
+   dentro il QR c'e' solo quella stringa, quindi vale quanto l'originale, e
+   funziona senza segnale dal primo secondo — che e' esattamente dove serve,
+   in fila al banco. Bianco e nero fissi e margine di quattro moduli: un QR
+   nei colori dell'evento, o senza bordo, gli scanner lo leggono peggio. Senza
+   QR la scheda resta, con la riga che dice dove prenderlo: chi la legge e' la
+   persona in difficolta'.
+   Ricopiata tale e quale dal template (motore/app.js, schedaQr). */
+function schedaQr(){
+  const d = QR.daMostrare();
+  if (!d) return '';
+  const T = C.qr || {};
+  const cerca = esc((T.titolo + ' ' + T.testo + ' ' + T.vuoto + ' qr').toLowerCase());
+  /* Il campo per incollare il codice e' l'unica strada per chi ha gia' l'app
+     installata sulla schermata Home quando arriva l'email: su iPhone quella app
+     ha un salvataggio suo, e il link aperto da Gmail finisce sempre nel browser
+     (provato l'11/9/2026, event-app-template#38). Accetta anche il link intero,
+     perche' in fila si copia quello che capita sotto il dito.
+     C'e' anche quando un QR e' gia' salvato, con l'etichetta che lo dice: chi
+     ne ha incollato uno sbagliato — quello dell'amico inoltrato nella stessa
+     email, o il proprio con una cifra persa ma di forma buona — dall'app
+     installata non avrebbe nessun altro modo di rimediare.
+     La riga d'errore sta sempre nel DOM, vuota, con aria-live: comparendo dal
+     nulla certi lettori di schermo non la annunciano. */
+  const campoQr = (etichetta) => `<div class="qrincolla">
+      ${etichetta ? `<p class="muted">${esc(etichetta)}</p>` : ''}
+      <input id="qr-incolla" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+             placeholder="${esc(U.qr.campo)}" aria-label="${esc(U.qr.campo)}"/>
+      <div class="btnrow"><button type="button" class="btn small" id="qr-incolla-ok">${esc(U.qr.conferma)}</button></div>
+      <p class="muted qrerr" id="qr-incolla-err" aria-live="polite"></p>
+    </div>`;
+  let corpo;
+  if (!d.token){
+    corpo = `${paragrafi(T.vuoto)}${campoQr('')}`;
+  } else {
+    let img = '';
+    try {
+      const qr = LeanQR.generate(d.token, { minCorrectionLevel: LeanQR.correction.M });
+      const lato = qr.size + 8;                                   // moduli piu' il margine di 4 per parte
+      const k = Math.max(4, Math.floor(260 / lato));              // pixel CSS per modulo, interi
+      const dpr = Math.min(3, Math.ceil(window.devicePixelRatio || 1));
+      const src = qr.toDataURL({ pad: 4, scale: k * dpr, on: [0, 0, 0, 255], off: [255, 255, 255, 255] });
+      img = `<img class="qrimg" src="${src}" width="${lato * k}" height="${lato * k}" alt="${esc(T.titolo || '')}"/>`;
+    } catch(e) { /* il pettorale "basta dire il numero" resta leggibile senza immagine */ }
+    corpo = `<div class="qrnum">${esc(fmt(T.numero || '|', QR.numero(d.token)))}</div>
+      ${img}
+      ${paragrafi(T.testo)}
+      ${d.daLink ? `<p class="muted">${esc(T.daLink || '')}</p>
+      <div class="btnrow"><button type="button" class="btn small sec" id="qr-mio">${esc(T.mio || '')}</button></div>` : ''}
+      ${campoQr(d.daLink ? U.qr.oppure : U.qr.cambia)}`;
+  }
+  return `<div class="card icard" id="info-qr" data-tema="" data-cerca="${cerca}">
+    <div class="head" role="button" tabindex="0" aria-expanded="false" aria-controls="ibody-qr"><span class="e">${icon('qr-code', 20)}</span><h3>${esc(T.titolo || '')}</h3><span class="chev"></span></div>
+    <div class="body qrcorpo" id="ibody-qr">${corpo}</div>
+  </div>`;
+}
 function renderInfo(){
   let h = `<input id="infosearch" type="search" placeholder="Cerca nelle informazioni…" autocomplete="off"/>
     <div id="infolist">`;
+  // La scheda del QR sta in testa, sopra i gruppi a tema. Vuota se e' spenta.
+  h += schedaQr();
   let temaCorrente = null;
   C.infoCards.forEach(c=>{
     if (c.tema !== temaCorrente){
@@ -1353,17 +1453,48 @@ function renderInfo(){
     card.classList.toggle('open', apri);
     head.setAttribute('aria-expanded', apri ? 'true' : 'false');
   };
+  /* Il codice incollato a mano: se ha la forma giusta diventa il proprio QR e
+     Info si ridisegna con la scheda aperta, se no compare la riga d'errore. */
+  const incollaQr = () => {
+    const campo = $('#qr-incolla');
+    if (QR.accetta(campo ? campo.value : '')){
+      renderInfo();
+      apriInfoCard($('#info-qr'));
+      return;
+    }
+    const err = $('#qr-incolla-err');
+    if (err) err.textContent = U.qr.errore;
+  };
   $('#infolist').addEventListener('click', e => {
+    // Il QR arrivato da un link di un altro: "Questo e' il mio QR" lo rende il
+    // salvato e ridisegna Info, che a quel punto mostra il proprio senza piu'
+    // il pulsante — riaperta, perche' il ridisegno la richiude come tutte.
+    if (e.target.closest('#qr-mio')){
+      QR.salvaComeMio();
+      renderInfo();
+      apriInfoCard($('#info-qr'));
+      return;
+    }
+    if (e.target.closest('#qr-incolla-ok')){ incollaQr(); return; }
     const head = e.target.closest('.icard > .head');
     if (head) scambia(head);
   });
   // testata come bottone (div + role): la tastiera va gestita a mano
   $('#infolist').addEventListener('keydown', e => {
+    /* Invio nel campo del codice vale come il pulsante — sulla tastiera del
+       telefono quel tasto e' proprio li' sotto il dito. */
+    if (e.key === 'Enter' && e.target.id === 'qr-incolla'){ e.preventDefault(); incollaQr(); return; }
     if (e.key !== 'Enter' && e.key !== ' ') return;
     const head = e.target.closest('.icard > .head');
     if (!head) return;
     e.preventDefault();
     scambia(head);
+  });
+  // La riga d'errore non deve restare li' a dare torto a chi sta correggendo.
+  $('#infolist').addEventListener('input', e => {
+    if (e.target.id !== 'qr-incolla') return;
+    const err = $('#qr-incolla-err');
+    if (err) err.textContent = '';
   });
   $('#infosearch').addEventListener('input',e=>{
     const q = e.target.value.trim().toLowerCase();
@@ -1822,6 +1953,12 @@ $('#sponsorbar').innerHTML = `<h3>${esc(C.sponsor.titolo)}</h3><div class="sprow
 
 /* ---------- CERCA GLOBALE ---------- */
 const INDEX = [];
+// La scheda del QR non e' una infoCards vera e propria (la mette il motore, non
+// l'evento): la ricerca generale la trova solo se la funzione e' accesa.
+if (QR.attivo && C.qr){
+  INDEX.push({tab:'info', el:'info-qr', t:C.qr.titolo, s:(C.qr.testo || C.qr.vuoto || '').slice(0,90)+'…',
+    k:(C.qr.titolo+' '+C.qr.testo+' '+C.qr.vuoto+' qr').toLowerCase()});
+}
 C.infoCards.forEach(c=>INDEX.push({tab:'info', el:'info-'+c.id, t:c.titolo, s:c.corpo.slice(0,90)+'…', k:(c.titolo+' '+c.corpo+' '+c.cerca).toLowerCase()}));
 C.percorsi.forEach(p=>INDEX.push({tab:'percorso', t:p.nome, s:`${p.km} km · ${p.dplus} m D+ · ${p.livello}`, k:(p.nome+' '+p.desc+' '+p.note.join(' ')+' percorso traccia gpx km dislivello').toLowerCase()}));
 INDEX.push({tab:'dormire', t:'Arrivare e dormire', s:'La mappa alloggi con prezzi e disponibilità', k:'dormire prenotare hotel alloggio notte mappa campeggio booking prenotazione'});
@@ -1957,6 +2094,7 @@ $('#searchinput').addEventListener('input',e=>{
     }
   });
 })();
+qrDallUrl();
 initGate();
 renderHome(); renderPercorso(); renderInfo(); renderDormire(); renderLive();
 paintDemo();
@@ -1997,6 +2135,9 @@ disegnaAvvisoUso();
 openTab('home');
 const tabRichiesta = new URLSearchParams(location.search).get('tab');
 if (['home','percorso','info','dormire','live'].includes(tabRichiesta)) apriDaGesto(tabRichiesta);
+/* Chi arriva dal link con il QR trova Info gia' aperta sulla sua scheda. Dopo
+   openTab('home') e dopo ?tab=, come nel template: il link del QR vince. */
+if (QR.arrivatoDalLink()){ openTab('info'); apriInfoCard($('#info-qr')); }
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('message', ev => {
     if (ev.data && ev.data.type === 'open-live') apriDaGesto('live');

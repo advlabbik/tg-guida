@@ -2,9 +2,9 @@
 // Strategia: network-first per i file dell'app (chi ha rete vede SEMPRE l'ultima
 // versione, senza doppia apertura), cache come rete di salvataggio quando il
 // segnale manca. Le tile mappa, il meteo e Stay22 non passano di qui.
-const CACHE = 'tg-guida-v46';
+const CACHE = 'tg-guida-v47';
 const ASSETS = [
-  './', './index.html', './config.js', './uso.js', './content.js', './tracks.js', './poi.js',
+  './', './index.html', './config.js', './uso.js', './qr.js', './lean-qr.js', './content.js', './tracks.js', './poi.js',
   './styles.css', './icons.js', './icons/sprite.svg',
   './assets/tg-logo-full.svg',
   './assets/percorsi/corto.jpg', './assets/percorsi/medio.jpg', './assets/percorsi/lungo.jpg',
@@ -34,14 +34,17 @@ self.addEventListener('fetch', e => {
   const sameApp = url.origin === location.origin;
   if (sameApp) {
     // network-first: la versione online vince sempre, la cache copre l'assenza di segnale
+    // Una pagina aperta da un link si porta dietro ?code= e ?qr=, che sono
+    // personali: in cache va la pagina senza query, una copia sola.
+    const chiave = e.request.mode === 'navigate' ? url.origin + url.pathname : e.request;
     e.respondWith(
       fetch(e.request).then(res => {
         if (res && res.ok) {
           const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
+          caches.open(CACHE).then(c => c.put(chiave, clone));
         }
         return res;
-      }).catch(() => caches.match(e.request).then(hit => hit || caches.match('./index.html')))
+      }).catch(() => caches.match(chiave).then(hit => hit || caches.match('./index.html')))
     );
     return;
   }

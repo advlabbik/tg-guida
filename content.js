@@ -167,6 +167,21 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
    whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
 whipUrl: "",
 
+/* La scheda del QR personale del ritiro pacco: il motore la mette PRIMA di
+   tutte le infoCards, in tutte le fasi. In `numero` il | sta al posto del
+   pettorale. `vuoto` e' la riga che legge chi il QR non ce l'ha, in fila al
+   banco. L'id `qr` nelle infoCards e' riservato a questa scheda.
+   ✱ `vuoto` da confermare quando il link ?qr= sara' nell'email del ritiro
+   pacco (Brevo, Francesco): finche' l'email porta solo l'immagine, il modo per
+   averlo nell'app e' incollare il codice. */
+qr: {
+  titolo: "Il tuo QR per il ritiro pacco",
+  numero: "Pettorale |",
+  testo: "Mostralo al banco del ritiro pacco, venerdì 25 settembre dalle 16 alle 18 a Progetto Manifattura. Funziona anche senza connessione, e se lo scanner non lo legge basta dire il numero.",
+  vuoto: "Il tuo QR è nell'email del ritiro pacco. Apri da lì il link che porta alla guida, oppure incolla qui sotto il codice, e comparirà qui, salvato sul telefono. Se non trovi l'email, al banco basta il tuo nome.",
+  daLink: "Questo QR è arrivato da un link. Il tuo resta salvato e torna alla prossima apertura.",
+  mio: "Questo è il mio QR"
+},
 infoCards: [
   /* Gli orari definitivi sono arrivati il 27/8 e stanno in una card sola, la
      prima, con la tabella oraria nel campo `orari` invece che dentro la prosa.
@@ -338,6 +353,14 @@ ui: {
   giorniSett: ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"],
   countdown: { giorni: "giorni", ore: "ore", minuti: "minuti" },
   tabs: { home: "Home", percorso: "Percorso", info: "Info", dormire: "Dormire", live: "Live" },
+  // Etichette della scheda del QR personale (dal template, motore/ui.js → qr).
+  qr: {
+    campo: "Codice o link dell'email",
+    conferma: "Mostra il mio QR",
+    errore: "Questo codice non ha la forma giusta. Copia di nuovo dall'email, per intero.",
+    cambia: "Non è il tuo QR? Incolla qui il codice dell'email",
+    oppure: "Oppure incolla il codice della tua email"
+  },
   gate: {
     testo: "Questa guida è riservata ai partecipanti.|Inserisci il codice che trovi nell'email con le tracce.",
     placeholder: "CODICE", bottone: "Entra",
@@ -606,6 +629,14 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
    whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
 whipUrl: "",
 
+qr: {
+  titolo: "Your QR for pack pickup",
+  numero: "Bib |",
+  testo: "Show it at the pack pickup desk, Friday 25 September from 4 to 6 pm at Progetto Manifattura. It works offline too, and if the scanner can't read it your number is enough.",
+  vuoto: "Your QR is in the pack pickup email. Open the link in that email that brings you to the guide, or paste the code below, and it will appear here, saved on your phone. Can't find the email? At the desk your name is enough.",
+  daLink: "This QR came from a link. Yours stays saved and comes back next time you open the guide.",
+  mio: "This is my QR"
+},
 infoCards: [
   { id: "orari", tema: "The schedule", icona: "⏱️", titolo: "All the times",
     corpo: "These are the final times. Everything happens at Progetto Manifattura in Rovereto — pack pickup, briefing, the start and the welcome at the finish.",
@@ -762,6 +793,13 @@ ui: {
   giorniSett: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
   countdown: { giorni: "days", ore: "hours", minuti: "minutes" },
   tabs: { home: "Home", percorso: "Route", info: "Info", dormire: "Sleep", live: "Live" },
+  qr: {
+    campo: "Code or link from the email",
+    conferma: "Show my QR",
+    errore: "That code does not look right. Copy it again from the email, in full.",
+    cambia: "Not your QR? Paste the code from the email here",
+    oppure: "Or paste the code from your own email"
+  },
   gate: {
     testo: "This guide is for participants only.|Enter the code you received in the routes email.",
     placeholder: "CODE", bottone: "Enter",
