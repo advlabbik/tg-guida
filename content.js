@@ -163,8 +163,10 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
    di live.whip ("qui arriverà la mappa del live tracking"). Quando WHIP consegna
    il codice del Trentino Gravel si scrive qui l'url completo, in tutte e due le
    lingue, e la mappa compare da sola. Verificato il 19/8 sull'evento NC4R26 che
-   whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
-whipUrl: "",
+   whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors).
+   Codice TG26 dal vademecum WHIP del 23/9 (issue #37). E' la MAPPA pubblica, non
+   il link di adesione whip.live/in/event/TG26 che va ai partecipanti col PIN. */
+whipUrl: "https://www.whip.live/event-tracking/TG26",
 
 /* La scheda del QR personale del ritiro pacco: il motore la mette PRIMA di
    tutte le infoCards, in tutte le fasi. In `numero` il | sta al posto del
@@ -175,7 +177,7 @@ whipUrl: "",
    l'immagine). */
 qr: {
   titolo: "Il tuo QR per il ritiro pacco",
-  numero: "Pettorale |",
+  numero: "Numero |",   // non "Pettorale": non e' una gara (23/9)
   testo: "Mostralo al banco del ritiro pacco, venerdì 25 settembre dalle 16 alle 18 a Progetto Manifattura. Funziona anche senza connessione, e se lo scanner non lo legge basta dire il numero.",
   vuoto: "Il tuo QR è nell'email del ritiro pacco. Apri da lì il link che porta alla guida, oppure incolla qui sotto il codice, e comparirà qui, salvato sul telefono. Se non trovi l'email, al banco basta il tuo nome.",
   daLink: "Questo QR è arrivato da un link. Il tuo resta salvato e torna alla prossima apertura.",
@@ -624,11 +626,11 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
    il codice del Trentino Gravel si scrive qui l'url completo, in tutte e due le
    lingue, e la mappa compare da sola. Verificato il 19/8 sull'evento NC4R26 che
    whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
-whipUrl: "",
+whipUrl: "https://www.whip.live/event-tracking/TG26",
 
 qr: {
   titolo: "Your QR for pack pickup",
-  numero: "Bib |",
+  numero: "Number |",
   testo: "Show it at the pack pickup desk, Friday 25 September from 4 to 6 pm at Progetto Manifattura. It works offline too, and if the scanner can't read it your number is enough.",
   vuoto: "Your QR is in the pack pickup email. Open the link in that email that brings you to the guide, or paste the code below, and it will appear here, saved on your phone. Can't find the email? At the desk your name is enough.",
   daLink: "This QR came from a link. Yours stays saved and comes back next time you open the guide.",
