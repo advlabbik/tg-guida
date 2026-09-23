@@ -404,6 +404,20 @@ main{padding:14px 14px calc(var(--nav-h) + 20px)}
   transform:rotate(45deg);transition:transform .15s,top .15s}
 .icard.open .chev{transform:rotate(-135deg);top:2px}
 .icard .body{display:none;margin-top:8px}
+/* La scheda del QR personale (dal template, con i colori di questa app). */
+.qrcorpo{text-align:center}
+/* 16px non e' un capriccio: sotto i 16 iPhone ingrandisce la pagina appena si
+   tocca il campo, e la scheda salta via da sola mentre si incolla. */
+.qrincolla{margin-top:14px}
+.qrincolla input{width:100%;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);
+  border-radius:12px;background:var(--card-2);color:var(--ink);text-align:center}
+.qrincolla input:focus{outline:none;border-color:var(--lime)}
+/* Un messaggio d'errore col colore del testo secondario, letto al sole in fila
+   al banco, non si legge- qui si tiene il corpo piccolo ma il colore pieno. */
+.qrincolla .qrerr{color:var(--ink);font-weight:600}
+.qrcorpo .btnrow{justify-content:center}
+.qrnum{font-family:'Space Grotesk','Inter',sans-serif;font-size:34px;font-weight:800;color:var(--ink);margin:4px 0 10px;letter-spacing:.5px}
+.qrimg{display:block;max-width:100%;height:auto;margin:0 auto 12px;image-rendering:pixelated;background:#fff;border-radius:8px}
 .icard.open .body{display:block}
 /* tabella oraria dentro una card info (campo `orari` in content.js) */
 .orari{margin-top:12px}
