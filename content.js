@@ -167,6 +167,9 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
    Codice TG26 dal vademecum WHIP del 23/9 (issue #37). E' la MAPPA pubblica, non
    il link di adesione whip.live/in/event/TG26 che va ai partecipanti col PIN. */
 whipUrl: "https://www.whip.live/event-tracking/TG26",
+/* La pagina live del sito, col tasto sotto la mappa. Spegnere a evento finito
+   (stringa vuota = niente tasto), insieme a whipUrl. */
+whipPagina: "https://www.trentinogravel.com/live",
 
 /* La scheda del QR personale del ritiro pacco: il motore la mette PRIMA di
    tutte le infoCards, in tutte le fasi. In `numero` il | sta al posto del
@@ -288,7 +291,8 @@ live: {
     testo: "La mappa del live tracking ufficiale. Vedi in tempo reale dove sono i partecipanti lungo il percorso.",
     nota: "",
     attesa: "Qui arriverà la mappa del live tracking ufficiale — vedrai in tempo reale dove sono gli altri lungo il percorso. Si accende prima della partenza.",
-    apri: "Apri a schermo intero"
+    apri: "Apri a schermo intero",
+    pagina: "Pagina live sul sito"
   },
   gps: {
     titolo: "Dove sono?",
@@ -627,6 +631,7 @@ mappeBase: "https://advlabbik.github.io/trentino-gravel-mappe/",
    lingue, e la mappa compare da sola. Verificato il 19/8 sull'evento NC4R26 che
    whip.live si lascia incorporare (niente X-Frame-Options ne' frame-ancestors). */
 whipUrl: "https://www.whip.live/event-tracking/TG26",
+whipPagina: "https://www.trentinogravel.com/live?lang=en",
 
 qr: {
   titolo: "Your QR for pack pickup",
@@ -727,7 +732,8 @@ live: {
     testo: "The official live tracking map. See in real time where the riders are along the route.",
     nota: "",
     attesa: "The official live tracking map will go here — you will see in real time where the others are along the route. It switches on before the start.",
-    apri: "Open full screen"
+    apri: "Open full screen",
+    pagina: "Live page on the website"
   },
   gps: {
     titolo: "Where am I?",

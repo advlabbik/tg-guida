@@ -1609,12 +1609,16 @@ function renderLive(){
   /* Live tracking WHIP. Con l'url la mappa e' dentro l'app (stesso iframe della
      home di northcape4000.com); senza url la card resta e dice che la mappa
      arrivera' — meglio una promessa chiara che una sezione che appare dal nulla
-     il giorno prima della partenza. */
+     il giorno prima della partenza. Con `whipPagina` sotto la mappa c'e' anche il
+     tasto per la pagina live del sito (quella da mandare a chi segue da casa),
+     come `whipPagina` del template (event-app-template#27). La pagina del sito
+     NON va nell'iframe: dentro il riquadro mostrerebbe nav e banner cookie. */
   h += `<div class="card" id="whipsec"><h3>${icon('radio',20)} ${esc(l.whip.titolo)}</h3>`
     + (C.whipUrl ? `<p>${esc(l.whip.testo)}</p>` : '') + (C.whipUrl
     ? `<div id="whipwrap"><iframe src="${C.whipUrl}" loading="lazy" title="${esc(l.whip.titolo)}"
         referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-      <div class="btnrow" style="margin-top:10px"><a class="btn sec" href="${C.whipUrl}" target="_blank" rel="noopener">${esc(l.whip.apri)}</a></div>
+      <div class="btnrow" style="margin-top:10px"><a class="btn sec" href="${C.whipUrl}" target="_blank" rel="noopener">${esc(l.whip.apri)}</a>${C.whipPagina && l.whip.pagina ? `
+        <a class="btn sec" href="${C.whipPagina}" target="_blank" rel="noopener">${esc(l.whip.pagina)}</a>` : ''}</div>
       ${l.whip.nota ? `<p class="muted" style="margin-top:8px">${esc(l.whip.nota)}</p>` : ''}`
     : `<div class="attesa">${icon('map-pin',17)}<span>${esc(l.whip.attesa)}</span></div>`) + `</div>`;
   h += `<div class="card" id="meteosec"><h3>${icon('cloud-sun-rain',20)} ${esc(U.meteoTitolo)}</h3>
