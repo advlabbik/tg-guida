@@ -524,6 +524,7 @@ function renderHome(){
       <div class="bigbtn" data-tab="live" data-meteo="1"><span class="e">${icon('cloud-sun-rain', 22)}</span><b>${esc(U.durante.meteo)}</b></div>
       <div class="bigbtn" data-tab="dormire"><span class="e">${icon('bed-double', 22)}</span><b>${esc(U.durante.dormire)}</b></div>
       <div class="bigbtn" data-tab="info"><span class="e">${icon('info', 22)}</span><b>${esc(U.durante.info)}</b></div>
+      <div class="bigbtn" id="refreshtile"><span class="e">${icon('repeat', 22)}</span><b>${esc(U.durante.aggiorna)}</b></div>
     </div>`;
   }
   if (ph === 'dopo') {
@@ -566,6 +567,27 @@ function renderHome(){
   bindTabLinks($('#tab-home'));
   bindInstall();
   maybeShowInstall();
+  const rf = $('#refreshtile');
+  if (rf) rf.addEventListener('click', () => { rf.style.opacity = .5; hardRefresh(); });
+}
+/* Tasto "Aggiorna l'app": svuota SOLO la cache dell'app (Cache Storage) e
+   annulla la registrazione del service worker, cosi' il prossimo caricamento
+   riparte da zero dalla rete — utile a chi e' rimasto su una versione vecchia
+   (es. GPX superato) perche' era senza segnale quando l'app avrebbe aggiornato
+   da sola. NON tocca mai localStorage: il QR del ritiro pacco (vedi qr.js) e
+   le altre preferenze salvate restano intatte. */
+async function hardRefresh(){
+  try {
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+    }
+    if (window.caches) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+  } catch (e) {}
+  location.reload();
 }
 /* Il forum ha una card sua, fuori dalla checklist (Andrea, 19/8): non e' un
    compito da spuntare, e dentro la lista sembrava una voce dimenticata senza

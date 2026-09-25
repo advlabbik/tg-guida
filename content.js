@@ -389,7 +389,8 @@ ui: {
   durante: {
     liveSotto: "Tocca qui e scopri dove sei, a che km, cosa hai davanti da mangiare e da dormire",
     emergenze: "Emergenze · 112", condividi: "Condividi posizione",
-    meteo: "Meteo e tramonto", dormire: "Dormire stanotte", info: "Tutte le info"
+    meteo: "Meteo e tramonto", dormire: "Dormire stanotte", info: "Tutte le info",
+    aggiorna: "Aggiorna l'app"
   },
   cercaLabel: "Cerca",
   cercaTip: "Qui dentro cerchi tutto: acqua, treno, pacco, meteo, alloggi.",
@@ -828,7 +829,8 @@ ui: {
   durante: {
     liveSotto: "Tap here to see where you are, at which km, and what lies ahead to eat and sleep",
     emergenze: "Emergency · 112", condividi: "Share position",
-    meteo: "Weather and sunset", dormire: "Sleep tonight", info: "All the info"
+    meteo: "Weather and sunset", dormire: "Sleep tonight", info: "All the info",
+    aggiorna: "Refresh the app"
   },
   cercaLabel: "Search",
   cercaTip: "Search everything in here: water, train, race pack, weather, beds.",
