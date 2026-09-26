@@ -202,7 +202,7 @@ infoCards: [
         { ora: "7:15", cosa: "Ritrovo sul viale" },
         { ora: "7:30", cosa: "Si parte" } ] },
       { giorno: "Gli arrivi, da domenica a mercoledì", voci: [
-        { ora: "14:00–19:00", cosa: "Domenica 27 settembre" },
+        { ora: "12:00–19:00", cosa: "Domenica 27 settembre" },
         { ora: "10:00–19:00", cosa: "Da lunedì 28 a mercoledì 30 settembre" } ] }
     ],
     link: { testo: "Apri in Google Maps", url: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto" },
@@ -262,7 +262,7 @@ infoCards: [
     corpo: "Per un'emergenza sanitaria o il soccorso alpino chiama subito il 112, il numero unico che funziona sempre. Per tutto il resto scrivi all'organizzazione su WhatsApp al +39 351 719 8039 — solo messaggi, non chiamate. L'evento è in autonomia, non c'è un servizio scopa. Dalla sezione Live puoi condividere la tua posizione esatta con un tocco.",
     cerca: "emergenza 112 soccorso aiuto telefono incidente posizione whatsapp numero organizzazione contatto" },
   { id: "arrivo", tema: "Durante l'evento", icona: "🏁", titolo: "Arrivo e accoglienza",
-    corpo: "Ti aspettiamo all'arrivo a Progetto Manifattura, dove ritirerai anche il pacco arrivo. Domenica 27 siamo lì dalle 14:00 alle 19:00, da lunedì 28 a mercoledì 30 dalle 10:00 alle 19:00.",
+    corpo: "Ti aspettiamo all'arrivo a Progetto Manifattura, dove ritirerai anche il pacco arrivo. Domenica 27 siamo lì dalle 12:00 alle 19:00, da lunedì 28 a mercoledì 30 dalle 10:00 alle 19:00.",
     cerca: "arrivo accoglienza orari fino quando domenica 27 lunedi 28 mercoledi 30 settembre pacco arrivo finisher" },
   { id: "social", tema: "Durante l'evento", icona: "📣", titolo: "Racconta il viaggio",
     corpo: "Usa l'hashtag #trentinogravel nelle foto e nelle storie, chi è a casa vive l'evento attraverso di te.",
@@ -653,7 +653,7 @@ infoCards: [
         { ora: "7:15", cosa: "Meet on the avenue" },
         { ora: "7:30", cosa: "Start" } ] },
       { giorno: "The finish, Sunday to Wednesday", voci: [
-        { ora: "14:00–19:00", cosa: "Sunday 27 September" },
+        { ora: "12:00–19:00", cosa: "Sunday 27 September" },
         { ora: "10:00–19:00", cosa: "Monday 28 to Wednesday 30 September" } ] }
     ],
     link: { testo: "Open in Google Maps", url: "https://maps.google.com/?q=Progetto+Manifattura+Piazza+Manifattura+1+Rovereto" },
@@ -710,7 +710,7 @@ infoCards: [
     corpo: "For a medical emergency or mountain rescue call 112 right away, the single European number that always works. For anything else, message the organisation on WhatsApp at +39 351 719 8039 — texts only, no calls. The event is self-supported, there is no sweep vehicle. From the Live section you can share your exact position with one tap.",
     cerca: "emergency 112 rescue help phone accident position whatsapp number organisation contact" },
   { id: "arrivo", tema: "During the event", icona: "🏁", titolo: "Finish and welcome",
-    corpo: "We wait for you at the finish at Progetto Manifattura, where you also collect your finisher pack. On Sunday 27 we are there from 14:00 to 19:00, from Monday 28 to Wednesday 30 from 10:00 to 19:00.",
+    corpo: "We wait for you at the finish at Progetto Manifattura, where you also collect your finisher pack. On Sunday 27 we are there from 12:00 to 19:00, from Monday 28 to Wednesday 30 from 10:00 to 19:00.",
     cerca: "finish welcome times until when sunday 27 monday 28 wednesday 30 september finisher pack" },
   { id: "social", tema: "During the event", icona: "📣", titolo: "Tell the story",
     corpo: "Use the hashtag #trentinogravel in your photos and stories, so the people back home live the event through you.",
